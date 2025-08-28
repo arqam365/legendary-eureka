@@ -1,0 +1,685 @@
+"use client"
+
+import { useEffect, useMemo, useRef, useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type Variants,
+} from "framer-motion"
+
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Navigation } from "@/components/navigation"
+import { Footer } from "@/components/footer"
+import { ArrowRight, Users, Code, Brain, TrendingUp, Volume2, VolumeX } from "lucide-react"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+
+/* -------------------- Shared minimal motion -------------------- */
+const revealOnce: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: "easeOut" },
+  },
+}
+const hoverCard = { scale: 1.02 }
+const hoverIcon = { scale: 1.08 }
+
+/* -------------------- Ambient Sound Toggle -------------------- */
+function SoundToggle() {
+  const [enabled, setEnabled] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const prefersReduced = useReducedMotion()
+
+  useEffect(() => {
+    if (!audioRef.current) {
+      const a = new Audio("/audio/ambient.mp3")
+      a.loop = true
+      a.preload = "auto"
+      a.volume = 0.12
+      audioRef.current = a
+    }
+    try {
+      const saved = typeof window !== "undefined" && localStorage.getItem("ambient-sound")
+      if (saved === "on" && !prefersReduced) setEnabled(true)
+    } catch {
+      /* ignore */
+    }
+  }, [prefersReduced])
+
+  useEffect(() => {
+    const a = audioRef.current
+    if (!a) return
+    if (enabled && !prefersReduced) {
+      a.play().catch(() => {
+        /* autoplay may be blocked until next user gesture */
+      })
+      try {
+        localStorage.setItem("ambient-sound", "on")
+      } catch {}
+    } else {
+      a.pause()
+      try {
+        localStorage.setItem("ambient-sound", "off")
+      } catch {}
+    }
+  }, [enabled, prefersReduced])
+
+  return (
+      <div className="fixed bottom-5 right-5 z-50">
+        <Button
+            variant="outline"
+            className="backdrop-blur-md bg-white/70 border-white/60 shadow-sm"
+            onClick={() => setEnabled((v) => !v)}
+            aria-pressed={enabled}
+            aria-label={enabled ? "Turn ambient sound off" : "Turn ambient sound on"}
+            title={enabled ? "Turn ambient sound off" : "Turn ambient sound on"}
+        >
+          {enabled ? <Volume2 className="h-4 w-4 mr-2" /> : <VolumeX className="h-4 w-4 mr-2" />}
+          {enabled ? "Sound on" : "Sound off"}
+        </Button>
+      </div>
+  )
+}
+
+/* -------------------- Case Studies Carousel (no scroll) -------------------- */
+type Study = {
+  id: string
+  title: string
+  problem: string
+  solution: string
+  results: string
+  image: string
+  link?: string
+}
+
+function CaseStudiesCarousel() {
+  const studies: Study[] = useMemo(
+      () => [
+        {
+          id: "beesocial",
+          title: "BeeSocial – Social Media App",
+          problem: "Low engagement and high churn.",
+          solution: "Rebuilt feed ranking, real-time chat, and creator tools.",
+          results: "+42% DAU, 29% session length, 18% retention.",
+          image: "/case-studies/beesocial.jpg",
+          link: "/portfolio/beesocial",
+        },
+        {
+          id: "finlytics",
+          title: "Finlytics – Analytics SaaS",
+          problem: "Complex reporting slowed decisions.",
+          solution: "Built multi-tenant dashboards, alerts, and ETL pipelines.",
+          results: "3× faster insights, 35% conversion lift, NPS +14.",
+          image: "/case-studies/finlytics.jpg",
+          link: "/portfolio/finlytics",
+        },
+        // add more…
+      ],
+      []
+  )
+
+  const [active, setActive] = useState(0)
+  const [hovering, setHovering] = useState(false)
+  const prefersReduced = useReducedMotion()
+
+  // Optional subtle autoplay
+  useEffect(() => {
+    if (prefersReduced || hovering) return
+    const id = setInterval(() => setActive((i) => (i + 1) % studies.length), 7000)
+    return () => clearInterval(id)
+  }, [prefersReduced, hovering, studies.length])
+
+  const next = () => setActive((i) => (i + 1) % studies.length)
+  const prev = () => setActive((i) => (i - 1 + studies.length) % studies.length)
+
+  return (
+      <section className="py-20 bg-gray-50">
+        <motion.div
+            className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8"
+            variants={revealOnce}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.25 }}
+        >
+          <div className="flex items-end justify-between mb-8">
+            <div className="text-center md:text-left">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">Case Studies</h2>
+              <p className="text-gray-600 text-lg">Learn from others.</p>
+            </div>
+            <div className="hidden md:flex gap-3">
+              <Button variant="outline" onClick={prev} aria-label="Previous" title="Previous case study">
+                ←
+              </Button>
+              <Button onClick={next} aria-label="Next" title="Next case study">
+                →
+              </Button>
+            </div>
+          </div>
+
+          <div
+              className="relative h-[520px] lg:h-[560px] flex items-center justify-center"
+              aria-roledescription="carousel"
+              aria-label="Case studies"
+              onMouseEnter={() => setHovering(true)}
+              onMouseLeave={() => setHovering(false)}
+          >
+            <AnimatePresence mode="wait">
+              <motion.article
+                  key={studies[active].id}
+                  initial={{ opacity: 0, x: 60 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -60 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="absolute w-full max-w-5xl rounded-3xl border border-white/60 bg-white/60 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] overflow-hidden"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-5">
+                  {/* Visual */}
+                  <div className="relative lg:col-span-2">
+                    <motion.img
+                        src={studies[active].image}
+                        alt={studies[active].title}
+                        className="h-full w-full object-cover lg:min-h-[560px]"
+                        whileHover={prefersReduced ? undefined : hoverIcon}
+                        transition={{ duration: 0.35 }}
+                    />
+                    <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white/70 to-transparent" />
+                  </div>
+
+                  {/* Content */}
+                  <div className="lg:col-span-3 p-8 lg:p-10">
+                    <div className="flex items-center gap-2 text-primary mb-3">
+                      <TrendingUp className="h-5 w-5" />
+                      <span className="text-sm font-medium">Case Study</span>
+                    </div>
+                    <h3 className="text-2xl lg:text-3xl font-heading font-semibold text-gray-900">
+                      {studies[active].title}
+                    </h3>
+                    <div className="mt-5 space-y-3 text-gray-700 leading-relaxed">
+                      <p>
+                        <span className="font-semibold text-gray-900">Problem:</span> {studies[active].problem}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-gray-900">Solution:</span> {studies[active].solution}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-gray-900">Results:</span> {studies[active].results}
+                      </p>
+                    </div>
+                    <Link
+                        href={studies[active].link || "/portfolio"}
+                        className="inline-flex items-center text-primary font-medium hover:underline mt-6"
+                    >
+                      View case study <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+
+                    {/* Transparent detail bar */}
+                    <div className="relative mt-8 rounded-2xl border border-white/60 bg-white/40 backdrop-blur-xl px-5 py-3 text-sm text-gray-700 overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+                      <div className="flex flex-wrap gap-3">
+                        <span className="px-2.5 py-1 rounded-md bg-white/70 text-gray-800">Discovery → MVP → Scale</span>
+                        <span className="px-2.5 py-1 rounded-md bg-white/70 text-gray-800">Design Systems</span>
+                        <span className="px-2.5 py-1 rounded-md bg-white/70 text-gray-800">Observability</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.article>
+            </AnimatePresence>
+
+            {/* Arrows (mobile + desktop) */}
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-2 lg:px-4">
+              <Button variant="outline" size="icon" onClick={prev} aria-label="Previous slide" title="Previous slide">
+                ←
+              </Button>
+              <Button variant="outline" size="icon" onClick={next} aria-label="Next slide" title="Next slide">
+                →
+              </Button>
+            </div>
+          </div>
+
+          {/* Dots */}
+          <div className="mt-8 flex items-center justify-center gap-2" aria-live="polite">
+            {studies.map((_, i) => (
+                <button
+                    key={i}
+                    onClick={() => setActive(i)}
+                    aria-label={`Go to slide ${i + 1}`}
+                    className={`h-2.5 rounded-full transition-all ${
+                        i === active ? "bg-primary w-6" : "bg-gray-300 w-2.5 hover:bg-gray-400"
+                    }`}
+                />
+            ))}
+          </div>
+        </motion.div>
+      </section>
+  )
+}
+
+/* ----------------------------------- Page ----------------------------------- */
+export default function HomePage() {
+  const prefersReduced = useReducedMotion()
+  const heroRef = useRef<HTMLDivElement | null>(null)
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] })
+  // ultra-subtle parallax
+  const blobShift = useTransform(scrollYProgress, [0, 1], [0, prefersReduced ? 0 : -30])
+
+  return (
+      <div className="min-h-screen bg-white">
+        <Navigation />
+
+        {/* Hero */}
+        <section ref={heroRef} className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50">
+          <motion.div
+              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32"
+              variants={revealOnce}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.25 }}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-8">
+                <div className="space-y-4">
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 leading-tight">
+                    Innovating Products. <span className="text-gradient-revzion">Empowering Businesses.</span>
+                  </h1>
+                  <p className="text-xl text-gray-600 leading-relaxed max-w-2xl">
+                    Revzion builds scalable SaaS, AI, and cross-platform solutions for startups and enterprises.
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button size="lg" className="bg-gradient-revzion hover:opacity-90 transition-opacity text-lg px-8 py-3">
+                    Get a Free Consultation
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                  <Button
+                      size="lg"
+                      variant="outline"
+                      className="text-lg px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white bg-transparent"
+                  >
+                    <Link href="/services" className="flex items-center">
+                      Explore Services
+                    </Link>
+                  </Button>
+                </div>
+
+                <div className="flex items-center space-x-8 pt-4">
+                  {[
+                    { value: "50+", label: "Projects Delivered" },
+                    { value: "100%", label: "Client Satisfaction" },
+                    { value: "24/7", label: "Support" },
+                  ].map((m) => (
+                      <motion.div key={m.label} whileHover={prefersReduced ? undefined : hoverCard} className="text-center">
+                        <div className="text-2xl font-heading font-bold text-gray-900">{m.value}</div>
+                        <div className="text-sm text-gray-600">{m.label}</div>
+                      </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="relative">
+                <div className="relative z-10">
+                  <Image
+                      src="/placeholder-0f1yy.png"
+                      alt="Modern tech dashboard showcasing Revzion's solutions"
+                      width={1200}
+                      height={800}
+                      priority
+                      className="w-full h-auto rounded-2xl shadow-2xl"
+                  />
+                </div>
+
+                {/* Subtle parallax blobs */}
+                <motion.div
+                    aria-hidden
+                    style={{ y: blobShift }}
+                    className="absolute -top-4 -right-4 w-72 h-72 bg-gradient-revzion rounded-full opacity-10 blur-3xl"
+                />
+                <motion.div
+                    aria-hidden
+                    style={{ y: blobShift }}
+                    className="absolute -bottom-8 -left-8 w-64 h-64 bg-blue-200 rounded-full opacity-20 blur-2xl"
+                />
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Services */}
+        <section className="py-20 bg-gray-50">
+          <motion.div
+              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+              variants={revealOnce}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.25 }}
+          >
+            <div className="text-center mb-16">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">What We Do Best</h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                From cutting-edge AI solutions to scalable SaaS platforms, we deliver technology that drives your business
+                forward.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                {
+                  icon: <Code className="h-8 w-8" />,
+                  title: "Custom Development",
+                  description:
+                      "Tailored solutions built with modern technologies to meet your unique business requirements.",
+                  stack: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "Tailwind CSS"],
+                },
+                {
+                  icon: <Brain className="h-8 w-8" />,
+                  title: "AI & Automation",
+                  description: "Intelligent systems that streamline operations and unlock new possibilities for growth.",
+                  stack: ["AI SDK", "OpenAI/Groq/xAI", "Vector DB", "Embeddings", "Workers/Queues"],
+                },
+                {
+                  icon: <Users className="h-8 w-8" />,
+                  title: "Consulting",
+                  description: "Strategic guidance to help you make informed technology decisions.",
+                  stack: ["Architecture", "Migrations", "Performance", "Security", "Roadmapping"],
+                },
+                {
+                  icon: <Users className="h-8 w-8" />,
+                  title: "SaaS Solutions",
+                  description: "Scalable software-as-a-service platforms designed for rapid deployment and growth.",
+                  stack: ["Multi-tenant", "RBAC", "Billing", "Webhooks", "Audit Logs"],
+                },
+                {
+                  icon: <Users className="h-8 w-8" />,
+                  title: "Cloud & DevOps",
+                  description: "Secure, reliable infrastructure that scales with your business needs.",
+                  stack: ["Vercel", "Neon/Supabase", "CI/CD", "Observability", "RLS/Policies"],
+                },
+                {
+                  icon: <Users className="h-8 w-8" />,
+                  title: "Mobile & Web Apps",
+                  description: "Cross-platform applications that deliver exceptional user experiences.",
+                  stack: ["React Native", "Expo", "PWA", "Offline-first", "App Store/Play"],
+                },
+              ].map((service, index) => (
+                  <motion.div
+                      key={service.title}
+                      whileHover={prefersReduced ? undefined : hoverCard}
+                      transition={{ type: "spring", stiffness: 200, damping: 24 }}
+                  >
+                    <Card className="group border-0 shadow-md hover:shadow-lg transition-shadow">
+                      <CardContent className="p-8">
+                        <motion.div className="text-primary mb-4" whileHover={prefersReduced ? undefined : hoverIcon}>
+                          {service.icon}
+                        </motion.div>
+                        <h3 className="text-xl font-heading font-semibold text-gray-900 mb-3">{service.title}</h3>
+                        <p className="text-gray-600 leading-relaxed mb-4">{service.description}</p>
+                        <Accordion type="single" collapsible>
+                          <AccordionItem value={`stack-${index}`}>
+                            <AccordionTrigger className="text-left text-primary font-medium hover:no-underline">
+                              View Tech Stack
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <div className="flex flex-wrap gap-2">
+                                {service.stack.map((tech) => (
+                                    <span
+                                        key={tech}
+                                        className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs"
+                                        aria-label={`Technology ${tech}`}
+                                    >
+                                {tech}
+                              </span>
+                                ))}
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        </Accordion>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Why Choose Us */}
+        <section className="py-20 bg-white">
+          <motion.div
+              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+              variants={revealOnce}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.25 }}
+          >
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-8">Why Choose Revzion?</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {[
+                { title: "Proven Expertise", description: "Years of experience delivering successful projects across various industries and technologies." },
+                { title: "Agile Approach", description: "Fast, iterative development process that adapts to your changing needs and market demands." },
+                { title: "End-to-End Solutions", description: "From concept to deployment and beyond, we handle every aspect of your project lifecycle." },
+                { title: "Future-Ready Technology", description: "We use cutting-edge tools and frameworks to ensure your solutions remain competitive." },
+              ].map((item) => (
+                  <motion.div key={item.title} whileHover={prefersReduced ? undefined : hoverCard}>
+                    <div className="flex items-start space-x-4">
+                      <div className="flex-shrink-0 w-6 h-6 bg-gradient-revzion rounded-full flex items-center justify-center mt-1">
+                        <div className="w-2 h-2 bg-white rounded-full" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-heading font-semibold text-gray-900 mb-2">{item.title}</h3>
+                        <p className="text-gray-600">{item.description}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Case Studies */}
+        <CaseStudiesCarousel />
+
+        {/* Tech Stacks */}
+        {/* Tech Stacks */}
+        <section className="py-20 bg-gray-50">
+          <motion.div
+              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+              variants={revealOnce}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.25 }}
+          >
+            <div className="text-center mb-16">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">
+                Our Tech Stacks
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                The modern tools we use to build fast, secure, and scalable products.
+              </p>
+            </div>
+
+            {/* On large screens, show two columns of accordions for better scan */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Accordion type="single" collapsible className="w-full bg-white rounded-xl shadow-sm border-0">
+                <AccordionItem value="frontend">
+                  <AccordionTrigger className="px-6 text-left">
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">{"</>"}</span>
+                      <span className="font-semibold">Frontend Technologies</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6">
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      Component-driven UIs with performance and accessibility built in.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {["React", "Next.js (App Router)", "TypeScript", "Tailwind CSS", "React Native", "Expo", "Vite"].map(t => (
+                          <motion.span
+                              key={t}
+                              whileHover={{ scale: 1.04 }}
+                              className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium"
+                          >
+                            {t}
+                          </motion.span>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="mobile-webperf">
+                  <AccordionTrigger className="px-6 text-left">
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">⚡</span>
+                      <span className="font-semibold">Mobile, PWA & Performance</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6">
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      Cross-platform reach with offline-first and lighthouse-friendly builds.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {["PWA", "Workbox", "Web Animations", "Framer Motion", "Lighthouse CI", "React Query"].map(t => (
+                          <motion.span
+                              key={t}
+                              whileHover={{ scale: 1.04 }}
+                              className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium"
+                          >
+                            {t}
+                          </motion.span>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+
+              <Accordion type="single" collapsible className="w-full bg-white rounded-xl shadow-sm border-0">
+                <AccordionItem value="backend">
+                  <AccordionTrigger className="px-6 text-left">
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">🛠️</span>
+                      <span className="font-semibold">Backend & APIs</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6">
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      Reliable services with clean contracts and strong observability.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {["Node.js", "tRPC / REST", "Webhooks", "GraphQL", "Zod", "JWT/OAuth", "Rate limiting"].map(t => (
+                          <motion.span
+                              key={t}
+                              whileHover={{ scale: 1.04 }}
+                              className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium"
+                          >
+                            {t}
+                          </motion.span>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="data-cloud">
+                  <AccordionTrigger className="px-6 text-left">
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">☁️</span>
+                      <span className="font-semibold">Data, Cloud & DevOps</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6">
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      Scale safely with IaC, observability, and cost-aware architectures.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        "PostgreSQL",
+                        "Redis",
+                        "Neon/Supabase",
+                        "S3",
+                        "CI/CD (GH Actions)",
+                        "Docker",
+                        "Kubernetes",
+                        "Terraform",
+                        "OpenTelemetry",
+                      ].map(t => (
+                          <motion.span
+                              key={t}
+                              whileHover={{ scale: 1.04 }}
+                              className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium"
+                          >
+                            {t}
+                          </motion.span>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="ai">
+                  <AccordionTrigger className="px-6 text-left">
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">🧠</span>
+                      <span className="font-semibold">AI & Automation</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6">
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      Practical AI: copilots, RAG, and workflow automation that ship.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {["OpenAI / Groq / xAI", "Embeddings", "Vector DB", "RAG", "LangChain", "Workers/Queues"].map(t => (
+                          <motion.span
+                              key={t}
+                              whileHover={{ scale: 1.04 }}
+                              className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium"
+                          >
+                            {t}
+                          </motion.span>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* CTA */}
+        <section className="py-20 bg-gradient-revzion">
+          <motion.div
+              className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+              variants={revealOnce}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.25 }}
+          >
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-6">
+              Ready to Transform Your Business?
+            </h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Let's discuss how we can help you build innovative solutions that drive growth and success.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-3">
+                <Link href="/contact">Start Your Project</Link>
+              </Button>
+              <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-3 bg-transparent"
+              >
+                <Link href="/portfolio">View Our Work</Link>
+              </Button>
+            </div>
+          </motion.div>
+        </section>
+
+        <Footer />
+        <SoundToggle />
+      </div>
+  )
+}
