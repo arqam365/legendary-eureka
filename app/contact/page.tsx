@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react"
 import axios from "axios"
-import { motion } from "framer-motion"
+import {motion, Variants} from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -25,9 +25,13 @@ import {
 import { useToast } from "@/components/ui/use-toast"
 
 /* ---- minimal motion ---- */
-const revealOnce = {
+const revealOnce: Variants = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] }
+  },
 }
 const staggerParent = {
   hidden: {},
