@@ -17,11 +17,12 @@ export function Navigation() {
 
   const navItems: NavItem[] = useMemo(
       () => [
-        { href: "/", label: "Home" },
-        { href: "/services", label: "Services" },
-        { href: "/portfolio", label: "Portfolio" },
-        { href: "/about", label: "About" },
-        { href: "/contact", label: "Contact" },
+          { href: "/", label: "Home" },
+          { href: "/services", label: "Services" },
+          { href: "/portfolio", label: "Portfolio" },
+          { href: "/about", label: "About" },
+          { href: "/blogs", label: "Blogs" },
+          { href: "/contact", label: "Contact" },
       ],
       []
   )
