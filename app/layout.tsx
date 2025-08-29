@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     metadataBase: new URL("https://www.revzion.com"),
 
     icons: {
-        icon: "/favicon.svg",
+        icon: "/logo.svg",
         shortcut: "/favicon-16x16.png",
         apple: "/apple-touch-icon.png",
     },
