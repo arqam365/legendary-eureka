@@ -1,76 +1,155 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
+import { useEffect, useMemo, useState } from "react"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
 import { Menu, X } from "lucide-react"
+import { AnimatePresence, motion } from "framer-motion"
+
+type NavItem = { href: string; label: string }
 
 export function Navigation() {
+  const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
-  const navItems = [
-    { href: "/", label: "Home" },
-    { href: "/services", label: "Services" },
-    { href: "/portfolio", label: "Portfolio" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
-  ]
+  const navItems: NavItem[] = useMemo(
+      () => [
+        { href: "/", label: "Home" },
+        { href: "/services", label: "Services" },
+        { href: "/portfolio", label: "Portfolio" },
+        { href: "/about", label: "About" },
+        { href: "/contact", label: "Contact" },
+      ],
+      []
+  )
+
+  // Add a light shadow when the page is scrolled
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
+  const isActive = (href: string) =>
+      href === "/"
+          ? pathname === "/"
+          : pathname?.startsWith(href)
 
   return (
-    <nav className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-revzion rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">R</span>
-            </div>
-            <span className="font-heading font-bold text-xl text-gray-900">Revzion</span>
-          </Link>
+      <nav
+          className={[
+            "sticky top-0 z-50 border-b border-gray-100/70",
+            "bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/70",
+            scrolled ? "shadow-[0_6px_24px_-18px_rgba(0,0,0,0.25)]" : "shadow-none",
+          ].join(" ")}
+          role="navigation"
+          aria-label="Main"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            {/* Logo + Brand */}
+            <Link href="/" className="flex items-center gap-2 group" aria-label="Revzion home">
+              {/* For SVGs, use <img>; for raster, use next/image */}
+              <img
+                  src="/logo.svg"
+                  alt="Revzion logo"
+                  className="h-9 w-9 rounded-lg"
+                  loading="eager"
+              />
+              <span className="font-heading font-bold text-xl text-gray-900 group-hover:opacity-90">
+              Revzion
+            </span>
+            </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-gray-600 hover:text-primary transition-colors duration-200 font-medium"
-              >
-                {item.label}
-              </Link>
-            ))}
-            <Button className="bg-gradient-revzion hover:opacity-90 transition-opacity">Get Started</Button>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <Button variant="ghost" size="sm" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-100">
-            <div className="flex flex-col space-y-3">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-gray-600 hover:text-primary transition-colors duration-200 font-medium py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <Button className="bg-gradient-revzion hover:opacity-90 transition-opacity mt-4 w-full">
+            {/* Desktop nav */}
+            <div className="hidden md:flex items-center gap-6">
+              {navItems.map((item) => {
+                const active = isActive(item.href)
+                return (
+                    <Link
+                        key={item.href}
+                        href={item.href}
+                        className={[
+                          "relative font-medium transition-colors",
+                          active ? "text-gray-900" : "text-gray-600 hover:text-primary",
+                        ].join(" ")}
+                    >
+                      {item.label}
+                      {/* active underline */}
+                      <span
+                          className={[
+                            "absolute -bottom-1 left-0 h-0.5 rounded-full transition-all",
+                            active ? "w-full bg-primary" : "w-0 bg-transparent group-hover:w-full",
+                          ].join(" ")}
+                      />
+                    </Link>
+                )
+              })}
+              <Button className="bg-gradient-revzion hover:opacity-90 transition-opacity">
                 Get Started
               </Button>
             </div>
+
+            {/* Mobile toggle */}
+            <div className="md:hidden">
+              <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsMenuOpen((v) => !v)}
+                  aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                  aria-expanded={isMenuOpen}
+                  aria-controls="mobile-nav"
+              >
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
+            </div>
           </div>
-        )}
-      </div>
-    </nav>
+
+          {/* Mobile drawer */}
+          <AnimatePresence>
+            {isMenuOpen && (
+                <motion.div
+                    id="mobile-nav"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.22, ease: "easeOut" }}
+                    className="md:hidden overflow-hidden border-t border-gray-100"
+                >
+                  <div className="py-4 flex flex-col gap-2">
+                    {navItems.map((item) => {
+                      const active = isActive(item.href)
+                      return (
+                          <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setIsMenuOpen(false)}
+                              className={[
+                                "px-1 py-2 rounded-md font-medium transition-colors",
+                                active
+                                    ? "text-gray-900 bg-gray-100"
+                                    : "text-gray-700 hover:text-primary hover:bg-gray-50",
+                              ].join(" ")}
+                          >
+                            {item.label}
+                          </Link>
+                      )
+                    })}
+                    <Button
+                        className="mt-2 bg-gradient-revzion hover:opacity-90 transition-opacity"
+                        onClick={() => setIsMenuOpen(false)}
+                    >
+                      Get Started
+                    </Button>
+                  </div>
+                </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </nav>
   )
 }

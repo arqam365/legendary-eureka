@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -31,7 +31,22 @@ const staggerParent = {
   show: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } },
 }
 
+/* md+ detector: animate immediately on small screens (iOS Safari fixes) */
+const useIsMdUp = () => {
+  const [mdUp, setMdUp] = useState(false)
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 768px)")
+    const onChange = () => setMdUp(mql.matches)
+    onChange()
+    mql.addEventListener?.("change", onChange)
+    return () => mql.removeEventListener?.("change", onChange)
+  }, [])
+  return mdUp
+}
+
 export default function AboutPage() {
+  const mdUp = useIsMdUp()
+
   const teamMembers = [
     {
       name: "Arqam Ahmad Siddiqui",
@@ -42,69 +57,13 @@ export default function AboutPage() {
       twitter: "https://x.com/arqam365",
       github: "https://github.com/arqam365",
     },
-    {
-      name: "Sharad Pratap Singh Sengar",
-      role: "Mobile Developer",
-      bio: "Kotlin Multiplatform developer building fast, reliable Android & iOS apps.",
-      image: "/team/sharad.jpg",
-      linkedin: "#",
-      twitter: "#",
-      github: "#",
-    },
-    {
-      name: "Raj Dwivedi",
-      role: "Backend Engineer & DevOps Specialist",
-      bio: "APIs, CI/CD, and cloud-native reliability across Node/Ktor and modern infra.",
-      image: "/team/raj.jpg",
-      linkedin: "#",
-      twitter: "#",
-      github: "#",
-    },
-    {
-      name: "Bilal Sheikh",
-      role: "Full Stack Engineer",
-      bio: "Bridging frontend and backend to ship robust, user-centric features.",
-      image: "/team/bilal.jpg",
-      linkedin: "#",
-      twitter: "#",
-      github: "#",
-    },
-    {
-      name: "Sneha Sahu",
-      role: "Head of Business Development",
-      bio: "Building partnerships and growth pipelines aligned with product value.",
-      image: "/team/sneha.jpg",
-      linkedin: "#",
-      twitter: "#",
-      github: "#",
-    },
-    {
-      name: "Aanya Agrawal",
-      role: "Mobile Developer",
-      bio: "Compose & KMP enthusiast focused on smooth UX and performance.",
-      image: "/team/aanya.jpg",
-      linkedin: "#",
-      twitter: "#",
-      github: "#",
-    },
-    {
-      name: "Saniya Khan",
-      role: "UI/UX Developer",
-      bio: "Designs intuitive, accessible interfaces with implementation ownership.",
-      image: "/team/saniya.jpg",
-      linkedin: "#",
-      twitter: "#",
-      github: "#",
-    },
-    {
-      name: "Khushi Chaturvedi",
-      role: "UI/UX Expert",
-      bio: "Crafts delightful, user-first experiences grounded in research.",
-      image: "/team/khushi.jpg",
-      linkedin: "#",
-      twitter: "#",
-      github: "#",
-    },
+    { name: "Sharad Pratap Singh Sengar", role: "Mobile Developer", bio: "Kotlin Multiplatform developer building fast, reliable Android & iOS apps.", image: "/team/sharad.jpg", linkedin: "#", twitter: "#", github: "#", },
+    { name: "Raj Dwivedi", role: "Backend Engineer & DevOps Specialist", bio: "APIs, CI/CD, and cloud-native reliability across Node/Ktor and modern infra.", image: "/team/raj.jpg", linkedin: "#", twitter: "#", github: "#", },
+    { name: "Bilal Sheikh", role: "Full Stack Engineer", bio: "Bridging frontend and backend to ship robust, user-centric features.", image: "/team/bilal.jpg", linkedin: "#", twitter: "#", github: "#", },
+    { name: "Sneha Sahu", role: "Head of Business Development", bio: "Building partnerships and growth pipelines aligned with product value.", image: "/team/sneha.jpg", linkedin: "#", twitter: "#", github: "#", },
+    { name: "Aanya Agrawal", role: "Mobile Developer", bio: "Compose & KMP enthusiast focused on smooth UX and performance.", image: "/team/aanya.jpg", linkedin: "#", twitter: "#", github: "#", },
+    { name: "Saniya Khan", role: "UI/UX Developer", bio: "Designs intuitive, accessible interfaces with implementation ownership.", image: "/team/saniya.jpg", linkedin: "#", twitter: "#", github: "#", },
+    { name: "Khushi Chaturvedi", role: "UI/UX Expert", bio: "Crafts delightful, user-first experiences grounded in research.", image: "/team/khushi.jpg", linkedin: "#", twitter: "#", github: "#", },
   ]
 
   const extendedTeam = [
@@ -239,8 +198,10 @@ export default function AboutPage() {
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
               initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.25 }}
+              /* same md-up trick to ensure it reveals on mobile */
+              {...(mdUp
+                  ? { whileInView: "show", viewport: { once: true, amount: 0.25 } }
+                  : { animate: "show" })}
           >
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-6">Our Values</h2>
@@ -253,8 +214,9 @@ export default function AboutPage() {
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 variants={staggerParent}
                 initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.2 }}
+                {...(mdUp
+                    ? { whileInView: "show", viewport: { once: true, amount: 0.2, margin: "-10% 0px" } }
+                    : { animate: "show" })}
             >
               {values.map((v) => (
                   <motion.div key={v.title} variants={revealOnce}>
@@ -275,8 +237,9 @@ export default function AboutPage() {
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
               initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.25 }}
+              {...(mdUp
+                  ? { whileInView: "show", viewport: { once: true, amount: 0.25 } }
+                  : { animate: "show" })}
           >
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-6">Meet Our Team</h2>
@@ -289,13 +252,14 @@ export default function AboutPage() {
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 variants={staggerParent}
                 initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.2 }}
+                {...(mdUp
+                    ? { whileInView: "show", viewport: { once: true, amount: 0.2, margin: "-10% 0px" } }
+                    : { animate: "show" })}
             >
               {teamMembers.map((m) => (
                   <motion.div key={m.name} variants={revealOnce}>
                     <Card className="overflow-hidden hover:shadow-xl transition-shadow border-0">
-                      <div className="aspect-square overflow-hidden">
+                      <div className="aspect-square overflow-hidden bg-gray-100">
                         <img
                             src={m.image || "/placeholder.svg"}
                             alt={m.name}
@@ -309,35 +273,17 @@ export default function AboutPage() {
                         <p className="text-gray-600 text-sm leading-relaxed mb-4">{m.bio}</p>
                         <div className="flex space-x-3">
                           {m.linkedin && (
-                              <a
-                                  href={m.linkedin}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-gray-400 hover:text-primary transition-colors"
-                                  aria-label={`${m.name} on LinkedIn`}
-                              >
+                              <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on LinkedIn`}>
                                 <Linkedin className="h-5 w-5" />
                               </a>
                           )}
                           {m.twitter && (
-                              <a
-                                  href={m.twitter}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-gray-400 hover:text-primary transition-colors"
-                                  aria-label={`${m.name} on Twitter/X`}
-                              >
+                              <a href={m.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on Twitter/X`}>
                                 <Twitter className="h-5 w-5" />
                               </a>
                           )}
                           {m.github && (
-                              <a
-                                  href={m.github}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-gray-400 hover:text-primary transition-colors"
-                                  aria-label={`${m.name} on GitHub`}
-                              >
+                              <a href={m.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on GitHub`}>
                                 <Github className="h-5 w-5" />
                               </a>
                           )}
@@ -384,8 +330,9 @@ export default function AboutPage() {
               className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
               variants={revealOnce}
               initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.25 }}
+              {...(mdUp
+                  ? { whileInView: "show", viewport: { once: true, amount: 0.25 } }
+                  : { animate: "show" })}
           >
             <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-6">
               Awards & Recognition
@@ -398,8 +345,9 @@ export default function AboutPage() {
                 className="grid grid-cols-1 md:grid-cols-2 gap-6"
                 variants={staggerParent}
                 initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.2 }}
+                {...(mdUp
+                    ? { whileInView: "show", viewport: { once: true, amount: 0.2, margin: "-10% 0px" } }
+                    : { animate: "show" })}
             >
               {awards.map((a) => (
                   <motion.div key={a.title} variants={revealOnce}>
@@ -424,8 +372,9 @@ export default function AboutPage() {
               className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
               variants={revealOnce}
               initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.25 }}
+              {...(mdUp
+                  ? { whileInView: "show", viewport: { once: true, amount: 0.25 } }
+                  : { animate: "show" })}
           >
             <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-6">
               Ready to Work Together?
