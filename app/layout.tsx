@@ -7,6 +7,7 @@ import Spotlight from "@/components/visuals/Spotlight";
 import NoiseOverlay from "@/components/visuals/NoiseOverlay";
 // @ts-ignore
 import SplashScreen from "@/components/splash-screen";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -91,6 +92,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             // }}
         />
         {children}
+        {/* GSAP core */}
+        <Script
+            src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"
+            strategy="beforeInteractive"
+        />
+        {/* ScrollTrigger + ScrambleText */}
+        <Script
+            src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"
+            strategy="beforeInteractive"
+        />
+        <Script
+            src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrambleTextPlugin.min.js"
+            strategy="beforeInteractive"
+        />
         </body>
         </html>
     )

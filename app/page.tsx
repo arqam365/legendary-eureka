@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState, useLayoutEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import {
@@ -13,13 +13,16 @@ import {
   type MotionValue,
   type Variants,
 } from "framer-motion"
-
+import { gsap } from "gsap";
+import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { ArrowRight, Users, Code, Brain, TrendingUp, Volume2, VolumeX } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+
+gsap.registerPlugin(ScrambleTextPlugin);
 
 /* -------------------- Shared minimal motion -------------------- */
 const revealOnce: Variants = {
@@ -564,6 +567,27 @@ export default function HomePage() {
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] })
   const blobShift = useTransform(scrollYProgress, [0, 1], [0, prefersReduced ? 0 : -30])
 
+  const scrambleRef = useRef<HTMLSpanElement | null>(null)
+
+  useLayoutEffect(() => {
+    if (!scrambleRef.current) return
+    const ctx = gsap.context(() => {
+      gsap.from(scrambleRef.current, { opacity: 0, duration: 0.2 })
+      gsap.to(scrambleRef.current, {
+        duration: 1.6,
+        ease: "none",
+        scrambleText: {
+          text: "{original}",
+          chars: "upperAndLowerCase",
+          speed: 0.45,
+          revealDelay: 0.12,
+          tweenLength: true,
+        },
+      })
+    }, scrambleRef)
+    return () => ctx.revert()
+  }, [])
+
   return (
       <div className="min-h-screen bg-white">
         <Navigation />
@@ -581,7 +605,8 @@ export default function HomePage() {
               <div className="space-y-8">
                 <div className="space-y-4">
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 leading-tight">
-                    Innovating Products. <span className="text-gradient-revzion">Empowering Businesses.</span>
+                    <span ref={scrambleRef}>Innovating Products.</span>{" "}
+                    <span className="text-gradient-revzion">Empowering Businesses.</span>
                   </h1>
                   <p className="text-xl text-gray-600 leading-relaxed max-w-2xl">
                     Revzion builds scalable SaaS, AI, and cross-platform solutions for startups and enterprises.
