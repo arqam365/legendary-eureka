@@ -15,8 +15,8 @@ export function Footer() {
               </div>
 
               <p className="text-gray-600 mb-4 max-w-md">
-                Innovating Products. Empowering Businesses. We build scalable SaaS, AI, and cross-platform solutions for
-                startups and enterprises.
+                Innovating Products. Empowering Businesses. We build scalable SaaS, AI, and cross-platform
+                solutions for startups and enterprises.
               </p>
 
               <div className="flex space-x-4">
@@ -29,7 +29,7 @@ export function Footer() {
                 </a>
 
                 <a
-                    href="https://www.linkedin.com/company/revzion" /* update to your company page */
+                    href="https://www.linkedin.com/company/revzion"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Revzion on LinkedIn"
@@ -39,7 +39,7 @@ export function Footer() {
                 </a>
 
                 <a
-                    href="https://t.me/yourhandle" /* or WhatsApp/Intercom link */
+                    href="https://t.me/yourhandle"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Chat with Revzion"
@@ -67,6 +67,11 @@ export function Footer() {
                 <li>
                   <Link href="/about" className="text-gray-600 hover:text-primary transition-colors">
                     About
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/careers" className="text-gray-600 hover:text-primary transition-colors">
+                    Work With Us
                   </Link>
                 </li>
               </ul>
