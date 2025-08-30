@@ -1,7 +1,9 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import {motion, Variants} from "framer-motion"
+import Link from "next/link"
+import Image from "next/image"
+import { motion, type Variants } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -18,7 +20,12 @@ import {
   CheckCircle,
   Filter,
 } from "lucide-react"
-import Link from "next/link"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 /* ---------- minimal reveal variants ---------- */
 const revealOnce: Variants = {
@@ -26,7 +33,7 @@ const revealOnce: Variants = {
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] }
+    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
   },
 }
 
@@ -66,7 +73,8 @@ export default function PortfolioPage() {
           },
           results: {
             title: "The Impact",
-            description: "Successful launch with strong engagement metrics and retention.",
+            description:
+                "Successful launch with strong engagement metrics and retention.",
             metrics: [
               { label: "User Growth", value: "500K+", icon: <Users className="h-5 w-5" /> },
               { label: "Engagement Rate", value: "85%", icon: <TrendingUp className="h-5 w-5" /> },
@@ -218,7 +226,10 @@ export default function PortfolioPage() {
       [caseStudies]
   )
   const [activeCategory, setActiveCategory] = useState("All")
-  const filtered = activeCategory === "All" ? caseStudies : caseStudies.filter((c) => c.category === activeCategory)
+  const filtered =
+      activeCategory === "All"
+          ? caseStudies
+          : caseStudies.filter((c) => c.category === activeCategory)
 
   return (
       <div className="min-h-screen bg-white">
@@ -236,7 +247,7 @@ export default function PortfolioPage() {
             <h1 className="text-4xl sm:text-5xl font-heading font-bold text-gray-900 mb-6">
               Our <span className="text-gradient-revzion">Portfolio</span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed">
               Explore how we’ve helped teams ship faster, scale confidently, and delight users.
             </p>
 
@@ -276,7 +287,7 @@ export default function PortfolioPage() {
         {/* Case Studies */}
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="space-y-20">
+            <div className="space-y-16 lg:space-y-20">
               {filtered.map((study, index) => {
                 const imageLeft = index % 2 === 0
                 return (
@@ -288,59 +299,140 @@ export default function PortfolioPage() {
                         viewport={{ once: true, amount: 0.2 }}
                     >
                       <Card className="overflow-hidden shadow-xl border-0">
+                        {/* 12-col grid gives us finer control + breathing room */}
                         <div
-                            className={`grid grid-cols-1 lg:grid-cols-2 ${
+                            className={`grid grid-cols-12 gap-y-0 ${
                                 imageLeft ? "" : "lg:[&>*:first-child]:order-2"
                             }`}
                         >
                           {/* Media */}
-                          <div className="relative h-64 lg:h-auto">
-                            <img
-                                src={study.image || "/placeholder.svg"}
-                                alt={`${study.title} case study`}
-                                className="w-full h-full object-cover"
-                                loading="lazy"
-                            />
-                            {/* glass overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-white/0 to-white/30 backdrop-blur-[2px]" />
-                            <div className="absolute left-0 top-0 m-4">
-                              <Badge variant="secondary" className="bg-white/80 backdrop-blur px-3 py-1 text-xs">
-                                {study.category}
-                              </Badge>
+                          <div className="col-span-12 lg:col-span-5 relative">
+                            <div className="relative w-full overflow-hidden lg:h-full">
+                              <Image
+                                  src={study.image || "/placeholder.svg"}
+                                  alt={`${study.title} case study`}
+                                  width={1280}
+                                  height={960}
+                                  className="w-full h-auto lg:h-full lg:object-cover rounded-none lg:rounded-r-none"
+                                  priority={index === 0}
+                              />
+                              {/* soft glass veil to avoid harsh edges */}
+                              <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-white/30 backdrop-blur-[2px]" />
+                              <div className="absolute left-0 top-0 m-4">
+                                <Badge variant="secondary" className="bg-white/85 backdrop-blur px-3 py-1 text-xs">
+                                  {study.category}
+                                </Badge>
+                              </div>
                             </div>
                           </div>
 
                           {/* Body */}
-                          <div className="p-8 lg:p-12">
-                            <div className="flex flex-wrap items-center gap-3 mb-4">
-                              <span className="text-sm text-gray-500">{study.duration}</span>
+                          <div className="col-span-12 lg:col-span-7 p-8 lg:p-12">
+                            {/* meta row */}
+                            <div className="flex flex-wrap items-center gap-3 mb-3 text-sm text-gray-500">
+                              <span>{study.duration}</span>
                               <span className="text-gray-300">•</span>
-                              <span className="text-sm text-gray-500">{study.team}</span>
+                              <span>{study.team}</span>
                             </div>
 
-                            <h2 className="text-2xl sm:text-3xl font-heading font-bold text-gray-900">
+                            <h2 className="text-[28px] sm:text-[32px] font-heading font-bold text-gray-900 tracking-tight">
                               {study.title}
                             </h2>
-                            <p className="text-gray-600 mt-2">Client: {study.client}</p>
+                            <p className="text-gray-600 mt-1">Client: {study.client}</p>
 
                             {/* Tech chips */}
                             <div className="flex flex-wrap gap-2 mt-4">
                               {study.technologies.map((t) => (
-                                  <span key={t} className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
+                                  <span
+                                      key={t}
+                                      className="px-3 py-1 bg-gray-100 text-gray-700 text-[13px] rounded-full border border-gray-200"
+                                  >
                               {t}
                             </span>
                               ))}
                             </div>
 
-                            {/* Problem • Solution • Results (condensed row on lg) */}
-                            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 border border-gray-100 rounded-xl overflow-hidden">
+                            {/* MOBILE: collapse to accordion so it’s not jam-packed */}
+                            <div className="mt-8 md:hidden">
+                              <Accordion type="single" collapsible>
+                                <AccordionItem value="prob">
+                                  <AccordionTrigger className="text-left">
+                                    <div className="flex items-center">
+                                      <Target className="h-4 w-4 text-red-500 mr-2" />
+                                      {study.problem.title}
+                                    </div>
+                                  </AccordionTrigger>
+                                  <AccordionContent>
+                                    <p className="text-gray-600 text-sm leading-relaxed mb-3 max-w-prose">
+                                      {study.problem.description}
+                                    </p>
+                                    <ul className="space-y-2">
+                                      {study.problem.challenges.map((c) => (
+                                          <li key={c} className="text-sm text-gray-600 flex items-start">
+                                            <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-2 mr-3 flex-shrink-0" />
+                                            {c}
+                                          </li>
+                                      ))}
+                                    </ul>
+                                  </AccordionContent>
+                                </AccordionItem>
+
+                                <AccordionItem value="sol">
+                                  <AccordionTrigger className="text-left">
+                                    <div className="flex items-center">
+                                      <Zap className="h-4 w-4 text-blue-500 mr-2" />
+                                      {study.solution.title}
+                                    </div>
+                                  </AccordionTrigger>
+                                  <AccordionContent>
+                                    <p className="text-gray-600 text-sm leading-relaxed mb-3 max-w-prose">
+                                      {study.solution.description}
+                                    </p>
+                                    <ul className="space-y-2">
+                                      {study.solution.features.map((f) => (
+                                          <li key={f} className="text-sm text-gray-600 flex items-start">
+                                            <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5 mr-3 flex-shrink-0" />
+                                            {f}
+                                          </li>
+                                      ))}
+                                    </ul>
+                                  </AccordionContent>
+                                </AccordionItem>
+
+                                <AccordionItem value="res">
+                                  <AccordionTrigger className="text-left">
+                                    <div className="flex items-center">
+                                      <TrendingUp className="h-4 w-4 text-green-600 mr-2" />
+                                      {study.results.title}
+                                    </div>
+                                  </AccordionTrigger>
+                                  <AccordionContent>
+                                    <p className="text-gray-600 text-sm leading-relaxed mb-4 max-w-prose">
+                                      {study.results.description}
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-3">
+                                      {study.results.metrics.map((m) => (
+                                          <div key={m.label} className="text-center rounded-lg bg-gray-50 py-3">
+                                            <div className="text-green-600 mb-1 flex justify-center">{m.icon}</div>
+                                            <div className="text-base font-heading font-bold text-gray-900">{m.value}</div>
+                                            <div className="text-[11px] text-gray-600">{m.label}</div>
+                                          </div>
+                                      ))}
+                                    </div>
+                                  </AccordionContent>
+                                </AccordionItem>
+                              </Accordion>
+                            </div>
+
+                            {/* DESKTOP: roomy 3-column with dividers */}
+                            <div className="mt-8 hidden md:grid md:grid-cols-3 md:divide-x md:divide-gray-100 border border-gray-100 rounded-xl overflow-hidden">
                               {/* Problem */}
-                              <div className="p-6 border-b md:border-b-0 md:border-r border-gray-100">
+                              <div className="p-7">
                                 <h3 className="text-base font-heading font-semibold text-gray-900 mb-3 flex items-center">
                                   <Target className="h-5 w-5 text-red-500 mr-2" />
                                   {study.problem.title}
                                 </h3>
-                                <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                                <p className="text-gray-600 text-sm leading-relaxed mb-3 max-w-prose">
                                   {study.problem.description}
                                 </p>
                                 <ul className="space-y-2">
@@ -354,12 +446,12 @@ export default function PortfolioPage() {
                               </div>
 
                               {/* Solution */}
-                              <div className="p-6 border-b md:border-b-0 md:border-r border-gray-100">
+                              <div className="p-7">
                                 <h3 className="text-base font-heading font-semibold text-gray-900 mb-3 flex items-center">
                                   <Zap className="h-5 w-5 text-blue-500 mr-2" />
                                   {study.solution.title}
                                 </h3>
-                                <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                                <p className="text-gray-600 text-sm leading-relaxed mb-3 max-w-prose">
                                   {study.solution.description}
                                 </p>
                                 <ul className="space-y-2">
@@ -373,12 +465,12 @@ export default function PortfolioPage() {
                               </div>
 
                               {/* Results */}
-                              <div className="p-6">
+                              <div className="p-7">
                                 <h3 className="text-base font-heading font-semibold text-gray-900 mb-3 flex items-center">
                                   <TrendingUp className="h-5 w-5 text-green-600 mr-2" />
                                   {study.results.title}
                                 </h3>
-                                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                                <p className="text-gray-600 text-sm leading-relaxed mb-4 max-w-prose">
                                   {study.results.description}
                                 </p>
                                 <div className="grid grid-cols-2 gap-3">

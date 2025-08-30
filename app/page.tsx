@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState, useLayoutEffect } from "react"
+import React, { useEffect, useMemo, useRef, useState, useLayoutEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import {
@@ -21,7 +21,18 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
-import {ArrowRight, Users, Code, Brain, TrendingUp, Volume2, VolumeX, Monitor, Smartphone} from "lucide-react"
+import {
+  ArrowRight,
+  Users,
+  Code,
+  Brain,
+  TrendingUp,
+  Volume2,
+  VolumeX,
+  Monitor,
+  Smartphone,
+  Building2, Star
+} from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 // gsap.registerPlugin(ScrambleTextPlugin);
@@ -94,38 +105,60 @@ type Study = {
   results: string
   image: string
   link?: string
+  tags?: string[]
+  kpis?: { label: string; value: string }[]
+  clients?: { name: string; logo: string }[]
 }
 
 function CaseStudiesCarousel() {
-  const studies: Study[] = useMemo(
-      () => [
-        {
-          id: "beesocial",
-          title: "BeeSocial – Social Media App",
-          problem: "Low engagement and high churn.",
-          solution: "Rebuilt feed ranking, real-time chat, and creator tools.",
-          results: "+42% DAU, 29% session length, 18% retention.",
-          image: "/case-studies/beesocial.jpg",
-          link: "/portfolio/beesocial",
-        },
-        {
-          id: "finlytics",
-          title: "Finlytics – Analytics SaaS",
-          problem: "Complex reporting slowed decisions.",
-          solution: "Built multi-tenant dashboards, alerts, and ETL pipelines.",
-          results: "3× faster insights, 35% conversion lift, NPS +14.",
-          image: "/case-studies/finlytics.jpg",
-          link: "/portfolio/finlytics",
-        },
+  const studies: Study[] = [
+    {
+      id: "beesocial",
+      title: "BeeSocial – Social Media App",
+      problem: "Low engagement and high churn.",
+      solution: "Rebuilt feed ranking, real-time chat, and creator tools.",
+      results: "+42% DAU, 29% session length, 18% retention.",
+      image: "/case-studies/beesocial.jpg",
+      link: "/portfolio/beesocial",
+      tags: ["Discovery → MVP → Scale", "Design Systems", "Observability"],
+      kpis: [
+        { label: "DAU", value: "+42%" },
+        { label: "Session", value: "+29%" },
+        { label: "Retention", value: "+18%" },
       ],
-      []
-  )
+      clients: [
+        { name: "GreenLeaf", logo: "/logos/clients/greenleaf.svg" },
+        { name: "Northwave", logo: "/logos/clients/northwave.svg" },
+        { name: "Aster", logo: "/logos/clients/aster.svg" },
+      ],
+    },
+    {
+      id: "finlytics",
+      title: "Finlytics – Analytics SaaS",
+      problem: "Complex reporting slowed decisions.",
+      solution: "Built multi-tenant dashboards, alerts, and ETL pipelines.",
+      results: "3× faster insights, 35% conversion lift, NPS +14.",
+      image: "/case-studies/finlytics.jpg",
+      link: "/portfolio/finlytics",
+      tags: ["Multi-tenant", "Dashboards", "ETL Pipelines"],
+      kpis: [
+        { label: "Insights", value: "3× faster" },
+        { label: "Conversion", value: "+35%" },
+        { label: "NPS", value: "+14" },
+      ],
+      clients: [
+        { name: "Fiscus", logo: "/logos/clients/fiscus.svg" },
+        { name: "BlueRock", logo: "/logos/clients/bluerock.svg" },
+        { name: "Helios", logo: "/logos/clients/helios.svg" },
+      ],
+    },
+  ]
 
-  const [active, setActive] = useState(0)
-  const [hovering, setHovering] = useState(false)
+  const [active, setActive] = React.useState(0)
+  const [hovering, setHovering] = React.useState(false)
   const prefersReduced = useReducedMotion()
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (prefersReduced || hovering) return
     const id = setInterval(() => setActive(i => (i + 1) % studies.length), 7000)
     return () => clearInterval(id)
@@ -133,6 +166,8 @@ function CaseStudiesCarousel() {
 
   const next = () => setActive(i => (i + 1) % studies.length)
   const prev = () => setActive(i => (i - 1 + studies.length) % studies.length)
+
+  const s = studies[active]
 
   return (
       <section className="py-20 bg-gray-50" data-st-section>
@@ -143,10 +178,11 @@ function CaseStudiesCarousel() {
             whileInView="show"
             viewport={{ once: true, amount: 0.25 }}
         >
+          {/* header */}
           <div className="flex items-end justify-between mb-8">
             <div className="text-center md:text-left">
               <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">Case Studies</h2>
-              <p className="text-gray-600 text-lg">Learn from others.</p>
+              <p className="text-gray-600 text-lg">Proof over promises.</p>
             </div>
             <div className="hidden md:flex gap-3">
               <Button variant="outline" onClick={prev} aria-label="Previous" title="Previous case study">←</Button>
@@ -154,8 +190,9 @@ function CaseStudiesCarousel() {
             </div>
           </div>
 
+          {/* slide */}
           <div
-              className="relative h-[520px] lg:h-[560px] flex items-center justify-center"
+              className="relative h-[560px] flex items-center justify-center"
               aria-roledescription="carousel"
               aria-label="Case studies"
               onMouseEnter={() => setHovering(true)}
@@ -163,54 +200,125 @@ function CaseStudiesCarousel() {
           >
             <AnimatePresence mode="wait">
               <motion.article
-                  key={studies[active].id}
-                  initial={{ opacity: 0, x: 60 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -60 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="absolute w-full max-w-5xl rounded-3xl border border-white/60 bg-white/60 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] overflow-hidden"
+                  key={s.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -24 }}
+                  transition={{ duration: 0.45, ease: "easeOut" }}
+                  className="absolute w-full max-w-5xl rounded-3xl border border-white/70 bg-white/70 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] overflow-hidden"
               >
                 <div className="grid grid-cols-1 lg:grid-cols-5">
-                  {/* Visual */}
+                  {/* visual */}
                   <div className="relative lg:col-span-2">
                     <motion.img
-                        src={studies[active].image}
-                        alt={studies[active].title}
+                        src={s.image}
+                        alt={s.title}
                         className="h-full w-full object-cover lg:min-h-[560px]"
                         whileHover={prefersReduced ? undefined : hoverIcon}
                         transition={{ duration: 0.35 }}
                     />
-                    <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white/70 to-transparent" />
+                    {/* soft fade at edge */}
+                    <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white/80 to-transparent" />
                   </div>
 
-                  {/* Content */}
+                  {/* content */}
                   <div className="lg:col-span-3 p-8 lg:p-10">
                     <div className="flex items-center gap-2 text-primary mb-3">
                       <TrendingUp className="h-5 w-5" />
                       <span className="text-sm font-medium">Case Study</span>
                     </div>
+
                     <h3 className="text-2xl lg:text-3xl font-heading font-semibold text-gray-900">
-                      {studies[active].title}
+                      {s.title}
                     </h3>
+
                     <div className="mt-5 space-y-3 text-gray-700 leading-relaxed">
-                      <p><span className="font-semibold text-gray-900">Problem:</span> {studies[active].problem}</p>
-                      <p><span className="font-semibold text-gray-900">Solution:</span> {studies[active].solution}</p>
-                      <p><span className="font-semibold text-gray-900">Results:</span> {studies[active].results}</p>
+                      <p><span className="font-semibold text-gray-900">Problem:</span> {s.problem}</p>
+                      <p><span className="font-semibold text-gray-900">Solution:</span> {s.solution}</p>
+                      <p><span className="font-semibold text-gray-900">Results:</span> {s.results}</p>
                     </div>
+
                     <Link
-                        href={studies[active].link || "/portfolio"}
+                        href={s.link || "/portfolio"}
                         className="inline-flex items-center text-primary font-medium hover:underline mt-6"
                     >
                       View case study <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
 
-                    {/* Transparent detail bar */}
-                    <div className="relative mt-8 rounded-2xl border border-white/60 bg-white/40 backdrop-blur-xl px-5 py-3 text-sm text-gray-700 overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 opacity-0 hover:opacity-100 transition-opacity duration-300" />
-                      <div className="flex flex-wrap gap-3">
-                        <span className="px-2.5 py-1 rounded-md bg-white/70 text-gray-800">Discovery → MVP → Scale</span>
-                        <span className="px-2.5 py-1 rounded-md bg-white/70 text-gray-800">Design Systems</span>
-                        <span className="px-2.5 py-1 rounded-md bg-white/70 text-gray-800">Observability</span>
+                    {/* enhanced detail bar */}
+                    <div className="relative mt-8 rounded-2xl border border-white/60 bg-white/50 backdrop-blur-xl overflow-hidden">
+                      {/* animated shine on hover */}
+                      <div className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                        <div className="absolute -inset-x-20 -top-1/2 h-[200%] rotate-12 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 p-5">
+                        {/* clients */}
+                        {s.clients?.length ? (
+                            <div className="lg:col-span-2">
+                              <div className="flex items-center gap-2 text-gray-700 mb-2">
+                                <Building2 className="h-4 w-4 text-primary" />
+                                <span className="text-xs font-medium uppercase tracking-wide">Trusted by</span>
+                              </div>
+
+                              <div className="relative">
+                                <div className="flex gap-5 overflow-hidden group">
+                                  <div className="flex gap-5 animate-[marquee_18s_linear_infinite] group-hover:[animation-play-state:paused]">
+                                    {s.clients.concat(s.clients).map((c, i) => (
+                                        <div key={c.name + i} className="flex items-center gap-2 opacity-80 hover:opacity-100 transition">
+                                          <Image
+                                              src={c.logo}
+                                              alt={c.name}
+                                              width={84}
+                                              height={24}
+                                              className="h-5 w-auto object-contain"
+                                          />
+                                          <span className="sr-only">{c.name}</span>
+                                        </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        ) : null}
+
+                        {/* tags */}
+                        {s.tags?.length ? (
+                            <div className="lg:col-span-2">
+                              <div className="flex items-center gap-2 text-gray-700 mb-2">
+                                <Star className="h-4 w-4 text-primary" />
+                                <span className="text-xs font-medium uppercase tracking-wide">Highlights</span>
+                              </div>
+                              <div className="flex flex-wrap gap-2">
+                                {s.tags.map(tag => (
+                                    <span
+                                        key={tag}
+                                        className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs border border-gray-200"
+                                    >
+                                {tag}
+                              </span>
+                                ))}
+                              </div>
+                            </div>
+                        ) : null}
+
+                        {/* KPIs */}
+                        {s.kpis?.length ? (
+                            <div className="lg:col-span-1">
+                              <div className="text-xs font-medium uppercase tracking-wide text-gray-700 mb-2">Impact</div>
+                              <div className="grid grid-cols-3 lg:grid-cols-1 gap-2">
+                                {s.kpis.map(kpi => (
+                                    <div
+                                        key={kpi.label}
+                                        className="rounded-xl bg-white/70 border border-white/70 px-3 py-2 text-center shadow-sm"
+                                    >
+                                      <div className="text-sm font-semibold text-gray-900">{kpi.value}</div>
+                                      <div className="text-[10px] text-gray-500">{kpi.label}</div>
+                                    </div>
+                                ))}
+                              </div>
+                            </div>
+                        ) : null}
                       </div>
                     </div>
                   </div>
@@ -218,14 +326,14 @@ function CaseStudiesCarousel() {
               </motion.article>
             </AnimatePresence>
 
-            {/* Arrows (mobile + desktop) */}
+            {/* arrows */}
             <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-2 lg:px-4">
               <Button variant="outline" size="icon" onClick={prev} aria-label="Previous slide" title="Previous slide">←</Button>
               <Button variant="outline" size="icon" onClick={next} aria-label="Next slide" title="Next slide">→</Button>
             </div>
           </div>
 
-          {/* Dots */}
+          {/* dots */}
           <div className="mt-8 flex items-center justify-center gap-2" aria-live="polite">
             {studies.map((_, i) => (
                 <button
@@ -243,6 +351,14 @@ function CaseStudiesCarousel() {
             </Button>
           </div>
         </motion.div>
+
+        {/* marquee keyframes (Tailwind inline) */}
+        <style jsx>{`
+        @keyframes marquee {
+          0% { transform: translateX(0) }
+          100% { transform: translateX(-50%) }
+        }
+      `}</style>
       </section>
   )
 }
