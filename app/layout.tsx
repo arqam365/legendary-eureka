@@ -1,24 +1,21 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import ScrollProgress from "@/components/visuals/ScrollProgress";
-import Spotlight from "@/components/visuals/Spotlight";
-import NoiseOverlay from "@/components/visuals/NoiseOverlay";
-// @ts-ignore
-import SplashScreen from "@/components/splash-screen";
+// app/layout.tsx
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
 import Script from "next/script";
+import dynamic from "next/dynamic";
+import ClientSplash from "@/components/ClientSplash";
 
 const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-})
+    subsets: ["latin"],
+    display: "swap",
+    variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
     title: {
         default: "Revzion - Innovating Products. Empowering Businesses.",
-        template: "%s | Revzion"
+        template: "%s | Revzion",
     },
     description:
         "Revzion builds scalable SaaS, AI, and cross-platform solutions for startups and enterprises. Trusted globally for AI, Cloud, and modern product engineering.",
@@ -31,19 +28,17 @@ export const metadata: Metadata = {
         "Cloud & DevOps",
         "Mobile Apps",
         "Cross-platform apps",
-        "Custom Software Development"
+        "Custom Software Development",
     ],
     authors: [{ name: "Revzion Team", url: "https://www.revzion.com" }],
     creator: "Revzion",
     publisher: "Revzion",
     metadataBase: new URL("https://www.revzion.com"),
-
     icons: {
         icon: "/logo.svg",
         shortcut: "/favicon-16x16.png",
         apple: "/apple-touch-icon.png",
     },
-
     openGraph: {
         type: "website",
         locale: "en_US",
@@ -54,50 +49,50 @@ export const metadata: Metadata = {
             "We build scalable SaaS, AI, and cross-platform solutions for startups and enterprises worldwide.",
         images: [
             {
-                url: "/og-image.png", // Place this in /public (1200x630 recommended)
+                url: "/og-image.png",
                 width: 1200,
                 height: 630,
-                alt: "Revzion - Innovating Products. Empowering Businesses."
-            }
-        ]
+                alt: "Revzion - Innovating Products. Empowering Businesses.",
+            },
+        ],
     },
-
     twitter: {
         card: "summary_large_image",
-        site: "@revzion", // update with your handle
-        creator: "@arqam365", // your personal handle
+        site: "@revzion",
+        creator: "@arqam365",
         title: "Revzion - Innovating Products. Empowering Businesses.",
         description:
             "Scalable SaaS, AI, and cross-platform solutions engineered for growth.",
-        images: ["/og-image.png"]
+        images: ["/og-image.png"],
     },
-
     themeColor: "#0a0a0a",
     manifest: "/site.webmanifest",
     category: "technology",
 };
 
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+                                       children,
+                                   }: {
+    children: React.ReactNode;
+}) {
     return (
         <html lang="en">
-        <body>
-        <SplashScreen
-            minDuration={2500}
-            // onReady={async (resolve) => {
-            //     // Example: wait for fonts & a tiny delay
-            //     await document.fonts?.ready
-            //     // await someOtherPrep()
-            //     resolve() // tell splash it can complete to 100%
-            // }}
-        />
+        {/* Explicit style avoids dev-overlay hydration mismatch */}
+        <body
+            className={`${inter.variable} antialiased`}
+            style={{ overscrollBehaviorX: "auto" }}
+            suppressHydrationWarning
+        >
+        {/* Client-only splash; won’t render on server */}
+        <ClientSplash />
+
         {children}
-        {/* GSAP core */}
+
+        {/* GSAP CDN (optional if you’re not importing from npm) */}
         <Script
             src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"
             strategy="beforeInteractive"
         />
-        {/* ScrollTrigger + ScrambleText */}
         <Script
             src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"
             strategy="beforeInteractive"
@@ -108,5 +103,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         </body>
         </html>
-    )
+    );
 }

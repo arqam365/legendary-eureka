@@ -34,6 +34,7 @@ import {
   Building2, Star
 } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import {ConsultationCTA} from "@/components/consultation-cta";
 
 // gsap.registerPlugin(ScrambleTextPlugin);
 gsap.registerPlugin(SplitText);
@@ -678,10 +679,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button size="lg" className="bg-gradient-revzion hover:opacity-90 transition-opacity text-lg px-8 py-3">
-                    Get a Free Consultation
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
+                  <ConsultationCTA label="Free Consultation" />
                   <Button
                       size="lg"
                       variant="outline"

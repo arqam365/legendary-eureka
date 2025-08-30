@@ -1,29 +1,32 @@
-// components/splash-screen.tsx
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
+import Image from "next/image"
 
 type SplashProps = {
-    /** Minimum time (ms) to show the splash while progress reaches ~95% */
     minDuration?: number
-    /** Optional: when you have async prep, call resolve() to complete to 100% */
     onReady?: (resolve: () => void) => void
+    brandName?: string
+    logoSrc?: string              // e.g. "/logo.svg"
 }
 
-export default function SplashScreen({ minDuration = 2500, onReady }: SplashProps) {
-    // ----------------- Hooks (order stable) -----------------
+export default function SplashScreen({
+                                         minDuration = 2200,
+                                         onReady,
+                                         brandName = "Revzion",
+                                         logoSrc = "/logo.svg",
+                                     }: SplashProps) {
     const [mounted, setMounted] = useState(false)
     const [done, setDone] = useState(false)
-    const [progress, setProgress] = useState(0) // 0..100
+    const [phase, setPhase] = useState<"loading" | "exit">("loading")
+    const [progress, setProgress] = useState(0)
+    const reduced = useReducedMotion()
 
-    // allow an external gate to hold completion
-    const externalReadyRef = useRef(false)
-    const resolveExternal = () => {
-        externalReadyRef.current = true
-    }
+    const readyRef = useRef(false)
+    const resolveExternal = () => { readyRef.current = true }
 
-    // deterministic decorative particles (no randomness at render-time)
+    // deterministic particles (no render-time randomness pre-mount)
     const particles = useMemo(() => {
         function prng(seed: number) {
             return () => {
@@ -33,71 +36,60 @@ export default function SplashScreen({ minDuration = 2500, onReady }: SplashProp
                 return ((t ^ (t >>> 14)) >>> 0) / 4294967296
             }
         }
-        const r = prng(123456789)
-        return Array.from({ length: 32 }).map(() => ({
-            top: `${r() * 100}%`,
-            left: `${r() * 100}%`,
-            dur: 1.6 + (Math.floor(r() * 8)) * 0.1,
-            delay: r() * 0.8,
-        }))
+        const r = prng(87452391)
+        return Array.from({ length: 24 }).map(() => {
+            const y = r() * 100
+            const x = r() * 100
+            return {
+                top: `${y}%`,
+                left: `${x}%`,
+                dy: 8 + Math.floor(r() * 10),
+                dur: 2.2 + Math.floor(r() * 10) * 0.12,
+                delay: r() * 0.9,
+            }
+        })
     }, [])
 
-    // mark mounted
     useEffect(() => { setMounted(true) }, [])
+    useEffect(() => { if (!onReady) readyRef.current = true }, [onReady])
 
-    // optional external async gate
-    useEffect(() => {
-        // If there’s no onReady gate, don’t hold at 95
-        if (!onReady) externalReadyRef.current = true
-    }, [onReady])
-
-    // progress driver: ease up to ~95% over minDuration; after both minDuration and external gate are ready, finish to 100, then fade out
     useEffect(() => {
         let raf = 0
         const start = performance.now()
-        const softCap = 100 // don't reach 100 until we're truly ready
+        const softCap = 96
 
         const tick = (now: number) => {
-            const elapsed = now - start
-            const t = Math.min(1, elapsed / minDuration)
-
-            // ease-out curve for nicer feel
+            const t = Math.min(1, (now - start) / minDuration)
             const eased = 1 - Math.pow(1 - t, 2)
             const target = softCap * eased
-
-            setProgress((p) => {
-                const next = Math.max(p, target)
-                return next > softCap ? softCap : next
-            })
+            setProgress((p) => (target > p ? target : p))
 
             if (t < 1) {
                 raf = requestAnimationFrame(tick)
             } else {
-                // minDuration reached; wait for external gate (if any), then complete
                 const finish = () => {
-                    // animate to 100 quickly
-                    const finishStart = performance.now()
-                    const animateFinish = (now2: number) => {
-                        const tt = Math.min(1, (now2 - finishStart) / 350) // 350ms finish
+                    const finStart = performance.now()
+                    const step = (n2: number) => {
+                        const tt = Math.min(1, (n2 - finStart) / 360)
                         const val = softCap + (100 - softCap) * tt
                         setProgress(val)
-                        if (tt < 1) requestAnimationFrame(animateFinish)
+                        if (tt < 1) requestAnimationFrame(step)
                         else {
-                            // fade out slightly after hitting 100
-                            setTimeout(() => setDone(true), 100)
+                            setPhase("exit")
+                            // let curtains/flash play, then mark done + notify page
+                            setTimeout(() => {
+                                setDone(true)
+                                window.dispatchEvent(new Event("revzion:splash-done"))
+                            }, 800)
                         }
                     }
-                    requestAnimationFrame(animateFinish)
+                    requestAnimationFrame(step)
                 }
 
-                if (externalReadyRef.current) finish()
+                if (readyRef.current) finish()
                 else {
-                    // poll until external gate is ready
-                    const int = setInterval(() => {
-                        if (externalReadyRef.current) {
-                            clearInterval(int)
-                            finish()
-                        }
+                    const id = setInterval(() => {
+                        if (readyRef.current) { clearInterval(id); finish() }
                     }, 40)
                 }
             }
@@ -107,65 +99,131 @@ export default function SplashScreen({ minDuration = 2500, onReady }: SplashProp
         return () => cancelAnimationFrame(raf)
     }, [minDuration])
 
-    // ----------------- Render -----------------
+    useEffect(() => { if (onReady) onReady(resolveExternal) }, [onReady])
+
     if (!mounted || done) return null
 
-    const pct = Math.round(progress)
-    const widthPct = `${Math.min(100, Math.max(0, progress))}%`
+    const pct = Math.round(Math.min(100, Math.max(0, progress)))
+    const ringSweep = `${pct * 3.6}deg`
 
     return (
         <AnimatePresence>
             <motion.div
-                className="fixed inset-0 z-[9999] bg-black"
+                className="fixed inset-0 z-[9999] overflow-hidden bg-black"
                 initial={{ opacity: 1 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.45, ease: "easeOut" }}
                 role="status"
                 aria-label="Loading"
             >
-                {/* Brand / center */}
-                <div className="absolute inset-0 grid place-items-center">
-                    <div className="flex flex-col items-center gap-4">
+                {/* Brand gradient backdrop (matches site) */}
+                <div className="absolute inset-0">
+                    {/* use your brand utility */}
+                    <div className="absolute -inset-[20%] bg-gradient-revzion opacity-[0.18] blur-2xl" />
+                    {!reduced && (
                         <motion.div
-                            initial={{ scale: 0.9, opacity: 0.85 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{ duration: 0.6, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-                            className="text-white text-2xl font-heading tracking-wide"
-                        >
-                            Revzion
-                        </motion.div>
+                            className="absolute inset-0"
+                            animate={{ rotate: [0, 10, -8, 0] }}
+                            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                    )}
+                    <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.6),rgba(0,0,0,0.86))]" />
+                </div>
 
-                        {/* Percent text */}
-                        <div className="text-white/80 text-sm font-medium tabular-nums">
-                            {pct.toString().padStart(2, "0")}%
-                        </div>
-
-                        {/* Progress bar */}
-                        <div className="w-64 h-1.5 rounded-full bg-white/15 overflow-hidden">
+                {/* Center medal + progress ring */}
+                <div className="absolute inset-0 grid place-items-center">
+                    <div className="relative w-[200px] h-[200px]">
+                        {/* halo */}
+                        {!reduced && (
                             <motion.div
-                                className="h-full bg-gradient-to-r from-white via-white to-white"
-                                style={{ width: widthPct }}
-                                initial={{ width: "0%" }}
-                                animate={{ width: widthPct }}
-                                transition={{ type: "tween", duration: 0.2 }}
+                                className="absolute inset-0 rounded-full bg-white/10 blur-2xl"
+                                animate={{ opacity: [0.4, 0.8, 0.4] }}
+                                transition={{ duration: 2.1, repeat: Infinity, ease: "easeInOut" }}
                             />
-                        </div>
+                        )}
+
+                        {/* progress ring in brand colors */}
+                        <div
+                            className="absolute inset-0 rounded-full"
+                            style={{
+                                background: `conic-gradient(var(--ring, #60a5fa) ${ringSweep}, rgba(255,255,255,0.12) ${ringSweep})`,
+                                mask: "radial-gradient(farthest-side, transparent 68%, black 69%)",
+                                WebkitMask: "radial-gradient(farthest-side, transparent 68%, black 69%)",
+                            }}
+                        />
+
+                        {/* inner medal */}
+                        <motion.div
+                            className="absolute inset-[22px] rounded-2xl border border-white/15 bg-white/8 backdrop-blur-sm grid place-items-center"
+                            animate={reduced ? {} : { scale: [0.985, 1, 0.985] }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                            style={{
+                                // subtle gradient frame using your brand
+                                background:
+                                    "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))",
+                            }}
+                        >
+                            <div className="text-center px-4">
+                                {/* prefer your SVG logo */}
+                                <div className="mx-auto mb-2 h-10 w-10 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center">
+                                    {/* swap to <Image> for crisp logo */}
+                                    <Image src={logoSrc} alt={`${brandName} logo`} width={28} height={28} priority />
+                                </div>
+                                <div className="text-white text-[18px] font-bold tracking-wide">
+                  <span className="bg-gradient-revzion bg-clip-text text-transparent">
+                    {brandName}
+                  </span>
+                                </div>
+                                <div className="text-white/60 text-[11px] tracking-wider uppercase">
+                                    Loading {pct}%
+                                </div>
+                            </div>
+                        </motion.div>
                     </div>
                 </div>
 
-                {/* Decorative particles */}
-                <div aria-hidden className="pointer-events-none absolute inset-0">
-                    {particles.map((p, i) => (
-                        <motion.span
-                            key={i}
-                            className="absolute h-[2px] w-[2px] rounded-full bg-white/70"
-                            style={{ top: p.top, left: p.left }}
-                            initial={{ opacity: 0, scale: 0 }}
-                            animate={{ opacity: [0, 1, 0], scale: [0, 1, 0] }}
-                            transition={{ duration: p.dur, delay: p.delay, repeat: Infinity, ease: "easeInOut" }}
-                        />
-                    ))}
-                </div>
+                {/* floating specs */}
+                {!reduced && (
+                    <div aria-hidden className="pointer-events-none absolute inset-0">
+                        {particles.map((p, i) => (
+                            <motion.span
+                                key={i}
+                                className="absolute h-[2px] w-[2px] rounded-full bg-white/70"
+                                style={{ top: p.top, left: p.left }}
+                                initial={{ y: 0, opacity: 0 }}
+                                animate={{ y: -p.dy, opacity: [0, 1, 0] }}
+                                transition={{ duration: p.dur, delay: p.delay, repeat: Infinity, ease: "easeInOut" }}
+                            />
+                        ))}
+                    </div>
+                )}
+
+                {/* exit: brand flash + curtain */}
+                <AnimatePresence>
+                    {phase === "exit" && (
+                        <>
+                            <motion.div
+                                className="absolute inset-0 bg-gradient-revzion"
+                                initial={{ clipPath: "circle(0% at 50% 50%)", opacity: 0.9 }}
+                                animate={{ clipPath: "circle(140% at 50% 50%)", opacity: [0.9, 0.5, 0] }}
+                                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                            />
+                            <motion.div
+                                className="absolute inset-x-0 top-0 h-1/2 bg-black"
+                                initial={{ y: 0 }}
+                                animate={{ y: "-100%" }}
+                                transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+                            />
+                            <motion.div
+                                className="absolute inset-x-0 bottom-0 h-1/2 bg-black"
+                                initial={{ y: 0 }}
+                                animate={{ y: "100%" }}
+                                transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+                            />
+                        </>
+                    )}
+                </AnimatePresence>
             </motion.div>
         </AnimatePresence>
     )
