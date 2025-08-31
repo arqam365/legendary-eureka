@@ -162,9 +162,9 @@ export default function SplashScreen({
                                 <div className="text-white font-bold tracking-wide text-[16px] sm:text-[18px]">
                                     <span className="bg-gradient-revzion bg-clip-text text-transparent">{brandName}</span>
                                 </div>
-                                <div className="text-white/70 tracking-wider uppercase mt-0.5 text-[10px] sm:text-[11px]">
-                                    Loading {pct}%
-                                </div>
+                                {/*<div className="text-white/70 tracking-wider uppercase mt-0.5 text-[10px] sm:text-[11px]">*/}
+                                {/*    Loading {pct}%*/}
+                                {/*</div>*/}
                             </div>
                         </motion.div>
                     </div>

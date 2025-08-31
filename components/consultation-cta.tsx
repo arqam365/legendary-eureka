@@ -6,7 +6,12 @@ import { useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -24,7 +29,7 @@ type Props = {
     className?: string;
     calendlyUrl?: string;
     onBooked?: () => void;
-    appearance?: Appearance; // "button" (default), "pill" (rounded gradient), "link" (text link)
+    appearance?: Appearance;
 };
 
 const INITIAL_WEEKLY_SLOTS = 5;
@@ -88,6 +93,7 @@ export function ConsultationCTA({
                                     appearance = "button",
                                 }: Props) {
     const [open, setOpen] = useState(false);
+    const [tab, setTab] = useState<"cal" | "form">("cal"); // <- one shared Tabs state
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const { slots, decrement, mounted } = useWeeklySlots();
     const prefersReducedMotion = useReducedMotion();
@@ -95,19 +101,13 @@ export function ConsultationCTA({
     // preload chime on client
     useEffect(() => {
         const a = new Audio("/audio/chime.mp3");
-        a.volume = 0.35;
-        a.preload = "auto";
+        a.volume = 0.35; a.preload = "auto";
         audioRef.current = a;
     }, []);
 
     const chime = () => {
-        try {
-            if (!audioRef.current) return;
-            audioRef.current.currentTime = 0;
-            void audioRef.current.play();
-        } catch {}
+        try { if (!audioRef.current) return; audioRef.current.currentTime = 0; void audioRef.current.play(); } catch {}
     };
-
     const popConfetti = (count = 80) => {
         if (prefersReducedMotion) return;
         const angleBase = 60;
@@ -151,13 +151,8 @@ export function ConsultationCTA({
                 </button>
             );
         }
-        // default: shadcn Button
         return (
-            <Button
-                size={size}
-                className={["bg-gradient-revzion hover:opacity-90 transition-opacity", className].join(" ")}
-                onClick={handleOpen}
-            >
+            <Button size={size} className={["bg-gradient-revzion hover:opacity-90 transition-opacity", className].join(" ")} onClick={handleOpen}>
                 {label} <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
         );
@@ -170,9 +165,7 @@ export function ConsultationCTA({
                 <div
                     className={[
                         "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium border select-none",
-                        slots > 0
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                            : "bg-amber-50 text-amber-700 border-amber-200",
+                        slots > 0 ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-amber-50 text-amber-700 border-amber-200",
                     ].join(" ")}
                     title="Estimated free 30-min sessions remaining this week"
                     aria-live="polite"
@@ -187,48 +180,54 @@ export function ConsultationCTA({
                     <Trigger />
                 </DialogTrigger>
 
-                <DialogContent className="max-w-3xl">
-                    <DialogHeader>
-                        <DialogTitle>Book your free consultation</DialogTitle>
-                        <DialogDescription>
-                            Pick a time right now or leave your details — we’ll respond within 24–48 hours.
-                        </DialogDescription>
-                    </DialogHeader>
+                {/* Full-height dialog with sticky header */}
+                <DialogContent className="w-[min(100vw,900px)] p-0 overflow-hidden sm:rounded-lg">
+                    {/* ONE Tabs wrapper for header & content */}
+                    <Tabs value={tab} onValueChange={(v) => setTab(v as "cal" | "form")}>
+                        <div className="flex flex-col max-h-[calc(100svh-24px)]">
+                            {/* Sticky header */}
+                            <DialogHeader className="sticky top-0 z-10 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 px-5 sm:px-6 pt-5 pb-4">
+                                <DialogTitle>Book your free consultation</DialogTitle>
+                                <DialogDescription className="mt-1">
+                                    Pick a time right now or leave your details — we’ll respond within 24–48 hours.
+                                </DialogDescription>
 
-                    <Tabs defaultValue="cal" className="mt-2">
-                        <TabsList className="grid grid-cols-2 w-full">
-                            <TabsTrigger value="cal">
-                                <Calendar className="h-4 w-4 mr-2" />
-                                Book a time
-                            </TabsTrigger>
-                            <TabsTrigger value="form">Quick form</TabsTrigger>
-                        </TabsList>
+                                <TabsList className="grid grid-cols-2 w-full mt-3">
+                                    <TabsTrigger value="cal">
+                                        <Calendar className="h-4 w-4 mr-2" />
+                                        Book a time
+                                    </TabsTrigger>
+                                    <TabsTrigger value="form">Quick form</TabsTrigger>
+                                </TabsList>
+                            </DialogHeader>
 
-                        {/* Calendly embed */}
-                        <TabsContent value="cal" className="mt-4">
-                            <div className="relative overflow-hidden rounded-xl border bg-white">
-                                <iframe
-                                    title="Calendly booking"
-                                    src={calendlyUrl}
-                                    className="w-full h-[620px]"
-                                    loading="lazy"
-                                    referrerPolicy="no-referrer-when-downgrade"
-                                    allow="clipboard-read; clipboard-write"
-                                    sandbox="allow-forms allow-popups allow-scripts allow-same-origin allow-top-navigation-by-user-activation"
-                                />
+                            {/* Scrollable area */}
+                            <div className="px-5 sm:px-6 pb-[max(16px,env(safe-area-inset-bottom))] overflow-y-auto">
+                                <TabsContent value="cal" className="mt-4">
+                                    <div className="relative overflow-hidden rounded-xl border bg-white">
+                                        <iframe
+                                            title="Calendly booking"
+                                            src={calendlyUrl}
+                                            className="w-full h-[65svh] sm:h-[620px] min-h-[420px]"
+                                            loading="lazy"
+                                            referrerPolicy="no-referrer-when-downgrade"
+                                            allow="clipboard-read; clipboard-write"
+                                            sandbox="allow-forms allow-popups allow-scripts allow-same-origin allow-top-navigation-by-user-activation"
+                                        />
+                                    </div>
+                                    <p className="mt-3 text-xs text-gray-500">
+                                        Don’t see a time that works? Switch to the quick form — we’ll find a slot for you.
+                                    </p>
+                                    <div className="mt-4 flex justify-end">
+                                        <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>
+                                    </div>
+                                </TabsContent>
+
+                                <TabsContent value="form" className="mt-4">
+                                    <LeadForm onSuccess={() => { handleBooked(); setOpen(false); }} />
+                                </TabsContent>
                             </div>
-                            <p className="mt-3 text-xs text-gray-500">
-                                Don’t see a time that works? Switch to the quick form — we’ll find a slot for you.
-                            </p>
-                            <div className="mt-4 flex justify-end">
-                                <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>
-                            </div>
-                        </TabsContent>
-
-                        {/* Lead form */}
-                        <TabsContent value="form" className="mt-4">
-                            <LeadForm onSuccess={() => { handleBooked(); setOpen(false); }} />
-                        </TabsContent>
+                        </div>
                     </Tabs>
                 </DialogContent>
             </Dialog>
