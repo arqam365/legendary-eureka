@@ -13,9 +13,8 @@ import {
   type MotionValue,
   type Variants,
 } from "framer-motion"
-import { gsap } from "gsap";
-// import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
-import { SplitText } from "gsap/SplitText";
+import { gsap } from "gsap"
+import { SplitText } from "gsap/SplitText"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -27,18 +26,18 @@ import {
   Code,
   Brain,
   TrendingUp,
-  Volume2,
-  VolumeX,
   Monitor,
   Smartphone,
-  Building2, Star
+  Building2,
+  Star,
 } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import {ConsultationCTA} from "@/components/consultation-cta";
-import SoundToggle from "@/components/SoundToggle";
+import { ConsultationCTA } from "@/components/consultation-cta"
+import SoundToggle from "@/components/SoundToggle"
+import ScrollMilestones, { type Milestone } from "@/components/scroll-milestones"
 
 // gsap.registerPlugin(ScrambleTextPlugin);
-gsap.registerPlugin(SplitText);
+gsap.registerPlugin(SplitText)
 gsap.registerPlugin(ScrollTrigger)
 
 /* -------------------- Shared minimal motion -------------------- */
@@ -123,7 +122,7 @@ function CaseStudiesCarousel() {
   const s = studies[active]
 
   return (
-      <section className="py-20 bg-gray-50" data-st-section>
+      <section id="case-studies" className="py-20 bg-gray-50" data-st-section>
         <motion.div
             className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8"
             variants={revealOnce}
@@ -307,33 +306,33 @@ function CaseStudiesCarousel() {
 
         {/* marquee keyframes (Tailwind inline) */}
         <style jsx>{`
-        @keyframes marquee {
-          0% { transform: translateX(0) }
-          100% { transform: translateX(-50%) }
-        }
-      `}</style>
+          @keyframes marquee {
+            0% { transform: translateX(0) }
+            100% { transform: translateX(-50%) }
+          }
+        `}</style>
       </section>
   )
 }
 
 /* -------------------- Interactive Product Mockups (Hero) -------------------- */
 function useCarousel(length: number, autoMs = 6000) {
-  const [i, setI] = useState(0);
-  const [hovering, setHover] = useState(false);
-  const prefersReduced = useReducedMotion();
+  const [i, setI] = useState(0)
+  const [hovering, setHover] = useState(false)
+  const prefersReduced = useReducedMotion()
 
   useEffect(() => {
-    if (prefersReduced || hovering || length <= 1) return;
-    const id = setInterval(() => setI(v => (v + 1) % length), autoMs);
-    return () => clearInterval(id);
-  }, [length, autoMs, hovering, prefersReduced]);
+    if (prefersReduced || hovering || length <= 1) return
+    const id = setInterval(() => setI(v => (v + 1) % length), autoMs)
+    return () => clearInterval(id)
+  }, [length, autoMs, hovering, prefersReduced])
 
-  const next = () => setI(v => (v + 1) % length);
-  const prev = () => setI(v => (v - 1 + length) % length);
-  return { i, setI, next, prev, setHover };
+  const next = () => setI(v => (v + 1) % length)
+  const prev = () => setI(v => (v - 1 + length) % length)
+  return { i, setI, next, prev, setHover }
 }
 
-type ShowcaseProps = { blobShift: MotionValue<number> };
+type ShowcaseProps = { blobShift: MotionValue<number> }
 
 function ProductShowcase({ blobShift }: ShowcaseProps) {
   const desktopShots = useMemo(
@@ -343,7 +342,7 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
         { src: "/shots/settings.png", alt: "Admin & settings" },
       ],
       []
-  );
+  )
   const mobileShots = useMemo(
       () => [
         { src: "/shots/mobile-chat.png", alt: "Chat & realtime" },
@@ -351,52 +350,52 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
         { src: "/shots/mobile-profile.png", alt: "Profile" },
       ],
       []
-  );
+  )
 
-  const desk = useCarousel(desktopShots.length, 5000);
-  const mob = useCarousel(mobileShots.length, 5000);
-  const prefersReduced = useReducedMotion();
+  const desk = useCarousel(desktopShots.length, 5000)
+  const mob = useCarousel(mobileShots.length, 5000)
+  const prefersReduced = useReducedMotion()
 
   // tilt only on non-touch + reducedMotion=false
-  const [canTilt, setCanTilt] = useState(false);
+  const [canTilt, setCanTilt] = useState(false)
   useEffect(() => {
     const isTouch =
         typeof window !== "undefined" &&
-        ("ontouchstart" in window || navigator.maxTouchPoints > 0);
-    setCanTilt(!isTouch && !prefersReduced);
-  }, [prefersReduced]);
+        ("ontouchstart" in window || navigator.maxTouchPoints > 0)
+    setCanTilt(!isTouch && !prefersReduced)
+  }, [prefersReduced])
 
   // which frame is on top (desktop vs phone) for sm+ layout
-  const [topView, setTopView] = useState<"desktop" | "mobile">("desktop");
+  const [topView, setTopView] = useState<"desktop" | "mobile">("desktop")
   useEffect(() => {
     const id = setInterval(
         () => setTopView(v => (v === "desktop" ? "mobile" : "desktop")),
         5000
-    );
-    return () => clearInterval(id);
-  }, []);
+    )
+    return () => clearInterval(id)
+  }, [])
 
   // tilt
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotX = useTransform(y, [-50, 50], [6, -6]);
-  const rotY = useTransform(x, [-80, 80], [-8, 8]);
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const rotX = useTransform(y, [-50, 50], [6, -6])
+  const rotY = useTransform(x, [-80, 80], [-8, 8])
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!canTilt) return;
-    const r = e.currentTarget.getBoundingClientRect();
-    x.set(e.clientX - (r.left + r.width / 2));
-    y.set(e.clientY - (r.top + r.height / 2));
-  };
+    if (!canTilt) return
+    const r = e.currentTarget.getBoundingClientRect()
+    x.set(e.clientX - (r.left + r.width / 2))
+    y.set(e.clientY - (r.top + r.height / 2))
+  }
   const onDragEnd = (offsetX: number, next: () => void, prev: () => void) => {
-    if (offsetX > 80) prev();
-    else if (offsetX < -80) next();
-  };
+    if (offsetX > 80) prev()
+    else if (offsetX < -80) next()
+  }
 
-  const desktopOnTop = topView === "desktop";
+  const desktopOnTop = topView === "desktop"
 
   return (
       <div className="relative isolate w-full">
-        {/* soft blobs */}
+        {/* soft blobs (pointer-events disabled so nothing blocks clicks) */}
         <motion.div
             aria-hidden
             style={{ y: blobShift }}
@@ -411,19 +410,15 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
         {/* ---------- DESKTOP CARD ---------- */}
         <motion.div
             className={[
-              // mobile: full-width card, stacked
               "relative w-full max-w-[640px] mx-auto rounded-2xl bg-white/70 backdrop-blur-xl border border-white/60 overflow-hidden shadow-lg",
-              // sm+: layered behavior
               "sm:transition-all sm:duration-500 sm:will-change-transform",
-              desktopOnTop
-                  ? "sm:z-40 sm:scale-100"
-                  : "sm:z-10 sm:scale-[0.92] sm:pointer-events-none",
+              desktopOnTop ? "sm:z-40 sm:scale-100" : "sm:z-10 sm:scale-[0.92] sm:pointer-events-none",
             ].join(" ")}
             style={canTilt ? { rotateX: rotX, rotateY: rotY } : undefined}
             onMouseMove={onMove}
             onMouseLeave={() => {
-              x.set(0);
-              y.set(0);
+              x.set(0)
+              y.set(0)
             }}
             onPointerEnter={() => desk.setHover(true)}
             onPointerLeave={() => desk.setHover(false)}
@@ -493,13 +488,9 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
         {/* ---------- PHONE CARD ---------- */}
         <motion.div
             className={[
-              // mobile: stack under desktop, centered
               "relative mt-6 mx-auto w-[220px] rounded-3xl bg-white border border-white/60 overflow-hidden shadow-2xl",
-              // sm+: dock in the corner & layer
               "sm:absolute sm:-bottom-6 sm:-right-6 sm:origin-bottom-right sm:w-[140px] md:w-[160px] lg:w-[180px] sm:transition-all sm:duration-500 sm:will-change-transform",
-              desktopOnTop
-                  ? "sm:z-10 sm:scale-[0.92] sm:pointer-events-none"
-                  : "sm:z-40 sm:scale-100 sm:pointer-events-auto",
+              desktopOnTop ? "sm:z-10 sm:scale-[0.92] sm:pointer-events-none" : "sm:z-40 sm:scale-100 sm:pointer-events-auto",
             ].join(" ")}
             initial={{ y: 16, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -580,7 +571,7 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
           </Button>
         </div>
       </div>
-  );
+  )
 }
 
 /* ----------------------------------- Page ----------------------------------- */
@@ -590,24 +581,24 @@ export default function HomePage() {
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] })
   const blobShift = useTransform(scrollYProgress, [0, 1], [0, prefersReduced ? 0 : -30])
 
-  const splitRef = useRef<HTMLSpanElement>(null);
-  const [hydrated, setHydrated] = useState(false);
+  const splitRef = useRef<HTMLSpanElement>(null)
+  const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
-    setHydrated(true); // only run after hydration
-  }, []);
+    setHydrated(true) // only run after hydration
+  }, [])
 
   useLayoutEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated) return
 
     const ctx = gsap.context(() => {
-      // 1) Hero headline (SplitText) when hero hits mid-viewport
+      // 1) Hero headline (SplitText)
       if (splitRef.current) {
-        const split = new SplitText(splitRef.current, { type: "words,chars" });
-        gsap.set(split.chars, { opacity: 0, y: 60, rotateX: -90 });
+        const split = new SplitText(splitRef.current, { type: "words,chars" })
+        gsap.set(split.chars, { opacity: 0, y: 60, rotateX: -90 })
 
         ScrollTrigger.create({
-          trigger: splitRef.current,     // or heroRef.current
+          trigger: splitRef.current,
           start: "top 65%",
           once: true,
           onEnter: () => {
@@ -618,31 +609,30 @@ export default function HomePage() {
               duration: 0.8,
               ease: "power3.out",
               stagger: 0.04,
-            });
+            })
           },
-        });
+        })
       }
 
       // 2) Fade/slide each section when it scrolls in
       gsap.utils.toArray<HTMLElement>("[data-st-section]").forEach((section) => {
-        // baseline state
-        gsap.set(section, { opacity: 0, y: 24 });
+        gsap.set(section, { opacity: 0, y: 24 })
 
         ScrollTrigger.create({
           trigger: section,
           start: "top 75%",
           once: true,
           onEnter: () => {
-            gsap.to(section, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" });
+            gsap.to(section, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" })
           },
-        });
+        })
 
-        // 3) Optional stagger for the inner grid/cards
-        const container = section.querySelector<HTMLElement>("[data-st-stagger]");
-        const items = container ? Array.from(container.children) : [];
+        // 3) Optional stagger for inner grid/cards
+        const container = section.querySelector<HTMLElement>("[data-st-stagger]")
+        const items = container ? Array.from(container.children) : []
 
         if (items.length) {
-          gsap.set(items, { opacity: 0, y: 18 });
+          gsap.set(items, { opacity: 0, y: 18 })
           ScrollTrigger.create({
             trigger: container!,
             start: "top 80%",
@@ -654,30 +644,36 @@ export default function HomePage() {
                 duration: 0.5,
                 ease: "power2.out",
                 stagger: 0.08,
-              });
+              })
             },
-          });
+          })
         }
-      });
+      })
+    })
 
-      // 4) Optional: batch pattern for lists that appear many times
-      // ScrollTrigger.batch("[data-st-item]", {
-      //   start: "top 85%",
-      //   once: true,
-      //   onEnter: (els) =>
-      //     gsap.to(els, { opacity: 1, y: 0, duration: 0.5, stagger: 0.06, ease: "power2.out" }),
-      // });
-    });
+    return () => ctx.revert()
+  }, [hydrated])
 
-    return () => ctx.revert(); // kills all ScrollTriggers created in this context
-  }, [hydrated]);
+  // left tracker sections (IDs must exist below)
+  const sectionsList: Milestone[] = [
+    { id: "hero", label: "Hero" },
+    { id: "trust", label: "Trusted By" },
+    { id: "services", label: "Services" },
+    { id: "why", label: "Why Revzion" },
+    { id: "case-studies", label: "Case Studies" },
+    { id: "stacks", label: "Tech Stacks" },
+    { id: "cta", label: "Get Started" },
+  ]
 
   return (
       <div className="min-h-screen bg-white">
         <Navigation />
 
+        {/* Left milestone tracker (lg+) */}
+        <ScrollMilestones sections={sectionsList} />
+
         {/* Hero */}
-        <section ref={heroRef} className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50">
+        <section id="hero" ref={heroRef} className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50">
           <motion.div
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32"
               variants={revealOnce}
@@ -688,10 +684,6 @@ export default function HomePage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-8">
                 <div className="space-y-4">
-                  {/*<h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 leading-tight">*/}
-                  {/*  <span ref={scrambleRef}>Innovating Products.</span>{" "}*/}
-                  {/*  <span className="text-gradient-revzion">Empowering Businesses.</span>*/}
-                  {/*</h1>*/}
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 leading-tight">
                     <span ref={splitRef}>Innovating Products</span>{" "}
                     <span className="text-gradient-revzion">Empowering Businesses.</span>
@@ -735,7 +727,7 @@ export default function HomePage() {
         </section>
 
         {/* Client Impact / Trust bar */}
-        <section className="bg-white">
+        <section id="trust" className="bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="rounded-2xl border border-gray-100 bg-gray-50/60 backdrop-blur-sm px-6 py-5">
               <div className="flex flex-col md:flex-row items-center justify-between gap-6">
@@ -756,7 +748,7 @@ export default function HomePage() {
         </section>
 
         {/* Services */}
-        <section className="py-20 bg-gray-50" data-st-section>
+        <section id="services" className="py-20 bg-gray-50" data-st-section>
           <motion.div
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
@@ -851,7 +843,7 @@ export default function HomePage() {
         </section>
 
         {/* Why Choose Us */}
-        <section className="py-20 bg-white" data-st-section>
+        <section id="why" className="py-20 bg-white" data-st-section>
           <motion.div
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
@@ -887,7 +879,7 @@ export default function HomePage() {
         <CaseStudiesCarousel />
 
         {/* Tech Stacks */}
-        <section className="py-20 bg-gray-50">
+        <section id="stacks" className="py-20 bg-gray-50">
           <motion.div
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
@@ -1006,7 +998,7 @@ export default function HomePage() {
         </section>
 
         {/* CTA */}
-        <section className="py-20 bg-gradient-revzion">
+        <section id="cta" className="py-20 bg-gradient-revzion">
           <motion.div
               className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
               variants={revealOnce}

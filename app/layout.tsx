@@ -81,7 +81,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en">
+        <html lang="en" className="scroll-smooth">
         {/* Explicit class for fonts + antialiasing; small style prevents dev overlay mismatch */}
         <body
             className={`${inter.variable} antialiased bg-white text-gray-900`}
