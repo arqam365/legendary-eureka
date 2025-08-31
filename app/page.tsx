@@ -318,20 +318,22 @@ function CaseStudiesCarousel() {
 
 /* -------------------- Interactive Product Mockups (Hero) -------------------- */
 function useCarousel(length: number, autoMs = 6000) {
-  const [i, setI] = useState(0)
-  const [hovering, setHover] = useState(false)
-  const prefersReduced = useReducedMotion()
+  const [i, setI] = useState(0);
+  const [hovering, setHover] = useState(false);
+  const prefersReduced = useReducedMotion();
+
   useEffect(() => {
-    if (prefersReduced || hovering || length <= 1) return
-    const id = setInterval(() => setI(v => (v + 1) % length), autoMs)
-    return () => clearInterval(id)
-  }, [length, autoMs, hovering, prefersReduced])
-  const next = () => setI(v => (v + 1) % length)
-  const prev = () => setI(v => (v - 1 + length) % length)
-  return { i, setI, next, prev, setHover }
+    if (prefersReduced || hovering || length <= 1) return;
+    const id = setInterval(() => setI(v => (v + 1) % length), autoMs);
+    return () => clearInterval(id);
+  }, [length, autoMs, hovering, prefersReduced]);
+
+  const next = () => setI(v => (v + 1) % length);
+  const prev = () => setI(v => (v - 1 + length) % length);
+  return { i, setI, next, prev, setHover };
 }
 
-type ShowcaseProps = { blobShift: MotionValue<number> }
+type ShowcaseProps = { blobShift: MotionValue<number> };
 
 function ProductShowcase({ blobShift }: ShowcaseProps) {
   const desktopShots = useMemo(
@@ -341,7 +343,7 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
         { src: "/shots/settings.png", alt: "Admin & settings" },
       ],
       []
-  )
+  );
   const mobileShots = useMemo(
       () => [
         { src: "/shots/mobile-chat.png", alt: "Chat & realtime" },
@@ -349,50 +351,80 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
         { src: "/shots/mobile-profile.png", alt: "Profile" },
       ],
       []
-  )
+  );
 
-  const desk = useCarousel(desktopShots.length, 5000)
-  const mob = useCarousel(mobileShots.length, 5000)
-  const prefersReduced = useReducedMotion()
+  const desk = useCarousel(desktopShots.length, 5000);
+  const mob = useCarousel(mobileShots.length, 5000);
+  const prefersReduced = useReducedMotion();
 
-  // which frame is on top (auto flip every 5s)
-  const [topView, setTopView] = useState<"desktop" | "mobile">("desktop")
+  // tilt only on non-touch + reducedMotion=false
+  const [canTilt, setCanTilt] = useState(false);
   useEffect(() => {
-    const id = setInterval(() => setTopView(v => (v === "desktop" ? "mobile" : "desktop")), 5000)
-    return () => clearInterval(id)
-  }, [])
+    const isTouch =
+        typeof window !== "undefined" &&
+        ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+    setCanTilt(!isTouch && !prefersReduced);
+  }, [prefersReduced]);
+
+  // which frame is on top (desktop vs phone) for sm+ layout
+  const [topView, setTopView] = useState<"desktop" | "mobile">("desktop");
+  useEffect(() => {
+    const id = setInterval(
+        () => setTopView(v => (v === "desktop" ? "mobile" : "desktop")),
+        5000
+    );
+    return () => clearInterval(id);
+  }, []);
 
   // tilt
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
-  const rotX = useTransform(y, [-50, 50], [6, -6])
-  const rotY = useTransform(x, [-80, 80], [-8, 8])
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotX = useTransform(y, [-50, 50], [6, -6]);
+  const rotY = useTransform(x, [-80, 80], [-8, 8]);
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (prefersReduced) return
-    const r = e.currentTarget.getBoundingClientRect()
-    x.set(e.clientX - (r.left + r.width / 2))
-    y.set(e.clientY - (r.top + r.height / 2))
-  }
+    if (!canTilt) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    x.set(e.clientX - (r.left + r.width / 2));
+    y.set(e.clientY - (r.top + r.height / 2));
+  };
   const onDragEnd = (offsetX: number, next: () => void, prev: () => void) => {
-    if (offsetX > 80) prev()
-    else if (offsetX < -80) next()
-  }
+    if (offsetX > 80) prev();
+    else if (offsetX < -80) next();
+  };
 
-  const desktopOnTop = topView === "desktop"
+  const desktopOnTop = topView === "desktop";
 
   return (
-      <div className="relative isolate">
-        {/* glow blobs */}
-        <motion.div aria-hidden style={{ y: blobShift }} className="absolute -top-6 -right-6 w-72 h-72 bg-gradient-revzion rounded-full opacity-10 blur-3xl pointer-events-none z-0" />
-        <motion.div aria-hidden style={{ y: blobShift }} className="absolute -bottom-10 -left-10 w-64 h-64 bg-blue-200 rounded-full opacity-20 blur-2xl pointer-events-none z-0" />
-
-        {/* DESKTOP (always positioned so z-index works) */}
+      <div className="relative isolate w-full">
+        {/* soft blobs */}
         <motion.div
-            className={`relative transition-all duration-500 rounded-2xl bg-white/70 backdrop-blur-xl border border-white/60 overflow-hidden shadow-lg will-change-transform
-          ${desktopOnTop ? "z-40 scale-100" : "z-10 scale-[0.92] pointer-events-none"}`}
-            style={prefersReduced ? undefined : { rotateX: rotX, rotateY: rotY }}
+            aria-hidden
+            style={{ y: blobShift }}
+            className="absolute -top-6 -right-6 w-56 h-56 sm:w-72 sm:h-72 bg-gradient-revzion rounded-full opacity-10 blur-3xl pointer-events-none z-0"
+        />
+        <motion.div
+            aria-hidden
+            style={{ y: blobShift }}
+            className="absolute -bottom-10 -left-10 w-48 h-48 sm:w-64 sm:h-64 bg-blue-200 rounded-full opacity-20 blur-2xl pointer-events-none z-0"
+        />
+
+        {/* ---------- DESKTOP CARD ---------- */}
+        <motion.div
+            className={[
+              // mobile: full-width card, stacked
+              "relative w-full max-w-[640px] mx-auto rounded-2xl bg-white/70 backdrop-blur-xl border border-white/60 overflow-hidden shadow-lg",
+              // sm+: layered behavior
+              "sm:transition-all sm:duration-500 sm:will-change-transform",
+              desktopOnTop
+                  ? "sm:z-40 sm:scale-100"
+                  : "sm:z-10 sm:scale-[0.92] sm:pointer-events-none",
+            ].join(" ")}
+            style={canTilt ? { rotateX: rotX, rotateY: rotY } : undefined}
             onMouseMove={onMove}
-            onMouseLeave={() => { x.set(0); y.set(0) }}
+            onMouseLeave={() => {
+              x.set(0);
+              y.set(0);
+            }}
             onPointerEnter={() => desk.setHover(true)}
             onPointerLeave={() => desk.setHover(false)}
         >
@@ -410,35 +442,65 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
                   alt={desktopShots[desk.i].alt}
                   width={1200}
                   height={750}
+                  sizes="(max-width: 640px) 100vw, 600px"
                   className="w-full h-auto rounded-xl select-none pointer-events-none"
+                  priority
               />
             </div>
           </motion.div>
 
-          {/* desktop pills */}
-          <div className="absolute bottom-3 left-0 right-0 flex items-center justify-between px-3">
-            <Button size="sm" variant="outline" onClick={desk.prev} aria-label="Previous desktop shot">←</Button>
+          {/* controls: mobile -> below; sm+ -> overlay */}
+          <div className="hidden sm:flex absolute bottom-3 left-0 right-0 items-center justify-between px-3">
+            <Button size="sm" variant="outline" onClick={desk.prev} aria-label="Previous desktop shot">
+              ←
+            </Button>
             <div className="flex gap-1.5">
               {desktopShots.map((_, idx) => (
                   <button
                       key={idx}
                       onClick={() => desk.setI(idx)}
                       aria-label={`Go to desktop shot ${idx + 1}`}
-                      className={`h-2 rounded-full transition-all ${
-                          idx === desk.i ? "bg-primary w-6" : "bg-white/70 w-2.5"
-                      }`}
+                      className={`h-2 rounded-full transition-all ${idx === desk.i ? "bg-primary w-6" : "bg-white/70 w-2.5"}`}
                   />
               ))}
             </div>
-            <Button size="sm" onClick={desk.next} aria-label="Next desktop shot">→</Button>
+            <Button size="sm" onClick={desk.next} aria-label="Next desktop shot">
+              →
+            </Button>
           </div>
         </motion.div>
 
-        {/* MOBILE (absolute in the corner) */}
+        {/* mobile-only controls under the desktop card */}
+        <div className="mt-3 sm:hidden flex items-center justify-center gap-3">
+          <Button size="sm" variant="outline" onClick={desk.prev} aria-label="Previous desktop shot">
+            ←
+          </Button>
+          <div className="flex gap-1.5">
+            {desktopShots.map((_, idx) => (
+                <button
+                    key={idx}
+                    onClick={() => desk.setI(idx)}
+                    aria-label={`Go to desktop shot ${idx + 1}`}
+                    className={`h-2 rounded-full transition-all ${idx === desk.i ? "bg-primary w-6" : "bg-gray-300 w-2.5"}`}
+                />
+            ))}
+          </div>
+          <Button size="sm" onClick={desk.next} aria-label="Next desktop shot">
+            →
+          </Button>
+        </div>
+
+        {/* ---------- PHONE CARD ---------- */}
         <motion.div
-            className={`absolute -bottom-6 -right-6 transition-all duration-500 rounded-3xl bg-white border border-white/60 overflow-hidden shadow-2xl w-[120px] sm:w-[140px] md:w-[160px] lg:w-[180px] origin-bottom-right will-change-transform ${desktopOnTop
-                ? "z-10 scale-[0.92] pointer-events-none"
-                : "z-40 scale-100 pointer-events-auto"}`}
+            className={[
+              // mobile: stack under desktop, centered
+              "relative mt-6 mx-auto w-[220px] rounded-3xl bg-white border border-white/60 overflow-hidden shadow-2xl",
+              // sm+: dock in the corner & layer
+              "sm:absolute sm:-bottom-6 sm:-right-6 sm:origin-bottom-right sm:w-[140px] md:w-[160px] lg:w-[180px] sm:transition-all sm:duration-500 sm:will-change-transform",
+              desktopOnTop
+                  ? "sm:z-10 sm:scale-[0.92] sm:pointer-events-none"
+                  : "sm:z-40 sm:scale-100 sm:pointer-events-auto",
+            ].join(" ")}
             initial={{ y: 16, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -458,32 +520,41 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
                 key={mobileShots[mob.i].src}
                 src={mobileShots[mob.i].src}
                 alt={mobileShots[mob.i].alt}
-                // width={480}
-                // height={960}
-                width={190}
-                height={380}
+                width={380}
+                height={760}
+                sizes="(max-width: 640px) 220px, 180px"
                 className="w-full h-auto select-none pointer-events-none"
                 priority
             />
           </motion.div>
 
-          {/* mobile pills */}
-          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+          {/* phone dots: inside for sm+, below for mobile */}
+          <div className="hidden sm:flex absolute bottom-2 left-0 right-0 justify-center gap-1.5">
             {mobileShots.map((_, idx) => (
                 <button
                     key={idx}
                     onClick={() => mob.setI(idx)}
                     aria-label={`Go to mobile shot ${idx + 1}`}
-                    className={`h-1.5 rounded-full transition-all ${
-                        idx === mob.i ? "bg-primary w-5" : "bg-gray-300 w-2.5"
-                    }`}
+                    className={`h-1.5 rounded-full transition-all ${idx === mob.i ? "bg-primary w-5" : "bg-gray-300 w-2.5"}`}
                 />
             ))}
           </div>
         </motion.div>
 
-        {/* Manual top/bottom toggle pills */}
-        <div className="mt-6 flex gap-3 justify-center">
+        {/* mobile-only phone dots under the phone mock */}
+        <div className="sm:hidden mt-2 flex justify-center gap-1.5">
+          {mobileShots.map((_, idx) => (
+              <button
+                  key={idx}
+                  onClick={() => mob.setI(idx)}
+                  aria-label={`Go to mobile shot ${idx + 1}`}
+                  className={`h-1.5 rounded-full transition-all ${idx === mob.i ? "bg-primary w-5" : "bg-gray-300 w-2.5"}`}
+              />
+          ))}
+        </div>
+
+        {/* manual top/bottom toggles: hide on mobile (stacked) */}
+        <div className="hidden sm:flex mt-6 gap-3 justify-center">
           <Button
               size="icon"
               variant={desktopOnTop ? "default" : "outline"}
@@ -509,7 +580,7 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
           </Button>
         </div>
       </div>
-  )
+  );
 }
 
 /* ----------------------------------- Page ----------------------------------- */
