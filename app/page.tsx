@@ -35,6 +35,7 @@ import {
 } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import {ConsultationCTA} from "@/components/consultation-cta";
+import SoundToggle from "@/components/SoundToggle";
 
 // gsap.registerPlugin(ScrambleTextPlugin);
 gsap.registerPlugin(SplitText);
@@ -47,55 +48,6 @@ const revealOnce: Variants = {
 }
 const hoverCard = { scale: 1.02 }
 const hoverIcon = { scale: 1.08 }
-
-/* -------------------- Ambient Sound Toggle -------------------- */
-function SoundToggle() {
-  const [enabled, setEnabled] = useState(false)
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-  const prefersReduced = useReducedMotion()
-
-  useEffect(() => {
-    if (!audioRef.current) {
-      const a = new Audio("/audio/ambient.mp3")
-      a.loop = true
-      a.preload = "auto"
-      a.volume = 0.12
-      audioRef.current = a
-    }
-    try {
-      const saved = typeof window !== "undefined" && localStorage.getItem("ambient-sound")
-      if (saved === "on" && !prefersReduced) setEnabled(true)
-    } catch {}
-  }, [prefersReduced])
-
-  useEffect(() => {
-    const a = audioRef.current
-    if (!a) return
-    if (enabled && !prefersReduced) {
-      a.play().catch(() => {})
-      try { localStorage.setItem("ambient-sound", "on") } catch {}
-    } else {
-      a.pause()
-      try { localStorage.setItem("ambient-sound", "off") } catch {}
-    }
-  }, [enabled, prefersReduced])
-
-  return (
-      <div className="fixed bottom-5 right-5 z-50">
-        <Button
-            variant="outline"
-            className="backdrop-blur-md bg-white/70 border-white/60 shadow-sm"
-            onClick={() => setEnabled(v => !v)}
-            aria-pressed={enabled}
-            aria-label={enabled ? "Turn ambient sound off" : "Turn ambient sound on"}
-            title={enabled ? "Turn ambient sound off" : "Turn ambient sound on"}
-        >
-          {enabled ? <Volume2 className="h-4 w-4 mr-2" /> : <VolumeX className="h-4 w-4 mr-2" />}
-          {enabled ? "Sound on" : "Sound off"}
-        </Button>
-      </div>
-  )
-}
 
 /* -------------------- Case Studies Carousel -------------------- */
 type Study = {
