@@ -8,7 +8,7 @@ type SplashProps = {
     minDuration?: number
     onReady?: (resolve: () => void) => void
     brandName?: string
-    logoSrc?: string              // e.g. "/logo.svg"
+    logoSrc?: string
 }
 
 export default function SplashScreen({
@@ -23,10 +23,31 @@ export default function SplashScreen({
     const [progress, setProgress] = useState(0)
     const reduced = useReducedMotion()
 
+    // simple responsive flags (CSR only; no SSR branches)
+    const [isSm, setIsSm] = useState(false) // ≤640px
+    const [isMd, setIsMd] = useState(false) // ≤1024px
+
+    useEffect(() => {
+        setMounted(true)
+        const mqSm = window.matchMedia("(max-width: 640px)")
+        const mqMd = window.matchMedia("(max-width: 1024px)")
+        const apply = () => {
+            setIsSm(mqSm.matches)
+            setIsMd(mqMd.matches)
+        }
+        apply()
+        mqSm.addEventListener?.("change", apply)
+        mqMd.addEventListener?.("change", apply)
+        return () => {
+            mqSm.removeEventListener?.("change", apply)
+            mqMd.removeEventListener?.("change", apply)
+        }
+    }, [])
+
     const readyRef = useRef(false)
     const resolveExternal = () => { readyRef.current = true }
 
-    // deterministic particles (no render-time randomness pre-mount)
+    // deterministic particles; fewer on small screens
     const particles = useMemo(() => {
         function prng(seed: number) {
             return () => {
@@ -37,20 +58,20 @@ export default function SplashScreen({
             }
         }
         const r = prng(87452391)
-        return Array.from({ length: 24 }).map(() => {
+        const count = reduced ? 0 : isSm ? 12 : isMd ? 18 : 24
+        return Array.from({ length: count }).map(() => {
             const y = r() * 100
             const x = r() * 100
             return {
                 top: `${y}%`,
                 left: `${x}%`,
-                dy: 8 + Math.floor(r() * 10),
-                dur: 2.2 + Math.floor(r() * 10) * 0.12,
+                dy: 6 + Math.floor(r() * 8),
+                dur: 1.8 + Math.floor(r() * 8) * 0.12,
                 delay: r() * 0.9,
             }
         })
-    }, [])
+    }, [isSm, isMd, reduced])
 
-    useEffect(() => { setMounted(true) }, [])
     useEffect(() => { if (!onReady) readyRef.current = true }, [onReady])
 
     useEffect(() => {
@@ -76,7 +97,6 @@ export default function SplashScreen({
                         if (tt < 1) requestAnimationFrame(step)
                         else {
                             setPhase("exit")
-                            // let curtains/flash play, then mark done + notify page
                             setTimeout(() => {
                                 setDone(true)
                                 window.dispatchEvent(new Event("revzion:splash-done"))
@@ -106,6 +126,13 @@ export default function SplashScreen({
     const pct = Math.round(Math.min(100, Math.max(0, progress)))
     const ringSweep = `${pct * 3.6}deg`
 
+    // responsive sizes via clamp: min(px) → vw → max(px)
+    const ringSize = "clamp(140px, 42vw, 220px)"            // overall ring
+    const insetPad = isSm ? 18 : 22                         // inner medal padding
+    const logoBox = isSm ? 36 : 40                          // logo container
+    const haloOpacity = isSm ? 0.08 : 0.10                  // lighter halo on phones
+    const backdropOpacity = isSm ? 0.14 : 0.18              // softer blur/gradient on phones
+
     return (
         <AnimatePresence>
             <motion.div
@@ -116,11 +143,14 @@ export default function SplashScreen({
                 transition={{ duration: 0.45, ease: "easeOut" }}
                 role="status"
                 aria-label="Loading"
+                aria-live="polite"
             >
-                {/* Brand gradient backdrop (matches site) */}
+                {/* brand gradient backdrop */}
                 <div className="absolute inset-0">
-                    {/* use your brand utility */}
-                    <div className="absolute -inset-[20%] bg-gradient-revzion opacity-[0.18] blur-2xl" />
+                    <div
+                        className="absolute -inset-[20%] bg-gradient-revzion blur-2xl"
+                        style={{ opacity: backdropOpacity }}
+                    />
                     {!reduced && (
                         <motion.div
                             className="absolute inset-0"
@@ -131,19 +161,23 @@ export default function SplashScreen({
                     <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.6),rgba(0,0,0,0.86))]" />
                 </div>
 
-                {/* Center medal + progress ring */}
-                <div className="absolute inset-0 grid place-items-center">
-                    <div className="relative w-[200px] h-[200px]">
+                {/* center medal + ring */}
+                <div className="absolute inset-0 grid place-items-center px-4"> {/* px for tiny screens */}
+                    <div
+                        className="relative"
+                        style={{ width: ringSize, height: ringSize }}
+                    >
                         {/* halo */}
                         {!reduced && (
                             <motion.div
-                                className="absolute inset-0 rounded-full bg-white/10 blur-2xl"
-                                animate={{ opacity: [0.4, 0.8, 0.4] }}
+                                className="absolute inset-0 rounded-full bg-white blur-2xl"
+                                style={{ opacity: haloOpacity }}
+                                animate={{ opacity: [haloOpacity, haloOpacity * 1.8, haloOpacity] }}
                                 transition={{ duration: 2.1, repeat: Infinity, ease: "easeInOut" }}
                             />
                         )}
 
-                        {/* progress ring in brand colors */}
+                        {/* progress ring */}
                         <div
                             className="absolute inset-0 rounded-full"
                             style={{
@@ -155,27 +189,36 @@ export default function SplashScreen({
 
                         {/* inner medal */}
                         <motion.div
-                            className="absolute inset-[22px] rounded-2xl border border-white/15 bg-white/8 backdrop-blur-sm grid place-items-center"
+                            className="absolute grid place-items-center rounded-2xl border border-white/15 backdrop-blur-sm"
+                            style={{
+                                inset: insetPad,
+                                background: "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))",
+                            }}
                             animate={reduced ? {} : { scale: [0.985, 1, 0.985] }}
                             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                            style={{
-                                // subtle gradient frame using your brand
-                                background:
-                                    "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))",
-                            }}
                         >
-                            <div className="text-center px-4">
-                                {/* prefer your SVG logo */}
-                                <div className="mx-auto mb-2 h-10 w-10 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center">
-                                    {/* swap to <Image> for crisp logo */}
-                                    <Image src={logoSrc} alt={`${brandName} logo`} width={28} height={28} priority />
+                            <div className="text-center px-3">
+                                <div
+                                    className="mx-auto mb-2 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center"
+                                    style={{ width: logoBox, height: logoBox }}
+                                >
+                                    <Image
+                                        src={logoSrc}
+                                        alt={`${brandName} logo`}
+                                        width={28}
+                                        height={28}
+                                        priority
+                                        sizes="(max-width: 640px) 28px, 32px"
+                                    />
                                 </div>
-                                <div className="text-white text-[18px] font-bold tracking-wide">
+
+                                <div className="text-white font-bold tracking-wide text-[16px] sm:text-[18px]">
                   <span className="bg-gradient-revzion bg-clip-text text-transparent">
                     {brandName}
                   </span>
                                 </div>
-                                <div className="text-white/60 text-[11px] tracking-wider uppercase">
+
+                                <div className="text-white/70 tracking-wider uppercase mt-0.5 text-[10px] sm:text-[11px]">
                                     Loading {pct}%
                                 </div>
                             </div>
@@ -183,14 +226,20 @@ export default function SplashScreen({
                     </div>
                 </div>
 
-                {/* floating specs */}
-                {!reduced && (
+                {/* floating particles */}
+                {!reduced && particles.length > 0 && (
                     <div aria-hidden className="pointer-events-none absolute inset-0">
                         {particles.map((p, i) => (
                             <motion.span
                                 key={i}
-                                className="absolute h-[2px] w-[2px] rounded-full bg-white/70"
-                                style={{ top: p.top, left: p.left }}
+                                className="absolute rounded-full bg-white/70"
+                                style={{
+                                    top: p.top,
+                                    left: p.left,
+                                    // lighter DOM on mobile: smaller specks
+                                    width: isSm ? 1.5 : 2,
+                                    height: isSm ? 1.5 : 2,
+                                }}
                                 initial={{ y: 0, opacity: 0 }}
                                 animate={{ y: -p.dy, opacity: [0, 1, 0] }}
                                 transition={{ duration: p.dur, delay: p.delay, repeat: Infinity, ease: "easeInOut" }}
@@ -199,7 +248,7 @@ export default function SplashScreen({
                     </div>
                 )}
 
-                {/* exit: brand flash + curtain */}
+                {/* exit: brand flash + curtains */}
                 <AnimatePresence>
                     {phase === "exit" && (
                         <>
@@ -207,19 +256,21 @@ export default function SplashScreen({
                                 className="absolute inset-0 bg-gradient-revzion"
                                 initial={{ clipPath: "circle(0% at 50% 50%)", opacity: 0.9 }}
                                 animate={{ clipPath: "circle(140% at 50% 50%)", opacity: [0.9, 0.5, 0] }}
-                                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                                transition={{ duration: isSm ? 0.6 : 0.7, ease: [0.16, 1, 0.3, 1] }}
                             />
                             <motion.div
-                                className="absolute inset-x-0 top-0 h-1/2 bg-black"
+                                className="absolute inset-x-0 top-0 bg-black"
+                                style={{ height: "50vh" }}
                                 initial={{ y: 0 }}
                                 animate={{ y: "-100%" }}
-                                transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+                                transition={{ duration: isSm ? 0.6 : 0.75, ease: [0.22, 1, 0.36, 1] }}
                             />
                             <motion.div
-                                className="absolute inset-x-0 bottom-0 h-1/2 bg-black"
+                                className="absolute inset-x-0 bottom-0 bg-black"
+                                style={{ height: "50vh" }}
                                 initial={{ y: 0 }}
                                 animate={{ y: "100%" }}
-                                transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+                                transition={{ duration: isSm ? 0.6 : 0.75, ease: [0.22, 1, 0.36, 1] }}
                             />
                         </>
                     )}
