@@ -1,9 +1,8 @@
 // app/layout.tsx
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
-import dynamic from "next/dynamic";
 import ClientSplash from "@/components/ClientSplash";
 
 const inter = Inter({
@@ -11,6 +10,18 @@ const inter = Inter({
     display: "swap",
     variable: "--font-inter",
 });
+
+// ✅ Mobile viewport (Next.js App Router way)
+export const viewport: Viewport = {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    viewportFit: "cover", // respects iOS safe areas
+    themeColor: [
+        { media: "(prefers-color-scheme: light)", color: "#0a0a0a" },
+        { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    ],
+};
 
 export const metadata: Metadata = {
     title: {
@@ -47,59 +58,64 @@ export const metadata: Metadata = {
         title: "Revzion - Innovating Products. Empowering Businesses.",
         description:
             "We build scalable SaaS, AI, and cross-platform solutions for startups and enterprises worldwide.",
-        images: [
-            {
-                url: "/og-image.png",
-                width: 1200,
-                height: 630,
-                alt: "Revzion - Innovating Products. Empowering Businesses.",
-            },
-        ],
+        images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Revzion - Innovating Products. Empowering Businesses." }],
     },
     twitter: {
         card: "summary_large_image",
         site: "@revzion",
         creator: "@arqam365",
         title: "Revzion - Innovating Products. Empowering Businesses.",
-        description:
-            "Scalable SaaS, AI, and cross-platform solutions engineered for growth.",
+        description: "Scalable SaaS, AI, and cross-platform solutions engineered for growth.",
         images: ["/og-image.png"],
     },
     themeColor: "#0a0a0a",
     manifest: "/site.webmanifest",
     category: "technology",
+
+    // ✅ Mobile format detection (avoid iOS auto-link styling)
+    formatDetection: {
+        telephone: false,
+        address: false,
+        email: false,
+    },
 };
 
-export default function RootLayout({
-                                       children,
-                                   }: {
-    children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-        {/* Explicit style avoids dev-overlay hydration mismatch */}
+        {/* Explicit class for fonts + antialiasing; small style prevents dev overlay mismatch */}
         <body
-            className={`${inter.variable} antialiased`}
-            style={{ overscrollBehaviorX: "auto" }}
+            className={`${inter.variable} antialiased bg-white text-gray-900`}
+            style={{ overscrollBehaviorX: "contain" }}
             suppressHydrationWarning
         >
-        {/* Client-only splash; won’t render on server */}
+        {/* Client-only splash (no SSR mismatch) */}
         <ClientSplash />
 
-        {children}
+        {/* Safe-area wrapper for notch devices */}
+        <div
+            className="
+            min-h-screen
+            px-4 sm:px-6 lg:px-8
+            pt-[max(1rem,env(safe-area-inset-top))]
+            pb-[max(1rem,env(safe-area-inset-bottom))]
+          "
+        >
+            {children}
+        </div>
 
-        {/* GSAP CDN (optional if you’re not importing from npm) */}
+        {/* GSAP CDN — run after hydration for better mobile TTI */}
         <Script
             src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"
-            strategy="beforeInteractive"
+            strategy="afterInteractive"
         />
         <Script
             src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"
-            strategy="beforeInteractive"
+            strategy="afterInteractive"
         />
         <Script
             src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrambleTextPlugin.min.js"
-            strategy="beforeInteractive"
+            strategy="afterInteractive"
         />
         </body>
         </html>
