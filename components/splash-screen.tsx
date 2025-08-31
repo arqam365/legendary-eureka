@@ -189,18 +189,18 @@ export default function SplashScreen({
                 {/* FULL-WIDTH bottom progress bar + trailing % */}
                 <div
                     className="
-            fixed left-0 right-0
-            bottom-[calc(env(safe-area-inset-bottom,0px)+10px)]
-            z-[10000]
-            pointer-events-none
-          "
+    fixed left-0 right-0
+    bottom-[calc(env(safe-area-inset-bottom,0px))]
+    z-[10000]
+    pointer-events-none
+  "
                     aria-live="polite"
                 >
                     {/* rail spans entire viewport */}
                     <div
-                        className="relative h-[6px] sm:h-2 w-full
-                       bg-white/14 border-y border-white/10
-                       overflow-hidden"
+                        className="relative h-4 sm:h-5 w-full
+               bg-white/14 border-y border-white/10
+               overflow-hidden"
                         role="progressbar"
                         aria-valuemin={0}
                         aria-valuemax={100}
@@ -216,26 +216,27 @@ export default function SplashScreen({
                     </div>
 
                     {/* subtle shadow stripe under rail */}
-                    <div className="h-[3px] bg-black/45 w-full" />
+                    <div className="h-2 bg-black/40 w-full" />
 
-                    {/* giant trailing percentage, clamped to viewport edges */}
+                    {/* giant trailing percentage */}
                     <motion.div
-                        className="absolute bottom-[calc(100%+10px)]
-                       font-extrabold tracking-tight
-                       text-white/20 select-none whitespace-nowrap"
+                        className="absolute bottom-[calc(100%+14px)]
+               font-extrabold tracking-tight
+               text-white/20 select-none whitespace-nowrap"
                         style={{
-                            left: `clamp(12px, calc(${pct}vw), calc(100vw - 12px))`,
+                            left: `clamp(16px, calc(${pct}vw), calc(100vw - 16px))`,
                             transform: "translateX(-100%)",
-                            fontSize: "clamp(48px, 18vw, 220px)",
+                            fontSize: "clamp(56px, 20vw, 240px)",
                             lineHeight: 1,
                         }}
                         initial={false}
-                        animate={{ left: `clamp(12px, calc(${pct}vw), calc(100vw - 12px))` }}
+                        animate={{ left: `clamp(16px, calc(${pct}vw), calc(100vw - 16px))` }}
                         transition={{ type: "tween", duration: 0.18 }}
                     >
                         {pct}%
                     </motion.div>
                 </div>
+
 
                 {/* exit curtains */}
                 <AnimatePresence>
