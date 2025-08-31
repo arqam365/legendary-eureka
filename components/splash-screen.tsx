@@ -24,8 +24,8 @@ export default function SplashScreen({
     const reduced = useReducedMotion()
 
     // CSR-only responsive flags
-    const [isSm, setIsSm] = useState(false) // ≤640px
-    const [isMd, setIsMd] = useState(false) // ≤1024px
+    const [isSm, setIsSm] = useState(false)
+    const [isMd, setIsMd] = useState(false)
 
     useEffect(() => {
         setMounted(true)
@@ -44,7 +44,7 @@ export default function SplashScreen({
     const readyRef = useRef(false)
     const resolveExternal = () => { readyRef.current = true }
 
-    // deterministic particles; fewer on small screens
+    // particles
     const particles = useMemo(() => {
         function prng(seed: number) {
             return () => {
@@ -59,13 +59,7 @@ export default function SplashScreen({
         return Array.from({ length: count }).map(() => {
             const y = r() * 100
             const x = r() * 100
-            return {
-                top: `${y}%`,
-                left: `${x}%`,
-                dy: 6 + Math.floor(r() * 8),
-                dur: 1.8 + Math.floor(r() * 8) * 0.12,
-                delay: r() * 0.9,
-            }
+            return { top: `${y}%`, left: `${x}%`, dy: 6 + Math.floor(r() * 8), dur: 1.8 + Math.floor(r() * 8) * 0.12, delay: r() * 0.9 }
         })
     }, [isSm, isMd, reduced])
 
@@ -76,13 +70,11 @@ export default function SplashScreen({
         let raf = 0
         const start = performance.now()
         const softCap = 96
-
         const tick = (now: number) => {
             const t = Math.min(1, (now - start) / minDuration)
             const eased = 1 - Math.pow(1 - t, 2)
             const target = softCap * eased
             setProgress(p => (target > p ? target : p))
-
             if (t < 1) {
                 raf = requestAnimationFrame(tick)
             } else {
@@ -103,16 +95,12 @@ export default function SplashScreen({
                     }
                     requestAnimationFrame(step)
                 }
-
                 if (readyRef.current) finish()
                 else {
-                    const id = setInterval(() => {
-                        if (readyRef.current) { clearInterval(id); finish() }
-                    }, 40)
+                    const id = setInterval(() => { if (readyRef.current) { clearInterval(id); finish() } }, 40)
                 }
             }
         }
-
         raf = requestAnimationFrame(tick)
         return () => cancelAnimationFrame(raf)
     }, [minDuration])
@@ -141,23 +129,16 @@ export default function SplashScreen({
                 aria-label="Loading"
                 aria-live="polite"
             >
-                {/* brand gradient backdrop */}
+                {/* backdrop */}
                 <div className="absolute inset-0">
-                    <div
-                        className="absolute -inset-[20%] bg-gradient-revzion blur-2xl"
-                        style={{ opacity: backdropOpacity }}
-                    />
+                    <div className="absolute -inset-[20%] bg-gradient-revzion blur-2xl" style={{ opacity: backdropOpacity }} />
                     {!reduced && (
-                        <motion.div
-                            className="absolute inset-0"
-                            animate={{ rotate: [0, 10, -8, 0] }}
-                            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                        />
+                        <motion.div className="absolute inset-0" animate={{ rotate: [0, 10, -8, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
                     )}
                     <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.6),rgba(0,0,0,0.86))]" />
                 </div>
 
-                {/* center brand medal (no ring) */}
+                {/* center brand card */}
                 <div className="absolute inset-0 grid place-items-center px-4">
                     <div className="relative w-[min(72vw,320px)] h-[min(72vw,320px)]">
                         {!reduced && (
@@ -168,37 +149,19 @@ export default function SplashScreen({
                                 transition={{ duration: 2.1, repeat: Infinity, ease: "easeInOut" }}
                             />
                         )}
-
                         <motion.div
                             className="absolute grid place-items-center rounded-2xl border border-white/15 backdrop-blur-sm"
-                            style={{
-                                inset: insetPad,
-                                background: "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))",
-                            }}
+                            style={{ inset: insetPad, background: "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))" }}
                             animate={reduced ? {} : { scale: [0.985, 1, 0.985] }}
                             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                         >
                             <div className="text-center px-3">
-                                <div
-                                    className="mx-auto mb-2 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center"
-                                    style={{ width: logoBox, height: logoBox }}
-                                >
-                                    <Image
-                                        src={logoSrc}
-                                        alt={`${brandName} logo`}
-                                        width={28}
-                                        height={28}
-                                        priority
-                                        sizes="(max-width: 640px) 28px, 32px"
-                                    />
+                                <div className="mx-auto mb-2 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center" style={{ width: logoBox, height: logoBox }}>
+                                    <Image src={logoSrc} alt={`${brandName} logo`} width={28} height={28} priority sizes="(max-width: 640px) 28px, 32px" />
                                 </div>
-
                                 <div className="text-white font-bold tracking-wide text-[16px] sm:text-[18px]">
-                  <span className="bg-gradient-revzion bg-clip-text text-transparent">
-                    {brandName}
-                  </span>
+                                    <span className="bg-gradient-revzion bg-clip-text text-transparent">{brandName}</span>
                                 </div>
-
                                 <div className="text-white/70 tracking-wider uppercase mt-0.5 text-[10px] sm:text-[11px]">
                                     Loading {pct}%
                                 </div>
@@ -207,19 +170,14 @@ export default function SplashScreen({
                     </div>
                 </div>
 
-                {/* floating particles */}
+                {/* particles */}
                 {!reduced && particles.length > 0 && (
                     <div aria-hidden className="pointer-events-none absolute inset-0">
                         {particles.map((p, i) => (
                             <motion.span
                                 key={i}
                                 className="absolute rounded-full bg-white/70"
-                                style={{
-                                    top: p.top,
-                                    left: p.left,
-                                    width: isSm ? 1.5 : 2,
-                                    height: isSm ? 1.5 : 2,
-                                }}
+                                style={{ top: p.top, left: p.left, width: isSm ? 1.5 : 2, height: isSm ? 1.5 : 2 }}
                                 initial={{ y: 0, opacity: 0 }}
                                 animate={{ y: -p.dy, opacity: [0, 1, 0] }}
                                 transition={{ duration: p.dur, delay: p.delay, repeat: Infinity, ease: "easeInOut" }}
@@ -228,51 +186,58 @@ export default function SplashScreen({
                     </div>
                 )}
 
-                {/* --- Bottom progress bar with floating % chip --- */}
+                {/* FULL-WIDTH bottom progress bar + trailing % */}
                 <div
                     className="
-            fixed inset-x-0
-            bottom-[calc(env(safe-area-inset-bottom,0px)+14px)]
+            fixed left-0 right-0
+            bottom-[calc(env(safe-area-inset-bottom,0px)+10px)]
             z-[10000]
-            px-4 sm:px-6
+            pointer-events-none
           "
                     aria-live="polite"
                 >
+                    {/* rail spans entire viewport */}
                     <div
-                        className="
-              relative mx-auto w-full max-w-5xl
-              h-2 rounded-full overflow-hidden
-              bg-white/15 backdrop-blur-[2px]
-              border border-white/10
-            "
+                        className="relative h-[6px] sm:h-2 w-full
+                       bg-white/14 border-y border-white/10
+                       overflow-hidden"
                         role="progressbar"
                         aria-valuemin={0}
                         aria-valuemax={100}
                         aria-valuenow={pct}
                     >
                         <motion.div
-                            className="absolute inset-y-0 left-0 bg-gradient-revzion shadow-[0_0_16px_0_rgba(99,102,241,0.35)]"
+                            className="h-full bg-gradient-revzion"
                             style={{ width: `${pct}%` }}
                             initial={{ width: 0 }}
                             animate={{ width: `${pct}%` }}
-                            transition={{ type: "tween", duration: 0.2 }}
+                            transition={{ type: "tween", duration: 0.18 }}
                         />
-                        <div
-                            className="absolute -top-7 sm:-top-8 h-6 sm:h-7 px-2.5 sm:px-3
-                         rounded-full bg-white/90 text-gray-900 text-[11px] sm:text-xs
-                         font-semibold tracking-wide shadow-sm
-                         flex items-center justify-center whitespace-nowrap"
-                            style={{
-                                left: `clamp(12px, calc(${pct}% - 16px), calc(100% - 12px))`,
-                                transform: "translateX(-50%)",
-                            }}
-                        >
-                            {pct}%
-                        </div>
                     </div>
+
+                    {/* subtle shadow stripe under rail */}
+                    <div className="h-[3px] bg-black/45 w-full" />
+
+                    {/* giant trailing percentage, clamped to viewport edges */}
+                    <motion.div
+                        className="absolute bottom-[calc(100%+10px)]
+                       font-extrabold tracking-tight
+                       text-white/20 select-none whitespace-nowrap"
+                        style={{
+                            left: `clamp(12px, calc(${pct}vw), calc(100vw - 12px))`,
+                            transform: "translateX(-100%)",
+                            fontSize: "clamp(48px, 18vw, 220px)",
+                            lineHeight: 1,
+                        }}
+                        initial={false}
+                        animate={{ left: `clamp(12px, calc(${pct}vw), calc(100vw - 12px))` }}
+                        transition={{ type: "tween", duration: 0.18 }}
+                    >
+                        {pct}%
+                    </motion.div>
                 </div>
 
-                {/* exit: brand flash + curtains */}
+                {/* exit curtains */}
                 <AnimatePresence>
                     {phase === "exit" && (
                         <>
