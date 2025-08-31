@@ -23,7 +23,7 @@ export default function SplashScreen({
     const [progress, setProgress] = useState(0)
     const reduced = useReducedMotion()
 
-    // simple responsive flags (CSR only; no SSR branches)
+    // CSR-only responsive flags
     const [isSm, setIsSm] = useState(false) // ≤640px
     const [isMd, setIsMd] = useState(false) // ≤1024px
 
@@ -31,10 +31,7 @@ export default function SplashScreen({
         setMounted(true)
         const mqSm = window.matchMedia("(max-width: 640px)")
         const mqMd = window.matchMedia("(max-width: 1024px)")
-        const apply = () => {
-            setIsSm(mqSm.matches)
-            setIsMd(mqMd.matches)
-        }
+        const apply = () => { setIsSm(mqSm.matches); setIsMd(mqMd.matches) }
         apply()
         mqSm.addEventListener?.("change", apply)
         mqMd.addEventListener?.("change", apply)
@@ -74,6 +71,7 @@ export default function SplashScreen({
 
     useEffect(() => { if (!onReady) readyRef.current = true }, [onReady])
 
+    // progress driver
     useEffect(() => {
         let raf = 0
         const start = performance.now()
@@ -83,7 +81,7 @@ export default function SplashScreen({
             const t = Math.min(1, (now - start) / minDuration)
             const eased = 1 - Math.pow(1 - t, 2)
             const target = softCap * eased
-            setProgress((p) => (target > p ? target : p))
+            setProgress(p => (target > p ? target : p))
 
             if (t < 1) {
                 raf = requestAnimationFrame(tick)
@@ -124,14 +122,12 @@ export default function SplashScreen({
     if (!mounted || done) return null
 
     const pct = Math.round(Math.min(100, Math.max(0, progress)))
-    const ringSweep = `${pct * 3.6}deg`
 
-    // responsive sizes via clamp: min(px) → vw → max(px)
-    const ringSize = "clamp(140px, 42vw, 220px)"            // overall ring
-    const insetPad = isSm ? 18 : 22                         // inner medal padding
-    const logoBox = isSm ? 36 : 40                          // logo container
-    const haloOpacity = isSm ? 0.08 : 0.10                  // lighter halo on phones
-    const backdropOpacity = isSm ? 0.14 : 0.18              // softer blur/gradient on phones
+    // center card sizing
+    const insetPad = isSm ? 18 : 22
+    const logoBox = isSm ? 36 : 40
+    const haloOpacity = isSm ? 0.08 : 0.10
+    const backdropOpacity = isSm ? 0.14 : 0.18
 
     return (
         <AnimatePresence>
@@ -161,13 +157,9 @@ export default function SplashScreen({
                     <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.6),rgba(0,0,0,0.86))]" />
                 </div>
 
-                {/* center medal + ring */}
-                <div className="absolute inset-0 grid place-items-center px-4"> {/* px for tiny screens */}
-                    <div
-                        className="relative"
-                        style={{ width: ringSize, height: ringSize }}
-                    >
-                        {/* halo */}
+                {/* center brand medal (no ring) */}
+                <div className="absolute inset-0 grid place-items-center px-4">
+                    <div className="relative w-[min(72vw,320px)] h-[min(72vw,320px)]">
                         {!reduced && (
                             <motion.div
                                 className="absolute inset-0 rounded-full bg-white blur-2xl"
@@ -177,17 +169,6 @@ export default function SplashScreen({
                             />
                         )}
 
-                        {/* progress ring */}
-                        <div
-                            className="absolute inset-0 rounded-full"
-                            style={{
-                                background: `conic-gradient(var(--ring, #60a5fa) ${ringSweep}, rgba(255,255,255,0.12) ${ringSweep})`,
-                                mask: "radial-gradient(farthest-side, transparent 68%, black 69%)",
-                                WebkitMask: "radial-gradient(farthest-side, transparent 68%, black 69%)",
-                            }}
-                        />
-
-                        {/* inner medal */}
                         <motion.div
                             className="absolute grid place-items-center rounded-2xl border border-white/15 backdrop-blur-sm"
                             style={{
@@ -236,7 +217,6 @@ export default function SplashScreen({
                                 style={{
                                     top: p.top,
                                     left: p.left,
-                                    // lighter DOM on mobile: smaller specks
                                     width: isSm ? 1.5 : 2,
                                     height: isSm ? 1.5 : 2,
                                 }}
@@ -247,6 +227,50 @@ export default function SplashScreen({
                         ))}
                     </div>
                 )}
+
+                {/* --- Bottom progress bar with floating % chip --- */}
+                <div
+                    className="
+            fixed inset-x-0
+            bottom-[calc(env(safe-area-inset-bottom,0px)+14px)]
+            z-[10000]
+            px-4 sm:px-6
+          "
+                    aria-live="polite"
+                >
+                    <div
+                        className="
+              relative mx-auto w-full max-w-5xl
+              h-2 rounded-full overflow-hidden
+              bg-white/15 backdrop-blur-[2px]
+              border border-white/10
+            "
+                        role="progressbar"
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={pct}
+                    >
+                        <motion.div
+                            className="absolute inset-y-0 left-0 bg-gradient-revzion shadow-[0_0_16px_0_rgba(99,102,241,0.35)]"
+                            style={{ width: `${pct}%` }}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${pct}%` }}
+                            transition={{ type: "tween", duration: 0.2 }}
+                        />
+                        <div
+                            className="absolute -top-7 sm:-top-8 h-6 sm:h-7 px-2.5 sm:px-3
+                         rounded-full bg-white/90 text-gray-900 text-[11px] sm:text-xs
+                         font-semibold tracking-wide shadow-sm
+                         flex items-center justify-center whitespace-nowrap"
+                            style={{
+                                left: `clamp(12px, calc(${pct}% - 16px), calc(100% - 12px))`,
+                                transform: "translateX(-50%)",
+                            }}
+                        >
+                            {pct}%
+                        </div>
+                    </div>
+                </div>
 
                 {/* exit: brand flash + curtains */}
                 <AnimatePresence>
