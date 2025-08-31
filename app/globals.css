@@ -1,35 +1,55 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Tailwind dark variant helper */
 @custom-variant dark (&:is(.dark *));
 
+/* ---------- Light theme (default) ---------- */
 :root {
-  /* Updated color palette to match Revzion brand colors */
-  --background: oklch(1 0 0); /* White #FFFFFF */
-  --foreground: oklch(0.145 0 0); /* Dark text */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.525 0.198 258.338); /* Primary Blue #2563EB */
-  --primary-foreground: oklch(1 0 0); /* White text on primary */
+  /* Base surfaces & text */
+  --background: oklch(1 0 0);                 /* #ffffff */
+  --foreground: oklch(0.145 0 0);             /* near-black text */
+
+  /* UI surfaces */
+  --card: var(--background);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+
+  /* Brand */
+  --primary: oklch(0.525 0.198 258.338);      /* #2563EB */
+  --primary-foreground: oklch(1 0 0);         /* white on blue */
+
+  /* Secondary / muted */
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0.016 258.338); /* Neutral Gray #64748B */
-  --accent: oklch(0.525 0.198 258.338); /* Primary Blue */
+  --muted-foreground: oklch(0.556 0.016 258.338); /* #64748B */
+
+  /* Accents */
+  --accent: var(--primary);
   --accent-foreground: oklch(1 0 0);
+
+  /* Feedback */
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(1 0 0);     /* ✅ contrast fix (white) */
+
+  /* Controls */
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.525 0.198 258.338); /* Primary Blue for focus rings */
+  --ring: var(--primary);
+
+  /* Charts (light) */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+
+  /* Misc */
   --radius: 0.625rem;
+
+  /* Sidebar */
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -39,39 +59,49 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* Added custom Revzion brand colors */
-  --revzion-blue: oklch(0.525 0.198 258.338); /* #2563EB */
-  --revzion-light-blue: oklch(0.725 0.142 258.338); /* #38BDF8 */
-  --revzion-navy: oklch(0.145 0.016 258.338); /* #0F172A */
-  --revzion-gray: oklch(0.556 0.016 258.338); /* #64748B */
+  /* Brand aliases */
+  --revzion-blue: oklch(0.525 0.198 258.338);      /* #2563EB */
+  --revzion-light-blue: oklch(0.725 0.142 258.338);/* #38BDF8 */
+  --revzion-navy: oklch(0.145 0.016 258.338);      /* #0F172A */
+  --revzion-gray: oklch(0.556 0.016 258.338);      /* #64748B */
 }
 
+/* ---------- Dark theme ---------- */
 .dark {
-  /* Updated dark mode colors to work with Revzion brand */
-  --background: oklch(0.145 0.016 258.338); /* Dark Navy #0F172A */
+  --background: oklch(0.145 0.016 258.338);  /* #0F172A */
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0.016 258.338);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0.016 258.338);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.525 0.198 258.338); /* Primary Blue */
+
+  --card: var(--background);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+
+  --primary: oklch(0.525 0.198 258.338);
   --primary-foreground: oklch(1 0 0);
+
   --secondary: oklch(0.269 0.016 258.338);
   --secondary-foreground: oklch(0.985 0 0);
+
   --muted: oklch(0.269 0.016 258.338);
   --muted-foreground: oklch(0.708 0.016 258.338);
-  --accent: oklch(0.525 0.198 258.338);
+
+  --accent: var(--primary);
   --accent-foreground: oklch(1 0 0);
+
   --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --destructive-foreground: oklch(0.985 0 0);
+
   --border: oklch(0.269 0.016 258.338);
   --input: oklch(0.269 0.016 258.338);
-  --ring: oklch(0.525 0.198 258.338);
+  --ring: var(--primary);
+
+  /* Charts (dark) */
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
+
   --sidebar: oklch(0.205 0.016 258.338);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -82,13 +112,16 @@
   --sidebar-ring: oklch(0.439 0.016 258.338);
 }
 
+/* ---------- Tailwind theme bindings ---------- */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -99,18 +132,22 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -120,60 +157,42 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Added custom font families */
+  /* Fonts */
   --font-sans: var(--font-inter);
   --font-heading: var(--font-inter);
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  /* Added Revzion brand color utilities */
+  /* Brand color tokens */
   --color-revzion-blue: var(--revzion-blue);
   --color-revzion-light-blue: var(--revzion-light-blue);
   --color-revzion-navy: var(--revzion-navy);
   --color-revzion-gray: var(--revzion-gray);
 }
 
+/* ---------- Base ---------- */
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground font-sans;
-  }
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground font-sans; }
 
-  /* Added heading font styles */
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  /* Headings use the heading font + slight tracking */
+  h1,h2,h3,h4,h5,h6 {
     font-family: var(--font-sans);
-    font-weight: 700; /* bolder for premium feel; adjust as needed */
+    font-weight: 700;
     letter-spacing: -0.01em;
   }
 }
 
-/* Added custom gradient utilities */
-@layer utilities {
-  .bg-gradient-revzion {
-    background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%);
-  }
+/* Prevent sideways scroll/gutters on mobile */
+html, body { max-width: 100%; overflow-x: clip; }
 
-  .text-gradient-revzion {
-    background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-}
-
-/* gentle, GPU-friendly background motion */
+/* ---------- Motion helpers ---------- */
 @keyframes spin-slow { to { transform: rotate(360deg); } }
 .animate-spin-slow { animation: spin-slow 18s linear infinite; }
 
-@keyframes pulse-slow { 0%,100% { opacity: .55 } 50% { opacity: .85 } }
+@keyframes pulse-slow { 0%,100% { opacity:.55 } 50% { opacity:.85 } }
 .animate-pulse-slow { animation: pulse-slow 3.2s ease-in-out infinite; }
 
+/* ---------- Utilities (single source of truth for gradients) ---------- */
 @layer utilities {
   .bg-gradient-revzion {
     background-image: linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #06b6d4 100%);
@@ -184,6 +203,8 @@
     background-clip: text;
     color: transparent;
   }
+
+  /* Hide scrollbars where needed */
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
