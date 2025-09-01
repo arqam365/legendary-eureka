@@ -484,7 +484,7 @@ export default function ContactPage() {
 
                         <p className="text-xs text-gray-500 text-center">
                           By submitting, you agree to our{" "}
-                          <a href="/privacy" className="underline hover:text-primary">
+                          <a href="/privacy-policy" className="underline hover:text-primary">
                             Privacy Policy
                           </a>
                           .
