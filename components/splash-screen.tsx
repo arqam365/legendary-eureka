@@ -1,15 +1,22 @@
-"use client"
+"use client";
 
-import { useEffect, useMemo, useRef, useState } from "react"
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
-import Image from "next/image"
+import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 
 type SplashProps = {
-    minDuration?: number
-    onReady?: (resolve: () => void) => void
-    brandName?: string
-    logoSrc?: string
-}
+    /** Minimum time (ms) to keep splash visible before we allow exit. */
+    minDuration?: number;
+    /**
+     * Optional: we’ll call this once on mount with a `resolve()` callback.
+     * Call `resolve()` when your app/data is ready; the splash will finish and exit.
+     */
+    onReady?: (resolve: () => void) => void;
+    brandName?: string;
+    logoSrc?: string;
+};
+
+type Phase = "loading" | "exit" | "done";
 
 export default function SplashScreen({
                                          minDuration = 2200,
@@ -17,123 +24,177 @@ export default function SplashScreen({
                                          brandName = "Revzion",
                                          logoSrc = "/logo.svg",
                                      }: SplashProps) {
-    const [mounted, setMounted] = useState(false)
-    const [done, setDone] = useState(false)
-    const [phase, setPhase] = useState<"loading" | "exit">("loading")
-    const [progress, setProgress] = useState(0)
-    const reduced = useReducedMotion()
+    const reduced = useReducedMotion();
 
-    // CSR-only responsive flags
-    const [isSm, setIsSm] = useState(false)
-    const [isMd, setIsMd] = useState(false)
+    // lifecycles / machine
+    const [mounted, setMounted] = useState(false);
+    const [phase, setPhase] = useState<Phase>("loading");
+    const [progress, setProgress] = useState(0);
 
+    // responsive flags (CSR only)
+    const [isSm, setIsSm] = useState(false);
+    const [isMd, setIsMd] = useState(false);
+
+    // external readiness
+    const readyRef = useRef(false);
+    const resolveExternal = () => {
+        readyRef.current = true;
+    };
+
+    // mount + media queries (no conditional hooks)
     useEffect(() => {
-        setMounted(true)
-        const mqSm = window.matchMedia("(max-width: 640px)")
-        const mqMd = window.matchMedia("(max-width: 1024px)")
-        const apply = () => { setIsSm(mqSm.matches); setIsMd(mqMd.matches) }
-        apply()
-        mqSm.addEventListener?.("change", apply)
-        mqMd.addEventListener?.("change", apply)
+        setMounted(true);
+        if (typeof window === "undefined") return;
+
+        const mqSm = window.matchMedia("(max-width: 640px)");
+        const mqMd = window.matchMedia("(max-width: 1024px)");
+
+        const apply = () => {
+            setIsSm(mqSm.matches);
+            setIsMd(mqMd.matches);
+        };
+        apply();
+
+        const add = (mq: MediaQueryList, cb: () => void) => {
+            if (mq.addEventListener) mq.addEventListener("change", cb);
+            else mq.addListener?.(cb);
+        };
+        const remove = (mq: MediaQueryList, cb: () => void) => {
+            if (mq.removeEventListener) mq.removeEventListener("change", cb);
+            else mq.removeListener?.(cb);
+        };
+
+        add(mqSm, apply);
+        add(mqMd, apply);
         return () => {
-            mqSm.removeEventListener?.("change", apply)
-            mqMd.removeEventListener?.("change", apply)
-        }
-    }, [])
+            remove(mqSm, apply);
+            remove(mqMd, apply);
+        };
+    }, []);
 
-    const readyRef = useRef(false)
-    const resolveExternal = () => { readyRef.current = true }
+    // if no onReady provided, consider immediately "ready"
+    useEffect(() => {
+        if (!onReady) readyRef.current = true;
+    }, [onReady]);
 
-    // particles
+    // expose resolve to caller (once)
+    useEffect(() => {
+        if (onReady) onReady(resolveExternal);
+    }, [onReady]);
+
+    // progress + exit driver
+    useEffect(() => {
+        if (!mounted) return;
+
+        let raf = 0;
+        const start = performance.now();
+        const softCap = 96;
+
+        const tick = (now: number) => {
+            const t = Math.min(1, (now - start) / minDuration);
+            const eased = 1 - Math.pow(1 - t, 2); // easeOutQuad
+            const target = softCap * eased;
+
+            setProgress((p) => (target > p ? target : p));
+
+            if (t < 1) {
+                raf = requestAnimationFrame(tick);
+            } else {
+                // after minDuration: wait for readiness, then finish to 100 and exit
+                const finish = () => {
+                    const finStart = performance.now();
+                    const step = (n2: number) => {
+                        const tt = Math.min(1, (n2 - finStart) / 360);
+                        const val = softCap + (100 - softCap) * tt;
+                        setProgress(val);
+                        if (tt < 1) {
+                            requestAnimationFrame(step);
+                        } else {
+                            // trigger curtain (the whole splash slides up)
+                            setPhase("exit");
+                            // let listeners know; unmount handled by onAnimationComplete
+                            window.dispatchEvent(new Event("revzion:splash-done"));
+                        }
+                    };
+                    requestAnimationFrame(step);
+                };
+
+                if (readyRef.current) {
+                    finish();
+                } else {
+                    const id = setInterval(() => {
+                        if (readyRef.current) {
+                            clearInterval(id);
+                            finish();
+                        }
+                    }, 40);
+                }
+            }
+        };
+
+        raf = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(raf);
+    }, [mounted, minDuration]);
+
+    // particles (memoized) — top-level hook, not inside JSX
     const particles = useMemo(() => {
+        if (reduced) return [];
         function prng(seed: number) {
             return () => {
-                seed |= 0; seed = (seed + 0x6D2B79F5) | 0
-                let t = Math.imul(seed ^ (seed >>> 15), 1 | seed)
-                t ^= t + Math.imul(t ^ (t >>> 7), 61 | t)
-                return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-            }
+                seed |= 0;
+                seed = (seed + 0x6d2b79f5) | 0;
+                let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+                t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+                return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+            };
         }
-        const r = prng(87452391)
-        const count = reduced ? 0 : isSm ? 12 : isMd ? 18 : 24
+        const r = prng(87452391);
+        const count = isSm ? 12 : isMd ? 18 : 24;
         return Array.from({ length: count }).map(() => {
-            const y = r() * 100
-            const x = r() * 100
-            return { top: `${y}%`, left: `${x}%`, dy: 6 + Math.floor(r() * 8), dur: 1.8 + Math.floor(r() * 8) * 0.12, delay: r() * 0.9 }
-        })
-    }, [isSm, isMd, reduced])
+            const top = `${r() * 100}%`;
+            const left = `${r() * 100}%`;
+            const dy = 6 + Math.floor(r() * 8);
+            const dur = 1.8 + Math.floor(r() * 8) * 0.12;
+            const delay = r() * 0.9;
+            return { top, left, dy, dur, delay };
+        });
+    }, [isSm, isMd, reduced]);
 
-    useEffect(() => { if (!onReady) readyRef.current = true }, [onReady])
+    // derived values (safe outside JSX)
+    const pct = Math.round(Math.min(100, Math.max(0, progress)));
+    const insetPad = isSm ? 18 : 22;
+    const logoBox = isSm ? 36 : 40;
+    const haloOpacity = isSm ? 0.08 : 0.1;
 
-    // progress driver
-    useEffect(() => {
-        let raf = 0
-        const start = performance.now()
-        const softCap = 96
-        const tick = (now: number) => {
-            const t = Math.min(1, (now - start) / minDuration)
-            const eased = 1 - Math.pow(1 - t, 2)
-            const target = softCap * eased
-            setProgress(p => (target > p ? target : p))
-            if (t < 1) {
-                raf = requestAnimationFrame(tick)
-            } else {
-                const finish = () => {
-                    const finStart = performance.now()
-                    const step = (n2: number) => {
-                        const tt = Math.min(1, (n2 - finStart) / 360)
-                        const val = softCap + (100 - softCap) * tt
-                        setProgress(val)
-                        if (tt < 1) requestAnimationFrame(step)
-                        else {
-                            setPhase("exit")
-                            setTimeout(() => {
-                                setDone(true)
-                                window.dispatchEvent(new Event("revzion:splash-done"))
-                            }, 800)
-                        }
-                    }
-                    requestAnimationFrame(step)
-                }
-                if (readyRef.current) finish()
-                else {
-                    const id = setInterval(() => { if (readyRef.current) { clearInterval(id); finish() } }, 40)
-                }
-            }
-        }
-        raf = requestAnimationFrame(tick)
-        return () => cancelAnimationFrame(raf)
-    }, [minDuration])
-
-    useEffect(() => { if (onReady) onReady(resolveExternal) }, [onReady])
-
-    if (!mounted || done) return null
-
-    const pct = Math.round(Math.min(100, Math.max(0, progress)))
-
-    // center card sizing
-    const insetPad = isSm ? 18 : 22
-    const logoBox = isSm ? 36 : 40
-    const haloOpacity = isSm ? 0.08 : 0.10
-    const backdropOpacity = isSm ? 0.14 : 0.18
+    // ✅ early return AFTER all hooks have run
+    if (!mounted || phase === "done") return null;
 
     return (
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
             <motion.div
-                className="fixed inset-0 z-[9999] overflow-hidden bg-black"
-                initial={{ opacity: 1 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.45, ease: "easeOut" }}
+                className="fixed inset-0 z-[9999] overflow-hidden bg-black will-change-transform"
+                // whole viewport acts as the curtain
+                initial={{ y: "0%", opacity: 1 }}
+                animate={{ y: phase === "exit" ? "-100%" : "0%", opacity: 1 }}
+                transition={{
+                    duration: isSm ? 0.6 : 0.75,
+                    ease: [0.22, 1, 0.36, 1],
+                }}
                 role="status"
                 aria-label="Loading"
                 aria-live="polite"
+                onAnimationComplete={() => {
+                    if (phase === "exit") setPhase("done");
+                }}
             >
                 {/* backdrop */}
                 <div className="absolute inset-0">
-                    <div className="absolute -inset-[20%] bg-gradient-revzion blur-2xl" style={{ opacity: backdropOpacity }} />
                     {!reduced && (
-                        <motion.div className="absolute inset-0" animate={{ rotate: [0, 10, -8, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
+                        <motion.div
+                            className="absolute inset-0"
+                            animate={{ rotate: [0, 10, -8, 0] }}
+                            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                        />
                     )}
                     <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.6),rgba(0,0,0,0.86))]" />
                 </div>
@@ -151,20 +212,30 @@ export default function SplashScreen({
                         )}
                         <motion.div
                             className="absolute grid place-items-center rounded-2xl border border-white/15 backdrop-blur-sm"
-                            style={{ inset: insetPad, background: "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))" }}
+                            style={{
+                                inset: insetPad,
+                                background: "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))",
+                            }}
                             animate={reduced ? {} : { scale: [0.985, 1, 0.985] }}
                             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                         >
                             <div className="text-center px-3">
-                                <div className="mx-auto mb-2 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center" style={{ width: logoBox, height: logoBox }}>
-                                    <Image src={logoSrc} alt={`${brandName} logo`} width={28} height={28} priority sizes="(max-width: 640px) 28px, 32px" />
+                                <div
+                                    className="mx-auto mb-2 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center"
+                                    style={{ width: logoBox, height: logoBox }}
+                                >
+                                    <Image
+                                        src={logoSrc}
+                                        alt={`${brandName} logo`}
+                                        width={28}
+                                        height={28}
+                                        priority
+                                        sizes="(max-width: 640px) 28px, 32px"
+                                    />
                                 </div>
                                 <div className="text-white font-bold tracking-wide text-[16px] sm:text-[18px]">
                                     <span className="bg-gradient-revzion bg-clip-text text-transparent">{brandName}</span>
                                 </div>
-                                {/*<div className="text-white/70 tracking-wider uppercase mt-0.5 text-[10px] sm:text-[11px]">*/}
-                                {/*    Loading {pct}%*/}
-                                {/*</div>*/}
                             </div>
                         </motion.div>
                     </div>
@@ -186,21 +257,19 @@ export default function SplashScreen({
                     </div>
                 )}
 
-                {/* FULL-WIDTH bottom progress bar + trailing % */}
+                {/* bottom progress bar + trailing % */}
                 <div
                     className="
-    fixed left-0 right-0
-    bottom-[calc(env(safe-area-inset-bottom,0px))]
-    z-[10000]
-    pointer-events-none
-  "
+            fixed left-0 right-0
+            bottom-[calc(env(safe-area-inset-bottom,0px))]
+            z-[10000]
+            pointer-events-none
+          "
                     aria-live="polite"
                 >
-                    {/* rail spans entire viewport */}
+                    {/* rail */}
                     <div
-                        className="relative h-4 sm:h-5 w-full
-               bg-white/14 border-y border-white/10
-               overflow-hidden"
+                        className="relative h-4 sm:h-5 w-full bg-white/14 border-y border-white/10 overflow-hidden"
                         role="progressbar"
                         aria-valuemin={0}
                         aria-valuemax={100}
@@ -214,58 +283,36 @@ export default function SplashScreen({
                             transition={{ type: "tween", duration: 0.18 }}
                         />
                     </div>
-
-                    {/* subtle shadow stripe under rail */}
+                    {/* subtle shadow stripe */}
                     <div className="h-2 bg-black/40 w-full" />
-
-                    {/* giant trailing percentage */}
+                    {/* trailing % */}
                     <motion.div
-                        className="absolute bottom-[calc(100%+14px)]
-               font-extrabold tracking-tight
-               text-white/20 select-none whitespace-nowrap"
+                        className={[
+                            "absolute",
+                            "bottom-[calc(100%+var(--gap))]",
+                            "font-extrabold tracking-tight text-white/20 select-none whitespace-nowrap",
+                            // mobile
+                            "[--edge:16px] [--gap:14px] [font-size:clamp(35px,20vw,240px)]",
+                            // tablet
+                            "sm:[--edge:20px] sm:[--gap:18px] sm:[font-size:clamp(45px,14vw,220px)]",
+                            // desktop
+                            "lg:[--edge:24px] lg:[--gap:22px] lg:[font-size:clamp(55px,10vw,200px)]",
+                        ].join(" ")}
                         style={{
-                            left: `clamp(16px, calc(${pct}vw), calc(100vw - 16px))`,
+                            left: `clamp(var(--edge), calc(${pct}vw), calc(100vw - var(--edge)))`,
                             transform: "translateX(-100%)",
-                            fontSize: "clamp(56px, 20vw, 240px)",
                             lineHeight: 1,
                         }}
                         initial={false}
-                        animate={{ left: `clamp(16px, calc(${pct}vw), calc(100vw - 16px))` }}
+                        animate={{
+                            left: `clamp(var(--edge), calc(${pct}vw), calc(100vw - var(--edge)))`,
+                        }}
                         transition={{ type: "tween", duration: 0.18 }}
                     >
                         {pct}%
                     </motion.div>
                 </div>
-
-
-                {/* exit curtains */}
-                <AnimatePresence>
-                    {phase === "exit" && (
-                        <>
-                            <motion.div
-                                className="absolute inset-0 bg-gradient-revzion"
-                                initial={{ clipPath: "circle(0% at 50% 50%)", opacity: 0.9 }}
-                                animate={{ clipPath: "circle(140% at 50% 50%)", opacity: [0.9, 0.5, 0] }}
-                                transition={{ duration: isSm ? 0.6 : 0.7, ease: [0.16, 1, 0.3, 1] }}
-                            />
-                            <motion.div
-                                className="absolute inset-x-0 top-0 bg-black"
-                                style={{ height: "50vh" }}
-                                initial={{ y: 0 }}
-                                animate={{ y: "-100%" }}
-                                transition={{ duration: isSm ? 0.6 : 0.75, ease: [0.22, 1, 0.36, 1] }}
-                            />
-                            <motion.div
-                                className="absolute inset-x-0 bottom-0 bg-black"
-                                style={{ height: "50vh" }}
-                                initial={{ y: 0 }}
-                                animate={{ y: "100%" }}
-                                transition={{ duration: isSm ? 0.6 : 0.75, ease: [0.22, 1, 0.36, 1] }}
-                            />
-                        </>
-                    )}
-                </AnimatePresence>
             </motion.div>
         </AnimatePresence>
-    )
+    );
 }
