@@ -88,7 +88,7 @@ export function ConsultationCTA({
                                     label = "Free Consultation",
                                     size = "lg",
                                     className = "",
-                                    calendlyUrl = "https://calendly.com/YOUR_HANDLE/free-consultation?hide_gdpr_banner=1&primary_color=4f46e5",
+                                    calendlyUrl = "https://calendly.com/arqam365/30min",
                                     onBooked,
                                     appearance = "button",
                                 }: Props) {
@@ -161,17 +161,60 @@ export function ConsultationCTA({
     return (
         <div className="relative inline-flex items-center gap-3">
             {/* Slots pill (hide on link appearance) */}
+            {/* Slots pill (hide on link appearance) */}
             {mounted && appearance !== "link" && (
                 <div
                     className={[
-                        "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium border select-none",
-                        slots > 0 ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-amber-50 text-amber-700 border-amber-200",
+                        // layout & alignment
+                        "inline-flex items-center justify-center select-none rounded-full border shadow-sm",
+                        // size: tight on mobile; matches button height on sm+
+                        "h-9 px-3 sm:h-10 sm:px-4 lg:h-11 lg:px-5",
+                        // typography scales, keep on one line on sm+
+                        "text-[11px] sm:text-sm lg:text-base font-medium tracking-tight whitespace-nowrap",
+                        // color by availability
+                        slots > 0
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                            : "bg-amber-50 text-amber-700 border-amber-200",
+                        // optional attention pulse when low
+                        slots > 0 && slots <= 2 ? "ring-1 ring-amber-300/50 animate-[pulse_1.8s_ease-in-out_infinite]" : "",
+                        // subtle hover feel on desktop
+                        "transition-colors hover:bg-white/70",
                     ].join(" ")}
-                    title="Estimated free 30-min sessions remaining this week"
+                    role="status"
                     aria-live="polite"
+                    title="Estimated free 30-min sessions remaining this week"
                 >
-                    <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                    {slots > 0 ? `${slots} slots left this week` : "Slots filling fast"}
+                    <Sparkles
+                        className={[
+                            "mr-2 -ml-1 flex-shrink-0",
+                            "h-3.5 w-3.5 sm:h-4 sm:w-4 lg:h-5 lg:w-5",
+                            slots > 0 ? "text-emerald-500" : "text-amber-500",
+                        ].join(" ")}
+                        aria-hidden="true"
+                    />
+
+                    {/* mobile: stacked label; sm+: single line */}
+                    <span className="sm:hidden leading-tight">
+      <span className="block uppercase tracking-wider opacity-70 -mb-0.5">slots</span>
+                        {slots > 0 ? (
+                            <>
+                                <span className="font-semibold tabular-nums">{slots}</span>
+                                <span className="ml-1">left this week</span>
+                            </>
+                        ) : (
+                            <span className="font-semibold">Filling fast</span>
+                        )}
+    </span>
+
+                    <span className="hidden sm:inline">
+      {slots > 0 ? (
+          <>
+              <span className="font-semibold tabular-nums">{slots}</span> left this week
+          </>
+      ) : (
+          "Slots filling fast"
+      )}
+    </span>
                 </div>
             )}
 
