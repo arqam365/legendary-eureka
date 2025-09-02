@@ -23,6 +23,7 @@ import { ArrowRight, Calendar, Sparkles } from "lucide-react";
 /* -------------------------------- Types ------------------------------- */
 type Appearance = "button" | "pill" | "link";
 
+
 type Props = {
     label?: string;
     size?: "default" | "sm" | "lg";
@@ -30,6 +31,7 @@ type Props = {
     calendlyUrl?: string;
     onBooked?: () => void;
     appearance?: Appearance;
+    mobileFullWidth?: boolean;
 };
 
 const INITIAL_WEEKLY_SLOTS = 5;
@@ -91,6 +93,7 @@ export function ConsultationCTA({
                                     calendlyUrl = "https://calendly.com/arqam365/30min",
                                     onBooked,
                                     appearance = "button",
+                                    mobileFullWidth = true,
                                 }: Props) {
     const [open, setOpen] = useState(false);
     const [tab, setTab] = useState<"cal" | "form">("cal"); // <- one shared Tabs state
@@ -126,13 +129,19 @@ export function ConsultationCTA({
                     type="button"
                     onClick={handleOpen}
                     className={[
-                        "inline-flex items-center rounded-full px-5 py-3 text-base font-semibold",
-                        "bg-gradient-revzion text-white shadow-sm hover:opacity-90 transition-opacity",
+                        "inline-flex items-center justify-center rounded-full",
+                        "h-11 px-4 text-sm",            // mobile
+                        "sm:h-12 sm:px-5 sm:text-base", // tablet+
+                        mobileFullWidth ? "w-full" : "w-auto", // <- NEW
+                        "sm:w-auto max-w-full",
+                        "bg-gradient-revzion text-white shadow-sm",
+                        "hover:opacity-90 transition-opacity",
                         "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary",
                         className,
                     ].join(" ")}
                 >
-                    {label} <ArrowRight className="ml-2 h-4 w-4" />
+                    {label}
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </button>
             );
         }
@@ -161,23 +170,18 @@ export function ConsultationCTA({
     return (
         <div className="relative inline-flex items-center gap-3">
             {/* Slots pill (hide on link appearance) */}
-            {/* Slots pill (hide on link appearance) */}
-            {mounted && appearance !== "link" && (
+            {mounted && appearance !== "link" && appearance !== "pill" && (
                 <div
                     className={[
-                        // layout & alignment
                         "inline-flex items-center justify-center select-none rounded-full border shadow-sm",
-                        // size: tight on mobile; matches button height on sm+
                         "h-9 px-3 sm:h-10 sm:px-4 lg:h-11 lg:px-5",
-                        // typography scales, keep on one line on sm+
                         "text-[11px] sm:text-sm lg:text-base font-medium tracking-tight whitespace-nowrap",
-                        // color by availability
                         slots > 0
                             ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                             : "bg-amber-50 text-amber-700 border-amber-200",
-                        // optional attention pulse when low
-                        slots > 0 && slots <= 2 ? "ring-1 ring-amber-300/50 animate-[pulse_1.8s_ease-in-out_infinite]" : "",
-                        // subtle hover feel on desktop
+                        slots > 0 && slots <= 2
+                            ? "ring-1 ring-amber-300/50 animate-[pulse_1.8s_ease-in-out_infinite]"
+                            : "",
                         "transition-colors hover:bg-white/70",
                     ].join(" ")}
                     role="status"
@@ -195,7 +199,9 @@ export function ConsultationCTA({
 
                     {/* mobile: stacked label; sm+: single line */}
                     <span className="sm:hidden leading-tight">
-      <span className="block uppercase tracking-wider opacity-70 -mb-0.5">slots</span>
+      <span className="block uppercase tracking-wider opacity-70 -mb-0.5">
+        slots
+      </span>
                         {slots > 0 ? (
                             <>
                                 <span className="font-semibold tabular-nums">{slots}</span>
@@ -209,7 +215,8 @@ export function ConsultationCTA({
                     <span className="hidden sm:inline">
       {slots > 0 ? (
           <>
-              <span className="font-semibold tabular-nums">{slots}</span> left this week
+              <span className="font-semibold tabular-nums">{slots}</span> left this
+              week
           </>
       ) : (
           "Slots filling fast"

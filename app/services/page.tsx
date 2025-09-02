@@ -1,41 +1,32 @@
 "use client"
 
-import {motion, useReducedMotion, Variants} from "framer-motion"
 import Link from "next/link"
+import { motion, useReducedMotion, Variants } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import {
-  Smartphone,
-  Cloud,
-  Brain,
-  Watch,
-  Database,
-  Puzzle,
-  ArrowRight,
-  CheckCircle,
-  Zap,
-  Shield,
-  Users,
-  Rocket,
-  BadgeDollarSign,
-  Clock4,
-  Handshake,
+  Smartphone, Cloud, Brain, Watch, Database, Puzzle, ArrowRight,
+  CheckCircle, Zap, Shield, Users, Rocket, BadgeDollarSign, Clock4, Handshake,
 } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
-/* ---------- shared minimal variants ---------- */
-const revealOnce: Variants = {
+/* ----------------------- Motion system (consistent) ----------------------- */
+const EASE = [0.16, 1, 0.3, 1] as const
+
+const sectionReveal: Variants = {
   hidden: { opacity: 0, y: 12 },
   show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] }
+    opacity: 1, y: 0,
+    transition: { duration: 0.55, ease: EASE, when: "beforeChildren", staggerChildren: 0.06 }
   },
 }
-const hoverCard = { scale: 1.02 }
-const hoverIcon = { scale: 1.08 }
+
+const childReveal: Variants = {
+  hidden: { opacity: 0, y: 14, scale: 0.98 },
+  show:   { opacity: 1, y: 0,  scale: 1, transition: { duration: 0.5, ease: EASE } },
+}
 
 export default function ServicesPage() {
   const prefersReduced = useReducedMotion()
@@ -91,10 +82,10 @@ export default function ServicesPage() {
   ]
 
   const processSteps = [
-    { icon: <Users className="h-8 w-8" />, title: "Discover", description: "Align on goals, scope, risks and KPIs." },
-    { icon: <Rocket className="h-8 w-8" />, title: "Design & Build", description: "Iterate fast with weekly demos." },
-    { icon: <Shield className="h-8 w-8" />, title: "Test & Launch", description: "QA, security and smooth rollout." },
-    { icon: <Zap className="h-8 w-8" />, title: "Operate & Scale", description: "SLOs, monitoring and roadmap." },
+    { icon: <Users className="h-8 w-8" />,  title: "Discover",       description: "Align on goals, scope, risks and KPIs." },
+    { icon: <Rocket className="h-8 w-8" />, title: "Design & Build",  description: "Iterate fast with weekly demos." },
+    { icon: <Shield className="h-8 w-8" />, title: "Test & Launch",   description: "QA, security and smooth rollout." },
+    { icon: <Zap className="h-8 w-8" />,    title: "Operate & Scale", description: "SLOs, monitoring and roadmap." },
   ]
 
   const models = [
@@ -125,35 +116,36 @@ export default function ServicesPage() {
       <div className="min-h-screen bg-white">
         <Navigation />
 
-        {/* Hero */}
+        {/* =========================== Hero =========================== */}
         <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50">
           <motion.div
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20"
-              variants={revealOnce}
+              variants={sectionReveal}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.25 }}
           >
-            <div className="text-center max-w-3xl mx-auto">
+            <motion.div variants={childReveal} className="text-center max-w-3xl mx-auto">
               <h1 className="text-4xl sm:text-5xl font-heading font-bold text-gray-900 mb-6">
                 Our <span className="text-gradient-revzion">Services</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8">
                 From AI copilots to multi-tenant SaaS and mobile, we build systems that are fast to ship and easy to scale.
               </p>
-              <Button size="lg" className="bg-gradient-revzion hover:opacity-90 transition-opacity">
-                <Link href="/contact">Get Started Today</Link>
-                <ArrowRight className="ml-2 h-5 w-5" />
+              <Button size="lg" className="bg-gradient-revzion hover:opacity-90 transition-opacity" asChild>
+                <Link href="/contact" aria-label="Get started with a project">
+                  Get Started Today <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
               </Button>
-            </div>
+            </motion.div>
           </motion.div>
         </section>
 
-        {/* Services Grid */}
+        {/* ======================= Services Grid ======================= */}
         <section className="py-16 bg-white">
           <motion.div
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-              variants={revealOnce}
+              variants={sectionReveal}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.2 }}
@@ -162,16 +154,17 @@ export default function ServicesPage() {
               {services.map((service) => (
                   <motion.div
                       key={service.title}
-                      whileHover={prefersReduced ? undefined : hoverCard}
-                      transition={{ type: "spring", stiffness: 200, damping: 24 }}
+                      variants={childReveal}
+                      whileHover={prefersReduced ? undefined : { y: -4 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 26 }}
                   >
                     <Card className="group border-0 shadow-md hover:shadow-xl transition-shadow rounded-2xl bg-white/70 backdrop-blur h-full">
                       <div className="flex flex-col h-full">
                         {/* Header */}
-                        <CardHeader className="pb-0 flex-grow-0">
+                        <CardHeader className="pb-0">
                           <motion.div
                               className="text-primary mb-4"
-                              whileHover={prefersReduced ? undefined : hoverIcon}
+                              whileHover={prefersReduced ? undefined : { scale: 1.08 }}
                           >
                             {service.icon}
                           </motion.div>
@@ -183,20 +176,14 @@ export default function ServicesPage() {
                           </p>
                         </CardHeader>
 
-                        {/* Content — consistent with accordion card */}
+                        {/* Content */}
                         <CardContent className="flex flex-col flex-grow">
                           <div className="space-y-5 flex-grow">
-                            {/* Key Features */}
                             <div>
-                              <h4 className="font-heading font-medium text-gray-900 mb-3">
-                                Key Features
-                              </h4>
+                              <h4 className="font-heading font-medium text-gray-900 mb-3">Key Features</h4>
                               <ul className="space-y-2">
                                 {service.features.map((f) => (
-                                    <li
-                                        key={f}
-                                        className="flex items-center text-sm text-gray-600"
-                                    >
+                                    <li key={f} className="flex items-center text-sm text-gray-600">
                                       <CheckCircle className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
                                       {f}
                                     </li>
@@ -204,19 +191,13 @@ export default function ServicesPage() {
                               </ul>
                             </div>
 
-                            {/* Tech We Love */}
                             <div className="mt-auto">
-                              <h4 className="font-heading font-medium text-gray-900 mb-3">
-                                Tech We Love
-                              </h4>
+                              <h4 className="font-heading font-medium text-gray-900 mb-3">Tech We Love</h4>
                               <div className="flex flex-wrap gap-2">
                                 {service.technologies.map((t) => (
-                                    <span
-                                        key={t}
-                                        className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs"
-                                    >
-                {t}
-              </span>
+                                    <span key={t} className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs">
+                                {t}
+                              </span>
                                 ))}
                               </div>
                             </div>
@@ -230,150 +211,270 @@ export default function ServicesPage() {
           </motion.div>
         </section>
 
-        {/* Process (clean timeline) */}
-        <section className="py-16 bg-gray-50">
+        {/* ================== Process (timeline + carousel) ================== */}
+        <section className="py-16 sm:py-20 bg-gray-50" aria-labelledby="process-heading">
           <motion.div
-              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-              variants={revealOnce}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.2 }}
-          >
-            <div className="text-center mb-14">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">Our Process</h2>
-              <p className="text-lg text-gray-600">
-                A proven path from idea to impact — transparent, iterative, measurable.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {processSteps.map((step, i) => (
-                  <div key={step.title} className="text-center">
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 bg-gradient-revzion rounded-full flex items-center justify-center mx-auto mb-4 text-white">
-                        {step.icon}
-                      </div>
-                      <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
-                        {i + 1}
-                      </div>
-                    </div>
-                    <h3 className="text-xl font-heading font-semibold text-gray-900 mb-2">{step.title}</h3>
-                    <p className="text-gray-600">{step.description}</p>
-                  </div>
-              ))}
-            </div>
-          </motion.div>
-        </section>
-
-        {/* Engagement Models */}
-        <section className="py-16 bg-white">
-          <motion.div
-              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-              variants={revealOnce}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.2 }}
-          >
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-3">Engagement Models</h2>
-              <p className="text-lg text-gray-600">Pick what fits your stage, budget and speed.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {models.map((m) => (
-                  <Card key={m.title} className="border-0 shadow-md rounded-2xl bg-white/70 backdrop-blur">
-                    <CardContent className="p-6">
-                      <div className="flex items-center gap-3 mb-2 text-primary">
-                        {m.icon}
-                        <h3 className="text-lg font-heading font-semibold text-gray-900">{m.title}</h3>
-                      </div>
-                      <p className="text-gray-700 mb-2">{m.copy}</p>
-                      <p className="text-sm text-gray-500 mb-4">
-                        <span className="font-medium text-gray-700">Best for:</span> {m.bestFor}
-                      </p>
-                      <ul className="space-y-1 text-sm text-gray-600">
-                        {m.notes.map((n) => (
-                            <li key={n} className="flex items-center">
-                              <CheckCircle className="h-4 w-4 text-primary mr-2" /> {n}
-                            </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-              ))}
-            </div>
-
-            <div className="mt-8 text-center">
-              <Button asChild size="lg" variant="outline" className="text-primary border-primary">
-                <Link href="/contact">Compare options with us</Link>
-              </Button>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* FAQ */}
-        <section className="py-16 bg-gray-50">
-          <motion.div
-              className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
-              variants={revealOnce}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.2 }}
-          >
-            <div className="text-center mb-10">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-3">FAQ</h2>
-              <p className="text-lg text-gray-600">Short answers to the questions we hear most.</p>
-            </div>
-
-            <Accordion type="single" collapsible className="bg-white/70 rounded-xl backdrop-blur">
-              <AccordionItem value="q1">
-                <AccordionTrigger>How do you estimate timeline and cost?</AccordionTrigger>
-                <AccordionContent>
-                  We run a short discovery to map scope, risks and milestones, then provide a conservative estimate with
-                  options (fixed scope vs. elastic capacity). You get weekly burn-up charts and demo builds.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="q2">
-                <AccordionTrigger>Can you work with our in-house team?</AccordionTrigger>
-                <AccordionContent>
-                  Absolutely. Most engagements pair our pod with your PM/tech lead. We follow your rituals, repos and CI,
-                  and leave a clean knowledge trail.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="q3">
-                <AccordionTrigger>Do you provide post-launch support?</AccordionTrigger>
-                <AccordionContent>
-                  Yes — we offer SLAs with monitoring, incident response, upgrades and a rolling roadmap to keep shipping
-                  value.
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-
-            <div className="text-center mt-8">
-              <Button asChild className="bg-gradient-revzion hover:opacity-90">
-                <Link href="/contact">Ask a different question</Link>
-              </Button>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* CTA */}
-        <section className="py-20 bg-gradient-revzion">
-          <motion.div
-              className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
-              variants={revealOnce}
+              className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+              variants={sectionReveal}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.25 }}
           >
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-6">
+            {/* Header */}
+            <motion.div variants={childReveal} className="text-center mb-10 sm:mb-14">
+              <h2 id="process-heading" className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">
+                Our Process
+              </h2>
+              <p className="mt-3 text-lg text-gray-600">
+                A proven path from idea to impact — transparent, iterative, measurable.
+              </p>
+            </motion.div>
+
+            {/* Mobile: snap carousel */}
+            <div className="md:hidden">
+              <div className="relative -mx-4 px-4" aria-label="Process steps (horizontally scrollable)">
+                <div className="flex snap-x snap-mandatory overflow-x-auto gap-4 pb-4 no-scrollbar">
+                  {processSteps.map((step, i) => (
+                      <motion.article
+                          key={step.title}
+                          tabIndex={0}
+                          aria-label={`Step ${i + 1}: ${step.title}`}
+                          className="snap-center shrink-0 w-[84%] rounded-2xl border border-gray-200 bg-white shadow-sm p-5"
+                          variants={childReveal}
+                          whileHover={prefersReduced ? undefined : { y: -2, scale: 1.01 }}
+                          whileTap={{ scale: 0.995 }}
+                          viewport={{ once: true, amount: 0.4 }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="grid h-12 w-12 place-items-center rounded-full bg-gradient-revzion text-white">
+                            {step.icon}
+                          </div>
+                          <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full border border-primary/30 px-2 text-xs font-semibold text-primary">
+                        {i + 1}
+                      </span>
+                        </div>
+
+                        <h3 className="mt-4 text-lg font-heading font-semibold text-gray-900">
+                          {step.title}
+                        </h3>
+                        <p className="mt-2 text-gray-600 leading-relaxed">{step.description}</p>
+                      </motion.article>
+                  ))}
+                </div>
+
+                {/* progress rail */}
+                <div className="relative mt-1 h-1 rounded-full bg-gray-200/70">
+                  <div className="absolute inset-y-0 left-0 w-1/3 rounded-full bg-primary/60 [animation:loadbar_8s_linear_infinite]" />
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop: connected timeline grid */}
+            <div className="hidden md:grid relative grid-cols-12 gap-8">
+              {/* animated center spine */}
+              <motion.div
+                  aria-hidden
+                  className="pointer-events-none absolute left-1/2 top-4 hidden w-[2px] -translate-x-1/2 rounded-full bg-gradient-to-b from-primary/40 via-primary/30 to-transparent md:block"
+                  initial={{ height: 0, opacity: 0 }}
+                  whileInView={{ height: "100%", opacity: 1 }}
+                  transition={{ duration: 1.1, ease: "easeOut" }}
+              />
+
+              {processSteps.map((step, i) => {
+                const leftSide = i % 2 === 0
+                return (
+                    <motion.article
+                        key={step.title}
+                        tabIndex={0}
+                        aria-label={`Step ${i + 1}: ${step.title}`}
+                        className={[
+                          "col-span-12 md:col-span-6",
+                          leftSide ? "md:pr-8 md:justify-self-end" : "md:pl-8 md:justify-self-start",
+                        ].join(" ")}
+                        initial={{ opacity: 0, y: 18, scale: 0.98 }}
+                        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: 0.55, delay: i * 0.05, ease: EASE }}
+                        viewport={{ once: true, amount: 0.35 }}
+                    >
+                      <motion.div
+                          className="relative rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+                          whileHover={prefersReduced ? undefined : { y: -4, boxShadow: "0px 12px 30px -20px rgba(2,6,23,0.25)" }}
+                          transition={{ type: "spring", stiffness: 420, damping: 30 }}
+                      >
+                        {/* node connector */}
+                        <motion.span
+                            aria-hidden
+                            className={[
+                              "absolute top-8 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-white bg-primary/90 shadow-md",
+                              leftSide ? "right-[-10px]" : "left-[-10px]",
+                            ].join(" ")}
+                            initial={{ scale: 0, opacity: 0 }}
+                            whileInView={{ scale: 1, opacity: 1 }}
+                            transition={{ type: "spring", stiffness: 500, damping: 18, delay: 0.05 }}
+                        />
+
+                        <div className="flex items-center gap-3">
+                          <motion.div
+                              className="grid h-12 w-12 place-items-center rounded-full bg-gradient-revzion text-white"
+                              initial={{ rotate: -6, opacity: 0 }}
+                              whileInView={{ rotate: 0, opacity: 1 }}
+                              transition={{ duration: 0.45, ease: EASE }}
+                          >
+                            {step.icon}
+                          </motion.div>
+                          <div className="inline-flex h-7 items-center rounded-full border border-primary/30 px-2 text-xs font-semibold text-primary">
+                            {`Step ${i + 1}`}
+                          </div>
+                        </div>
+
+                        <h3 className="mt-4 text-xl font-heading font-semibold text-gray-900">
+                          {step.title}
+                        </h3>
+                        <p className="mt-2 text-gray-600 leading-relaxed">{step.description}</p>
+                      </motion.div>
+                    </motion.article>
+                )
+              })}
+            </div>
+
+            {/* small CTA/footer under timeline */}
+            <motion.div
+                className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: EASE }}
+                viewport={{ once: true, amount: 0.3 }}
+            >
+              <Link href="/process" className="text-primary hover:underline font-medium" aria-label="Read about our delivery playbook">
+                See the detailed playbook
+              </Link>
+              <span className="hidden sm:inline text-gray-300">•</span>
+              <Link href="/portfolio" className="text-gray-700 hover:text-primary font-medium" aria-label="Explore recent case studies">
+                View recent case studies
+              </Link>
+            </motion.div>
+          </motion.div>
+
+          {/* tiny util: hide the scroll bar on mobile carousel */}
+          <style jsx>{`
+            .no-scrollbar::-webkit-scrollbar { display: none; }
+            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+            @keyframes loadbar { 0% {width: 0%} 100% {width: 100%} }
+          `}</style>
+        </section>
+
+        {/* ===================== Engagement Models ===================== */}
+        <section className="py-16 bg-white">
+          <motion.div
+              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+              variants={sectionReveal}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.2 }}
+          >
+            <motion.div variants={childReveal} className="text-center mb-12">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-3">Engagement Models</h2>
+              <p className="text-lg text-gray-600">Pick what fits your stage, budget and speed.</p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {models.map((m) => (
+                  <motion.div key={m.title} variants={childReveal} whileHover={prefersReduced ? undefined : { y: -4 }}>
+                    <Card className="border-0 shadow-md rounded-2xl bg-white/70 backdrop-blur">
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-3 mb-2 text-primary">
+                          {m.icon}
+                          <h3 className="text-lg font-heading font-semibold text-gray-900">{m.title}</h3>
+                        </div>
+                        <p className="text-gray-700 mb-2">{m.copy}</p>
+                        <p className="text-sm text-gray-500 mb-4">
+                          <span className="font-medium text-gray-700">Best for:</span> {m.bestFor}
+                        </p>
+                        <ul className="space-y-1 text-sm text-gray-600">
+                          {m.notes.map((n) => (
+                              <li key={n} className="flex items-center">
+                                <CheckCircle className="h-4 w-4 text-primary mr-2" /> {n}
+                              </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+              ))}
+            </div>
+
+            <motion.div variants={childReveal} className="mt-8 text-center">
+              <Button asChild size="lg" variant="outline" className="text-primary border-primary">
+                <Link href="/contact">Compare options with us</Link>
+              </Button>
+            </motion.div>
+          </motion.div>
+        </section>
+
+        {/* ============================= FAQ ============================= */}
+        <section className="py-16 bg-gray-50">
+          <motion.div
+              className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
+              variants={sectionReveal}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.2 }}
+          >
+            <motion.div variants={childReveal} className="text-center mb-10">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-3">FAQ</h2>
+              <p className="text-lg text-gray-600">Short answers to the questions we hear most.</p>
+            </motion.div>
+
+            <motion.div variants={childReveal} className="bg-white/70 rounded-xl backdrop-blur">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="q1">
+                  <AccordionTrigger>How do you estimate timeline and cost?</AccordionTrigger>
+                  <AccordionContent>
+                    We run a short discovery to map scope, risks and milestones, then provide a conservative estimate with options
+                    (fixed scope vs. elastic capacity). You get weekly burn-up charts and demo builds.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="q2">
+                  <AccordionTrigger>Can you work with our in-house team?</AccordionTrigger>
+                  <AccordionContent>
+                    Absolutely. Most engagements pair our pod with your PM/tech lead. We follow your rituals, repos and CI,
+                    and leave a clean knowledge trail.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="q3">
+                  <AccordionTrigger>Do you provide post-launch support?</AccordionTrigger>
+                  <AccordionContent>
+                    Yes — we offer SLAs with monitoring, incident response, upgrades and a rolling roadmap to keep shipping value.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </motion.div>
+
+            <motion.div variants={childReveal} className="text-center mt-8">
+              <Button asChild className="bg-gradient-revzion hover:opacity-90">
+                <Link href="/contact">Ask a different question</Link>
+              </Button>
+            </motion.div>
+          </motion.div>
+        </section>
+
+        {/* ============================== CTA ============================== */}
+        <section className="py-20 bg-gradient-revzion">
+          <motion.div
+              className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+              variants={sectionReveal}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.25 }}
+          >
+            <motion.h2 variants={childReveal} className="text-3xl sm:text-4xl font-heading font-bold text-white mb-6">
               Ready to Get Started?
-            </h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            </motion.h2>
+            <motion.p variants={childReveal} className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
               Tell us about your goals — we’ll suggest the fastest, safest path to impact.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-3">
+            </motion.p>
+            <motion.div variants={childReveal} className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-3" asChild>
                 <Link href="/contact">Request a Quote</Link>
               </Button>
               <Button
@@ -384,7 +485,7 @@ export default function ServicesPage() {
               >
                 <Link href="/portfolio">View Our Work</Link>
               </Button>
-            </div>
+            </motion.div>
           </motion.div>
         </section>
 

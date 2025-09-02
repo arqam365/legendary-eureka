@@ -676,7 +676,7 @@ export default function HomePage() {
         <Navigation />
 
         {/* Left milestone tracker (lg+) */}
-        <ScrollMilestones sections={sectionsList} />
+        <ScrollMilestones sections={sectionsList} hideWhenInView="#site-footer" disableBelow={1024} topOffsetPx={96} />
 
         {/* Hero */}
         <section id="hero" ref={heroRef} className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50">
