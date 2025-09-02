@@ -693,14 +693,36 @@ export default function HomePage() {
                   </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div
+                    className="
+    flex flex-col sm:flex-row
+    gap-4 sm:gap-6 lg:gap-8
+    justify-center sm:justify-start
+    items-stretch sm:items-center
+    w-full
+    max-w-2xl mx-auto
+  "
+                >
+                  {/* CTA button */}
                   <ConsultationCTA label="Free Consultation" />
+
+                  {/* Explore button */}
                   <Button
                       size="lg"
                       variant="outline"
-                      className="text-lg px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white bg-transparent"
+                      className="
+      text-base sm:text-lg
+      px-6 sm:px-8 py-3
+      border-2 border-primary text-primary
+      hover:bg-primary hover:text-white
+      bg-transparent
+      flex items-center justify-center
+      w-full sm:w-auto
+    "
                   >
-                    <Link href="/services" className="flex items-center">Explore Services</Link>
+                    <Link href="/services" className="flex items-center">
+                      Explore Services
+                    </Link>
                   </Button>
                 </div>
 
@@ -807,14 +829,26 @@ export default function HomePage() {
                       whileHover={prefersReduced ? undefined : hoverCard}
                       transition={{ type: "spring", stiffness: 200, damping: 24 }}
                   >
-                    <Card className="group border-0 shadow-md hover:shadow-lg transition-shadow">
-                      <CardContent className="p-8">
-                        <motion.div className="text-primary mb-4" whileHover={prefersReduced ? undefined : hoverIcon}>
+                    <Card className="group border-0 shadow-md hover:shadow-lg transition-shadow h-full">
+                      <CardContent className="p-8 flex flex-col h-full">
+                        {/* Icon */}
+                        <motion.div
+                            className="text-primary mb-4"
+                            whileHover={prefersReduced ? undefined : hoverIcon}
+                        >
                           {service.icon}
                         </motion.div>
-                        <h3 className="text-xl font-heading font-semibold text-gray-900 mb-3">{service.title}</h3>
-                        <p className="text-gray-600 leading-relaxed mb-4">{service.description}</p>
-                        <Accordion type="single" collapsible>
+
+                        {/* Title + description */}
+                        <h3 className="text-xl font-heading font-semibold text-gray-900 mb-3">
+                          {service.title}
+                        </h3>
+                        <p className="text-gray-600 leading-relaxed mb-4 flex-grow">
+                          {service.description}
+                        </p>
+
+                        {/* Accordion stays pinned at bottom */}
+                        <Accordion type="single" collapsible className="mt-auto">
                           <AccordionItem value={`stack-${index}`}>
                             <AccordionTrigger className="text-left text-primary font-medium hover:no-underline">
                               View Tech Stack
@@ -827,8 +861,8 @@ export default function HomePage() {
                                         className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs"
                                         aria-label={`Technology ${tech}`}
                                     >
-                                {tech}
-                              </span>
+                {tech}
+              </span>
                                 ))}
                               </div>
                             </AccordionContent>

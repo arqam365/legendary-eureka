@@ -224,10 +224,23 @@ export default function AboutPage() {
             >
               {values.map((v) => (
                   <motion.div key={v.title} variants={revealOnce}>
-                    <Card className="p-8 text-center hover:shadow-lg transition-shadow border-0 bg-white">
-                      <div className="text-primary mb-4 flex justify-center">{v.icon}</div>
-                      <h3 className="text-xl font-heading font-semibold text-gray-900 mb-3">{v.title}</h3>
-                      <p className="text-gray-600 leading-relaxed">{v.description}</p>
+                    <Card className="group border-0 shadow-md hover:shadow-xl transition-shadow rounded-2xl bg-white/70 backdrop-blur h-full">
+                      <div className="flex flex-col items-center text-center h-full p-8">
+                        {/* Icon */}
+                        <div className="text-primary mb-4 flex justify-center">
+                          {v.icon}
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="text-xl font-heading font-semibold text-gray-900 mb-3">
+                          {v.title}
+                        </h3>
+
+                        {/* Description */}
+                        <p className="text-gray-600 leading-relaxed mb-4 flex-grow">
+                          {v.description}
+                        </p>
+                      </div>
                     </Card>
                   </motion.div>
               ))}

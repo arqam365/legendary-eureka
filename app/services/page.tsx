@@ -165,39 +165,64 @@ export default function ServicesPage() {
                       whileHover={prefersReduced ? undefined : hoverCard}
                       transition={{ type: "spring", stiffness: 200, damping: 24 }}
                   >
-                    <Card className="group border-0 shadow-md hover:shadow-xl transition-shadow rounded-2xl bg-white/70 backdrop-blur">
-                      <CardHeader className="pb-4">
-                        <motion.div className="text-primary mb-4" whileHover={prefersReduced ? undefined : hoverIcon}>
-                          {service.icon}
-                        </motion.div>
-                        <h3 className="text-2xl font-heading font-bold text-gray-900 mb-2">{service.title}</h3>
-                        <p className="text-gray-600 leading-relaxed">{service.description}</p>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="space-y-4">
-                          <div>
-                            <h4 className="font-heading font-semibold text-gray-900 mb-3">Key Features</h4>
-                            <ul className="space-y-2">
-                              {service.features.map((f) => (
-                                  <li key={f} className="flex items-center text-sm text-gray-600">
-                                    <CheckCircle className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
-                                    {f}
-                                  </li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div>
-                            <h4 className="font-heading font-semibold text-gray-900 mb-3">Tech We Love</h4>
-                            <div className="flex flex-wrap gap-2">
-                              {service.technologies.map((t) => (
-                                  <span key={t} className="px-3 py-1 bg-blue-50 text-primary text-xs font-medium rounded-full">
-                              {t}
-                            </span>
-                              ))}
+                    <Card className="group border-0 shadow-md hover:shadow-xl transition-shadow rounded-2xl bg-white/70 backdrop-blur h-full">
+                      <div className="flex flex-col h-full">
+                        {/* Header */}
+                        <CardHeader className="pb-0 flex-grow-0">
+                          <motion.div
+                              className="text-primary mb-4"
+                              whileHover={prefersReduced ? undefined : hoverIcon}
+                          >
+                            {service.icon}
+                          </motion.div>
+                          <h3 className="text-xl font-heading font-semibold text-gray-900 mb-3">
+                            {service.title}
+                          </h3>
+                          <p className="text-gray-600 leading-relaxed mb-4">
+                            {service.description}
+                          </p>
+                        </CardHeader>
+
+                        {/* Content — consistent with accordion card */}
+                        <CardContent className="flex flex-col flex-grow">
+                          <div className="space-y-5 flex-grow">
+                            {/* Key Features */}
+                            <div>
+                              <h4 className="font-heading font-medium text-gray-900 mb-3">
+                                Key Features
+                              </h4>
+                              <ul className="space-y-2">
+                                {service.features.map((f) => (
+                                    <li
+                                        key={f}
+                                        className="flex items-center text-sm text-gray-600"
+                                    >
+                                      <CheckCircle className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
+                                      {f}
+                                    </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            {/* Tech We Love */}
+                            <div className="mt-auto">
+                              <h4 className="font-heading font-medium text-gray-900 mb-3">
+                                Tech We Love
+                              </h4>
+                              <div className="flex flex-wrap gap-2">
+                                {service.technologies.map((t) => (
+                                    <span
+                                        key={t}
+                                        className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs"
+                                    >
+                {t}
+              </span>
+                                ))}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </CardContent>
+                        </CardContent>
+                      </div>
                     </Card>
                   </motion.div>
               ))}
