@@ -355,7 +355,7 @@ export default function ProcessPage() {
                         <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100" asChild>
                             <Link href="/contact">Book a free consult</Link>
                         </Button>
-                        <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-primary" asChild>
+                        <Button size="lg" variant="outline" className="border-2 border-white text-primary hover:bg-gray-100 hover:text-primary" asChild>
                             <Link href="/portfolio">See what we’ve shipped</Link>
                         </Button>
                     </motion.div>
