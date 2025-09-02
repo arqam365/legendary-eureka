@@ -665,6 +665,12 @@ export default function HomePage() {
     { id: "cta", label: "Get Started" },
   ]
 
+  // just under other hooks in HomePage()
+  const [open, setOpen] = useState<null | string>(null);
+// helpers to feed each column
+  const leftValue  = open?.startsWith("L:") ? open.slice(2) : undefined;
+  const rightValue = open?.startsWith("R:") ? open.slice(2) : undefined;
+
   return (
       <div className="min-h-screen bg-white">
         <Navigation />
@@ -913,63 +919,254 @@ export default function HomePage() {
         <CaseStudiesCarousel />
 
         {/* Tech Stacks */}
-        <section id="stacks" className="py-20 bg-gray-50">
+        <section id="stacks" className="py-20 relative overflow-hidden">
+          {/* soft background */}
+          <div className="pointer-events-none absolute inset-0 opacity-[0.08]">
+            <div className="absolute -top-24 -right-24 w-[38rem] h-[38rem] rounded-full bg-gradient-revzion blur-3xl" />
+            <div className="absolute -bottom-24 -left-24 w-[32rem] h-[32rem] rounded-full bg-blue-200 blur-3xl" />
+          </div>
+
           <motion.div
-              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+              className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.25 }}
           >
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">Our Tech Stacks</h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                The modern tools we use to build fast, secure, and scalable products.
+            {/* header */}
+            <div className="text-center mb-12 sm:mb-16">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-3">
+                Our Tech Stacks
+              </h2>
+              <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+                We pick tools that are fast, secure, and scalable—then combine them with the right
+                patterns so your product ships reliably and grows safely.
               </p>
+
+              {/* category badges */}
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                {["Performance-first", "Security & Compliance", "DX that scales", "Cloud-native"].map((b) => (
+                    <span key={b} className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+            {b}
+          </span>
+                ))}
+              </div>
             </div>
 
+            {/* two-column accordions */}
+            {/* two-column accordions */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Accordion type="single" collapsible className="w-full bg-white rounded-xl shadow-sm border-0">
+              {/* LEFT */}
+              <Accordion
+                  type="single"
+                  collapsible
+                  value={leftValue}
+                  onValueChange={(v) => setOpen(v ? `L:${v}` : null)}
+                  className="w-full rounded-2xl shadow-sm border border-gray-100 bg-white/70 backdrop-blur"
+              >
+                {/* Frontend Technologies */}
                 <AccordionItem value="frontend">
                   <AccordionTrigger className="px-6 text-left">
                     <div className="flex items-center gap-3">
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">{"</>"}</span>
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">
+            {"</>"}
+          </span>
                       <span className="font-semibold">Frontend Technologies</span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="px-6 pb-6">
-                    <p className="text-gray-600 leading-relaxed mb-4">Component-driven UIs with performance and accessibility built in.</p>
-                    <div className="flex flex-wrap gap-2">
-                      {["React", "Next.js (App Router)", "TypeScript", "Tailwind CSS", "React Native", "Expo", "Vite"].map(t => (
-                          <motion.span key={t} whileHover={{ scale: 1.04 }} className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
-                            {t}
-                          </motion.span>
-                      ))}
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      Component-driven UIs with accessibility and performance baked in. Ship SSR/SSG/ISR
+                      with great Core Web Vitals and minimal bundles.
+                    </p>
+
+                    {/* We use it for */}
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-1.5">We use it for</h4>
+                      <ul className="space-y-1.5 text-sm text-gray-600">
+                        {[
+                          "Design systems & theming",
+                          "App Router SSR/ISR + edge streaming",
+                          "Animations & micro-interactions",
+                        ].map((li) => (
+                            <li key={li} className="flex items-center">
+                              <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2" /> {li}
+                            </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Primary stack */}
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Primary stack</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {[
+                          "React",
+                          "Next.js (App Router)",
+                          "TypeScript",
+                          "Tailwind CSS",
+                          "React Native",
+                          "Expo",
+                          "Vite",
+                        ].map((t) => (
+                            <motion.span
+                                key={t}
+                                whileHover={{ scale: 1.04 }}
+                                className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium"
+                            >
+                              {t}
+                            </motion.span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Often paired with */}
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Often paired with</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {["Zustand / Redux", "React Query", "Next Image/CDN", "Framer Motion", "shadcn/ui"].map(
+                            (t) => (
+                                <span
+                                    key={t}
+                                    className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs border border-gray-200"
+                                >
+                  {t}
+                </span>
+                            )
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Confidence */}
+                    <div>
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                        <span>Confidence</span>
+                        <span>Expert</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                        <div className="h-full w-[92%] bg-gradient-revzion" />
+                      </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
 
+                {/* Mobile, PWA & Performance */}
                 <AccordionItem value="mobile-webperf">
                   <AccordionTrigger className="px-6 text-left">
                     <div className="flex items-center gap-3">
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">⚡</span>
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">
+            ⚡
+          </span>
                       <span className="font-semibold">Mobile, PWA & Performance</span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="px-6 pb-6">
-                    <p className="text-gray-600 leading-relaxed mb-4">Cross-platform reach with offline-first and lighthouse-friendly builds.</p>
-                    <div className="flex flex-wrap gap-2">
-                      {["PWA", "Workbox", "Web Animations", "Framer Motion", "Lighthouse CI", "React Query"].map(t => (
-                          <motion.span key={t} whileHover={{ scale: 1.04 }} className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
-                            {t}
-                          </motion.span>
-                      ))}
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      Cross-platform reach with offline-first patterns and Lighthouse-friendly builds.
+                    </p>
+
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-1.5">We use it for</h4>
+                      <ul className="space-y-1.5 text-sm text-gray-600">
+                        {["Add-to-Home PWA", "Background sync", "Perf budgets & RUM"].map((li) => (
+                            <li key={li} className="flex items-center">
+                              <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2" /> {li}
+                            </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Primary tools</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {["PWA", "Workbox", "Web Animations", "Framer Motion", "Lighthouse CI", "React Query"].map(
+                            (t) => (
+                                <motion.span
+                                    key={t}
+                                    whileHover={{ scale: 1.04 }}
+                                    className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium"
+                                >
+                                  {t}
+                                </motion.span>
+                            )
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                        <span>Confidence</span>
+                        <span>Advanced</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                        <div className="h-full w-[88%] bg-gradient-revzion" />
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                {/* Design Systems & Accessibility */}
+                <AccordionItem value="design-accessibility">
+                  <AccordionTrigger className="px-6 text-left">
+                    <div className="flex items-center gap-3">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">
+            🎨
+          </span>
+                      <span className="font-semibold">Design Systems & Accessibility</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6">
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      Maintainable component libraries with tokens, dark mode, and WCAG-compliant UX.
+                    </p>
+
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-1.5">We use it for</h4>
+                      <ul className="space-y-1.5 text-sm text-gray-600">
+                        {["Theming & tokens", "A11y audits (WCAG 2.2)", "Docs & Storybook"].map((li) => (
+                            <li key={li} className="flex items-center">
+                              <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2" /> {li}
+                            </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Primary stack</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {["Tailwind CSS", "shadcn/ui", "Radix Primitives", "Storybook", "Figma"].map((t) => (
+                            <motion.span
+                                key={t}
+                                whileHover={{ scale: 1.04 }}
+                                className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium"
+                            >
+                              {t}
+                            </motion.span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                        <span>Confidence</span>
+                        <span>Advanced</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                        <div className="h-full w-[87%] bg-gradient-revzion" />
+                      </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
 
-              <Accordion type="single" collapsible className="w-full bg-white rounded-xl shadow-sm border-0">
+              {/* RIGHT */}
+              <Accordion
+                  type="single"
+                  collapsible
+                  value={rightValue}
+                  onValueChange={(v) => setOpen(v ? `R:${v}` : null)}
+                  className="w-full rounded-2xl shadow-sm border border-gray-100 bg-white/70 backdrop-blur"
+              >
                 <AccordionItem value="backend">
                   <AccordionTrigger className="px-6 text-left">
                     <div className="flex items-center gap-3">
@@ -978,13 +1175,40 @@ export default function HomePage() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="px-6 pb-6">
-                    <p className="text-gray-600 leading-relaxed mb-4">Reliable services with clean contracts and strong observability.</p>
-                    <div className="flex flex-wrap gap-2">
-                      {["Node.js", "tRPC / REST", "Webhooks", "GraphQL", "Zod", "JWT/OAuth", "Rate limiting"].map(t => (
-                          <motion.span key={t} whileHover={{ scale: 1.04 }} className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
-                            {t}
-                          </motion.span>
-                      ))}
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      Reliable services with clean contracts, validations, and strong observability.
+                    </p>
+
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-1.5">We use it for</h4>
+                      <ul className="space-y-1.5 text-sm text-gray-600">
+                        {["Multi-tenant SaaS", "Billing & webhooks", "Auth (JWT/OAuth)"].map((li) => (
+                            <li key={li} className="flex items-center">
+                              <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2" /> {li}
+                            </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Primary stack</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {["Node.js", "tRPC / REST", "Webhooks", "GraphQL", "Zod", "JWT/OAuth", "Rate limiting"].map((t) => (
+                            <motion.span key={t} whileHover={{ scale: 1.04 }} className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
+                              {t}
+                            </motion.span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                        <span>Confidence</span>
+                        <span>Expert</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                        <div className="h-full w-[93%] bg-gradient-revzion" />
+                      </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -997,13 +1221,40 @@ export default function HomePage() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="px-6 pb-6">
-                    <p className="text-gray-600 leading-relaxed mb-4">Scale safely with IaC, observability, and cost-aware architectures.</p>
-                    <div className="flex flex-wrap gap-2">
-                      {["PostgreSQL", "Redis", "Neon/Supabase", "S3", "CI/CD (GH Actions)", "Docker", "Kubernetes", "Terraform", "OpenTelemetry"].map(t => (
-                          <motion.span key={t} whileHover={{ scale: 1.04 }} className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
-                            {t}
-                          </motion.span>
-                      ))}
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      Scale safely with IaC, observability, cost controls, and zero-downtime deploys.
+                    </p>
+
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Primary stack</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {["PostgreSQL", "Redis", "Neon/Supabase", "S3", "CI/CD (GH Actions)", "Docker", "Kubernetes", "Terraform", "OpenTelemetry"].map((t) => (
+                            <motion.span key={t} whileHover={{ scale: 1.04 }} className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
+                              {t}
+                            </motion.span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-1.5">We monitor</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {["Error Budget", "P95 latency", "Throughput", "Cost per tenant"].map((m) => (
+                            <span key={m} className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs border border-gray-200">
+                {m}
+              </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                        <span>Confidence</span>
+                        <span>Advanced</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                        <div className="h-full w-[89%] bg-gradient-revzion" />
+                      </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -1016,17 +1267,61 @@ export default function HomePage() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="px-6 pb-6">
-                    <p className="text-gray-600 leading-relaxed mb-4">Practical AI: copilots, RAG, and workflow automation that ship.</p>
-                    <div className="flex flex-wrap gap-2">
-                      {["OpenAI / Groq / xAI", "Embeddings", "Vector DB", "RAG", "LangChain", "Workers/Queues"].map(t => (
-                          <motion.span key={t} whileHover={{ scale: 1.04 }} className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
-                            {t}
-                          </motion.span>
-                      ))}
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      Practical AI that ships: copilots, RAG pipelines, and workflow automation.
+                    </p>
+
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Primary stack</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {["OpenAI / Groq / xAI", "Embeddings", "Vector DB", "RAG", "LangChain", "Workers/Queues"].map((t) => (
+                            <motion.span key={t} whileHover={{ scale: 1.04 }} className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
+                              {t}
+                            </motion.span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                        <span>Confidence</span>
+                        <span>Advanced</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                        <div className="h-full w-[86%] bg-gradient-revzion" />
+                      </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
+            </div>
+
+            {/* tool strip */}
+            <div className="mt-12">
+              <div className="rounded-2xl border border-gray-100 bg-white/60 backdrop-blur px-5 py-4">
+                <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600">
+                  {[
+                    "Next.js", "TypeScript", "Tailwind", "React Query", "tRPC", "GraphQL",
+                    "PostgreSQL", "Redis", "Neon", "S3", "Docker", "Terraform", "Kubernetes",
+                  ].map((t) => (
+                      <span key={t} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                        {t}
+            </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="mt-10 text-center">
+              <Link
+                  href="/services"
+                  className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-primary text-primary hover:bg-primary hover:text-white transition-colors"
+              >
+                See how we pick the right stack for your use case
+                <span className="ml-2">→</span>
+              </Link>
             </div>
           </motion.div>
         </section>
