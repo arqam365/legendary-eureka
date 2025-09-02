@@ -264,7 +264,7 @@ export function Footer() {
                     items: [
                       { href: "/privacy-policy", label: "Privacy Policy" },
                       { href: "/terms", label: "Terms of Service" },
-                      { href: "/cookies", label: "Cookie Settings" },
+                      { href: "/cookie-settings", label: "Cookie Settings" },
                     ],
                   },
                 ].map((col, i) => (

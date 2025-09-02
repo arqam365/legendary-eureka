@@ -7,7 +7,7 @@ import QuickActions from "./QuickActions"; // client-only actions (print, etc.)
 export const metadata: Metadata = {
     title: "Privacy Policy | Revzion",
     description:
-        "How Revzion collects, uses, and protects your information. Learn about cookies, analytics, data sharing, retention, and your rights.",
+        "How Revzion collects, uses, and protects your information. Learn about cookie-settings, analytics, data sharing, retention, and your rights.",
     robots: { index: true, follow: true },
 };
 
