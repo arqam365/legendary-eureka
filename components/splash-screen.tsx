@@ -110,9 +110,8 @@ export default function SplashScreen({
                         if (tt < 1) {
                             requestAnimationFrame(step);
                         } else {
-                            // trigger curtain (the whole splash slides up)
+                            document.documentElement.classList.add("rvz-splash-exiting");
                             setPhase("exit");
-                            // let listeners know; unmount handled by onAnimationComplete
                             window.dispatchEvent(new Event("revzion:splash-done"));
                         }
                     };
@@ -184,7 +183,17 @@ export default function SplashScreen({
                 aria-label="Loading"
                 aria-live="polite"
                 onAnimationComplete={() => {
-                    if (phase === "exit") setPhase("done");
+                    if (phase === "exit") {
+                        setPhase("done");
+                        // Remove SSR placeholder & show app
+                        const root = document.documentElement;
+                        root.classList.remove("rvz-splashing");
+                        document.getElementById("rvz-ssr-splash")?.remove();
+                        document.documentElement.classList.remove("rvz-splash-exiting");
+                        document.documentElement.classList.remove("rvz-splashing");
+                        const ssr = document.getElementById("rvz-ssr-splash");
+                        if (ssr?.parentNode) ssr.parentNode.removeChild(ssr);
+                    }
                 }}
             >
                 {/* backdrop */}

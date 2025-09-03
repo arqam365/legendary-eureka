@@ -122,29 +122,29 @@ function CaseStudiesCarousel() {
   const s = studies[active]
 
   return (
-      <section id="case-studies" className="py-20 bg-gray-50" data-st-section>
+      <section id="case-studies" className="py-16 sm:py-20 bg-gray-50" data-st-section>
         <motion.div
-            className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8"
+            className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8"
             variants={revealOnce}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.25 }}
         >
-          {/* header */}
-          <div className="flex items-end justify-between mb-8">
-            <div className="text-center md:text-left">
+          {/* Header row */}
+          <div className="mb-6 sm:mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="text-center sm:text-left">
               <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">Case Studies</h2>
-              <p className="text-gray-600 text-lg">Proof over promises.</p>
+              <p className="text-gray-600 text-base sm:text-lg">Proof over promises.</p>
             </div>
             <div className="hidden md:flex gap-3">
-              <Button variant="outline" onClick={prev} aria-label="Previous" title="Previous case study">←</Button>
-              <Button onClick={next} aria-label="Next" title="Next case study">→</Button>
+              <Button variant="outline" onClick={prev} aria-label="Previous case study" title="Previous">←</Button>
+              <Button onClick={next} aria-label="Next case study" title="Next">→</Button>
             </div>
           </div>
 
-          {/* slide */}
+          {/* Slide */}
           <div
-              className="relative h-[560px] flex items-center justify-center"
+              className="relative"
               aria-roledescription="carousel"
               aria-label="Case studies"
               onMouseEnter={() => setHovering(true)}
@@ -153,38 +153,56 @@ function CaseStudiesCarousel() {
             <AnimatePresence mode="wait">
               <motion.article
                   key={s.id}
-                  initial={{ opacity: 0, y: 24 }}
+                  initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -24 }}
-                  transition={{ duration: 0.45, ease: "easeOut" }}
-                  className="absolute w-full max-w-5xl rounded-3xl border border-white/70 bg-white/70 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] overflow-hidden"
+                  exit={{ opacity: 0, y: -18 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className={[
+                    "mx-auto w-full rounded-3xl overflow-hidden",
+                    "border border-white/70 bg-white/70 backdrop-blur-xl",
+                    "shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)]",
+                  ].join(" ")}
               >
-                <div className="grid grid-cols-1 lg:grid-cols-5">
-                  {/* visual */}
+                {/* On mobile, stack; on lg+, split 2/3 */}
+                <motion.div
+                    drag={prefersReduced ? false : "x"}
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.2}
+                    onDragEnd={(_, info) => {
+                      if (info.offset.x > 80) prev()
+                      else if (info.offset.x < -80) next()
+                    }}
+                    className="grid grid-cols-1 lg:grid-cols-5"
+                >
+                  {/* Visual */}
                   <div className="relative lg:col-span-2">
-                    <motion.img
-                        src={s.image}
-                        alt={s.title}
-                        className="h-full w-full object-cover lg:min-h-[560px]"
-                        whileHover={prefersReduced ? undefined : hoverIcon}
-                        transition={{ duration: 0.35 }}
-                    />
-                    {/* soft fade at edge */}
-                    <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white/80 to-transparent" />
+                    {/* Mobile: keep a sane ratio; Desktop: fill */}
+                    <div className="relative aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:min-h-[520px]">
+                      <Image
+                          src={s.image}
+                          alt={s.title}
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 40vw"
+                          className="object-cover"
+                          priority
+                      />
+                      {/* soft fade into content on lg+ */}
+                      <div className="pointer-events-none absolute inset-y-0 right-0 w-20 hidden lg:block bg-gradient-to-l from-white/80 to-transparent" />
+                    </div>
                   </div>
 
-                  {/* content */}
-                  <div className="lg:col-span-3 p-8 lg:p-10">
-                    <div className="flex items-center gap-2 text-primary mb-3">
+                  {/* Content */}
+                  <div className="lg:col-span-3 p-6 sm:p-8 lg:p-10">
+                    <div className="mb-3 flex items-center gap-2 text-primary">
                       <TrendingUp className="h-5 w-5" />
                       <span className="text-sm font-medium">Case Study</span>
                     </div>
 
-                    <h3 className="text-2xl lg:text-3xl font-heading font-semibold text-gray-900">
+                    <h3 className="text-2xl sm:text-3xl font-heading font-semibold text-gray-900">
                       {s.title}
                     </h3>
 
-                    <div className="mt-5 space-y-3 text-gray-700 leading-relaxed">
+                    <div className="mt-4 sm:mt-5 space-y-3 text-gray-700 leading-relaxed">
                       <p><span className="font-semibold text-gray-900">Problem:</span> {s.problem}</p>
                       <p><span className="font-semibold text-gray-900">Solution:</span> {s.solution}</p>
                       <p><span className="font-semibold text-gray-900">Results:</span> {s.results}</p>
@@ -192,32 +210,29 @@ function CaseStudiesCarousel() {
 
                     <Link
                         href={s.link || "/portfolio"}
-                        className="inline-flex items-center text-primary font-medium hover:underline mt-6"
+                        className="mt-5 inline-flex items-center text-primary font-medium hover:underline"
                     >
                       View case study <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
 
-                    {/* enhanced detail bar */}
-                    <div className="relative mt-8 rounded-2xl border border-white/60 bg-white/50 backdrop-blur-xl overflow-hidden">
-                      {/* animated shine on hover */}
-                      <div className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300">
-                        <div className="absolute -inset-x-20 -top-1/2 h-[200%] rotate-12 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                      </div>
-
-                      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 p-5">
-                        {/* clients */}
+                    {/* Detail bar */}
+                    <div className="relative mt-6 sm:mt-8 rounded-2xl border border-white/60 bg-white/60 backdrop-blur-xl overflow-hidden">
+                      <div className="grid grid-cols-1 gap-4 p-4 sm:p-5 lg:grid-cols-5">
+                        {/* Clients */}
                         {s.clients?.length ? (
                             <div className="lg:col-span-2">
-                              <div className="flex items-center gap-2 text-gray-700 mb-2">
+                              <div className="mb-2 flex items-center gap-2 text-gray-700">
                                 <Building2 className="h-4 w-4 text-primary" />
                                 <span className="text-xs font-medium uppercase tracking-wide">Trusted by</span>
                               </div>
-
                               <div className="relative">
                                 <div className="flex gap-5 overflow-hidden group">
                                   <div className="flex gap-5 animate-[marquee_18s_linear_infinite] group-hover:[animation-play-state:paused]">
                                     {s.clients.concat(s.clients).map((c, i) => (
-                                        <div key={c.name + i} className="flex items-center gap-2 opacity-80 hover:opacity-100 transition">
+                                        <div
+                                            key={c.name + i}
+                                            className="flex items-center gap-2 opacity-80 hover:opacity-100 transition"
+                                        >
                                           <Image
                                               src={c.logo}
                                               alt={c.name}
@@ -234,10 +249,10 @@ function CaseStudiesCarousel() {
                             </div>
                         ) : null}
 
-                        {/* tags */}
+                        {/* Tags */}
                         {s.tags?.length ? (
                             <div className="lg:col-span-2">
-                              <div className="flex items-center gap-2 text-gray-700 mb-2">
+                              <div className="mb-2 flex items-center gap-2 text-gray-700">
                                 <Star className="h-4 w-4 text-primary" />
                                 <span className="text-xs font-medium uppercase tracking-wide">Highlights</span>
                               </div>
@@ -245,7 +260,7 @@ function CaseStudiesCarousel() {
                                 {s.tags.map(tag => (
                                     <span
                                         key={tag}
-                                        className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs border border-gray-200"
+                                        className="rounded-md border border-gray-200 bg-gray-100 px-2.5 py-1 text-xs text-gray-800"
                                     >
                                 {tag}
                               </span>
@@ -257,12 +272,14 @@ function CaseStudiesCarousel() {
                         {/* KPIs */}
                         {s.kpis?.length ? (
                             <div className="lg:col-span-1">
-                              <div className="text-xs font-medium uppercase tracking-wide text-gray-700 mb-2">Impact</div>
-                              <div className="grid grid-cols-3 lg:grid-cols-1 gap-2">
+                              <div className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-700">
+                                Impact
+                              </div>
+                              <div className="grid grid-cols-3 gap-2 sm:grid-cols-3 lg:grid-cols-1">
                                 {s.kpis.map(kpi => (
                                     <div
                                         key={kpi.label}
-                                        className="rounded-xl bg-white/70 border border-white/70 px-3 py-2 text-center shadow-sm"
+                                        className="rounded-xl border border-white/70 bg-white/70 px-3 py-2 text-center shadow-sm"
                                     >
                                       <div className="text-sm font-semibold text-gray-900">{kpi.value}</div>
                                       <div className="text-[10px] text-gray-500">{kpi.label}</div>
@@ -274,19 +291,37 @@ function CaseStudiesCarousel() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </motion.article>
             </AnimatePresence>
 
-            {/* arrows */}
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-2 lg:px-4">
-              <Button variant="outline" size="icon" onClick={prev} aria-label="Previous slide" title="Previous slide">←</Button>
-              <Button variant="outline" size="icon" onClick={next} aria-label="Next slide" title="Next slide">→</Button>
+            {/* Arrows – show on md+; larger touch targets */}
+            <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 hidden md:flex justify-between px-2 lg:px-4">
+              <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={prev}
+                  aria-label="Previous slide"
+                  title="Previous"
+                  className="pointer-events-auto h-10 w-10 sm:h-11 sm:w-11"
+              >
+                ←
+              </Button>
+              <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={next}
+                  aria-label="Next slide"
+                  title="Next"
+                  className="pointer-events-auto h-10 w-10 sm:h-11 sm:w-11"
+              >
+                →
+              </Button>
             </div>
           </div>
 
-          {/* dots */}
-          <div className="mt-8 flex items-center justify-center gap-2" aria-live="polite">
+          {/* Dots */}
+          <div className="mt-6 sm:mt-8 flex items-center justify-center gap-2" aria-live="polite">
             {studies.map((_, i) => (
                 <button
                     key={i}
@@ -297,14 +332,14 @@ function CaseStudiesCarousel() {
             ))}
           </div>
 
-          <div className="flex items-center justify-center mt-6">
+          <div className="mt-5 sm:mt-6 flex items-center justify-center">
             <Button asChild size="lg" variant="outline" className="px-6 py-3">
               <Link href="/portfolio">View More</Link>
             </Button>
           </div>
         </motion.div>
 
-        {/* marquee keyframes (Tailwind inline) */}
+        {/* marquee keyframes */}
         <style jsx>{`
           @keyframes marquee {
             0% { transform: translateX(0) }

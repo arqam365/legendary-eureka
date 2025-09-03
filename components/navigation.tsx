@@ -270,7 +270,7 @@ export function Navigation() {
                                 animate={{ height: "auto", opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
                                 transition={{ duration: 0.22, ease: "easeOut" }}
-                                className="md:hidden overflow-hidden border-t border-gray-100 bg-white/90 backdrop-blur"
+                                className="md:hidden overflow-hidden border-t border-gray-100 bg-white backdrop-blur"
                             >
                                 <div className="py-4 flex flex-col gap-2">
                                     {navItems.map((item) => {

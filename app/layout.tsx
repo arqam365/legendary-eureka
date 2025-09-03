@@ -5,13 +5,8 @@ import "./globals.css";
 import Script from "next/script";
 import ClientSplash from "@/components/ClientSplash";
 
-const inter = Inter({
-    subsets: ["latin"],
-    display: "swap",
-    variable: "--font-inter",
-});
+const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
-// ✅ Mobile viewport (Next.js App Router way)
 export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
@@ -81,41 +76,41 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en" className="scroll-smooth">
-        {/* Explicit class for fonts + antialiasing; small style prevents dev overlay mismatch */}
+        <html lang="en" className="scroll-smooth rvz-splashing">
         <body
             className={`${inter.variable} antialiased bg-white text-gray-900`}
             style={{ overscrollBehaviorX: "contain" }}
             suppressHydrationWarning
         >
-        {/* Client-only splash (no SSR mismatch) */}
+        {/* 0) Immediately mark document as "splashing" BEFORE any hydration */}
+        <Script id="rvz-splash-init" strategy="beforeInteractive">
+            {`document.documentElement.classList.add('rvz-splashing');`}
+        </Script>
+
+        {/* 1) SSR splash placeholder so there is NO flash before hydration */}
+        <div
+            id="rvz-ssr-splash"
+            className="fixed inset-0 z-[9998] bg-black grid place-items-center"
+        >
+            <img src="/logo.svg" alt="Revzion" width="36" height="36" style={{ opacity: 0.9 }} />
+        </div>
+
+        {/* 2) Client splash handles animation and dispatches the done event */}
         <ClientSplash />
 
-        {/* Safe-area wrapper for notch devices */}
+        {/* 3) Your app content — hidden until splash clears */}
         <div
-            className="
-            min-h-screen
-            px-4 sm:px-6 lg:px-8
-            pt-[max(1rem,env(safe-area-inset-top))]
-            pb-[max(1rem,env(safe-area-inset-bottom))]
-          "
+            id="rvz-app-root"
+            data-app-root
+            className="min-h-screen px-4 sm:px-6 lg:px-8 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))]"
         >
             {children}
         </div>
 
-        {/* GSAP CDN — run after hydration for better mobile TTI */}
-        <Script
-            src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"
-            strategy="afterInteractive"
-        />
-        <Script
-            src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"
-            strategy="afterInteractive"
-        />
-        <Script
-            src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrambleTextPlugin.min.js"
-            strategy="afterInteractive"
-        />
+        {/* GSAP scripts */}
+        <Script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" strategy="afterInteractive" />
+        <Script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" strategy="afterInteractive" />
+        <Script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrambleTextPlugin.min.js" strategy="afterInteractive" />
         </body>
         </html>
     );

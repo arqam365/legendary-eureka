@@ -213,3 +213,36 @@ html, body { max-width: 100%; overflow-x: clip; }
 @supports (-webkit-touch-callout: none) {
   html { text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
 }
+
+/* Hide the app until splash is finished (no flicker) */
+html.rvz-splashing [data-app-root] {
+  visibility: visible;
+}
+
+/* Optional: avoid scroll jumps while hidden */
+html.rvz-splashing, html.rvz-splashing body {
+  overflow: visible;
+}
+
+/* SSR splash default (visible) */
+#rvz-ssr-splash {
+  transform: translateY(0%);
+  opacity: 1;
+  transition:
+          transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+}
+
+/* Small screens: match your shorter duration */
+@media (max-width: 640px) {
+  #rvz-ssr-splash {
+    transition-duration: 0.6s;
+  }
+}
+
+/* When we start exiting, slide the SSR splash up (same as motion.div) */
+html.rvz-splash-exiting #rvz-ssr-splash {
+  transform: translateY(-100%);
+  opacity: 1; /* keep opacity if you want the same “curtain” look */
+}
