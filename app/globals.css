@@ -251,3 +251,12 @@ html.rvz-splash-exiting #rvz-ssr-splash {
   transform: translateY(-100%);
   opacity: 1; /* keep curtain look */
 }
+
+/* Lenis helpers */
+html.lenis { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto; } /* let Lenis control it */
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-scrolling iframe { pointer-events: none; }
+
+/* Optional – avoid scrollbar width layout shift */
+html { scrollbar-gutter: stable both-edges; }

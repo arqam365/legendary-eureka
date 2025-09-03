@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import ClientSplash from "@/components/ClientSplash";
+import SmoothScroll from "@/components/SmoothScroll";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
@@ -97,7 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* 2) Client splash handles animation and dispatches the done event */}
         <ClientSplash />
-
+        <SmoothScroll>
         {/* 3) Your app content — hidden until splash clears */}
         <div
             id="rvz-app-root"
@@ -106,6 +107,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
             {children}
         </div>
+        </SmoothScroll>
 
         {/* GSAP scripts */}
         <Script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" strategy="afterInteractive" />
