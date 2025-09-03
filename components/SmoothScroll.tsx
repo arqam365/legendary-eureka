@@ -29,7 +29,8 @@ export default function SmoothScroll({ children }: Props) {
             gestureOrientation: "vertical",
             touchMultiplier: 1.1,
         });
-        lenisRef.current = lenis;
+        (lenisRef as any).current = lenis;
+        (window as any).__lenis = lenis;
 
         // 2) Drive Lenis with rAF
         const raf = (time: number) => {

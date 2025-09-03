@@ -12,6 +12,8 @@ import {
     DialogTitle,
     DialogDescription,
     DialogTrigger,
+    DialogOverlay,
+    DialogPortal,
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -22,7 +24,6 @@ import { ArrowRight, Calendar, Sparkles } from "lucide-react";
 
 /* -------------------------------- Types ------------------------------- */
 type Appearance = "button" | "pill" | "link";
-
 
 type Props = {
     label?: string;
@@ -96,7 +97,7 @@ export function ConsultationCTA({
                                     mobileFullWidth = true,
                                 }: Props) {
     const [open, setOpen] = useState(false);
-    const [tab, setTab] = useState<"cal" | "form">("cal"); // <- one shared Tabs state
+    const [tab, setTab] = useState<"cal" | "form">("cal");
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const { slots, decrement, mounted } = useWeeklySlots();
     const prefersReducedMotion = useReducedMotion();
@@ -104,13 +105,44 @@ export function ConsultationCTA({
     // preload chime on client
     useEffect(() => {
         const a = new Audio("/audio/chime.mp3");
-        a.volume = 0.35; a.preload = "auto";
+        a.volume = 0.35;
+        a.preload = "auto";
         audioRef.current = a;
     }, []);
 
+    // Lock page scroll (and pause Lenis) while dialog is open
+    useEffect(() => {
+        const root = document.documentElement;
+        const body = document.body;
+
+        if (open) {
+            root.style.overflow = "hidden";
+            body.style.overscrollBehavior = "contain";
+            body.style.touchAction = "none"; // iOS
+            // pause Lenis if present (set __lenis in your SmoothScroll)
+            (window as any).__lenis?.stop?.();
+        } else {
+            root.style.overflow = "";
+            body.style.overscrollBehavior = "";
+            body.style.touchAction = "";
+            (window as any).__lenis?.start?.();
+        }
+
+        return () => {
+            root.style.overflow = "";
+            body.style.overscrollBehavior = "";
+            body.style.touchAction = "";
+        };
+    }, [open]);
+
     const chime = () => {
-        try { if (!audioRef.current) return; audioRef.current.currentTime = 0; void audioRef.current.play(); } catch {}
+        try {
+            if (!audioRef.current) return;
+            audioRef.current.currentTime = 0;
+            void audioRef.current.play();
+        } catch {}
     };
+
     const popConfetti = (count = 80) => {
         if (prefersReducedMotion) return;
         const angleBase = 60;
@@ -130,9 +162,9 @@ export function ConsultationCTA({
                     onClick={handleOpen}
                     className={[
                         "inline-flex items-center justify-center rounded-full",
-                        "h-11 px-4 text-sm",            // mobile
-                        "sm:h-12 sm:px-5 sm:text-base", // tablet+
-                        mobileFullWidth ? "w-full" : "w-auto", // <- NEW
+                        "h-11 px-4 text-sm",
+                        "sm:h-12 sm:px-5 sm:text-base",
+                        mobileFullWidth ? "w-full" : "w-auto",
                         "sm:w-auto max-w-full",
                         "bg-gradient-revzion text-white shadow-sm",
                         "hover:opacity-90 transition-opacity",
@@ -176,12 +208,8 @@ export function ConsultationCTA({
                         "inline-flex items-center justify-center select-none rounded-full border shadow-sm",
                         "h-9 px-3 sm:h-10 sm:px-4 lg:h-11 lg:px-5",
                         "text-[11px] sm:text-sm lg:text-base font-medium tracking-tight whitespace-nowrap",
-                        slots > 0
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                            : "bg-amber-50 text-amber-700 border-amber-200",
-                        slots > 0 && slots <= 2
-                            ? "ring-1 ring-amber-300/50 animate-[pulse_1.8s_ease-in-out_infinite]"
-                            : "",
+                        slots > 0 ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-amber-50 text-amber-700 border-amber-200",
+                        slots > 0 && slots <= 2 ? "ring-1 ring-amber-300/50 animate-[pulse_1.8s_ease-in-out_infinite]" : "",
                         "transition-colors hover:bg-white/70",
                     ].join(" ")}
                     role="status"
@@ -196,12 +224,8 @@ export function ConsultationCTA({
                         ].join(" ")}
                         aria-hidden="true"
                     />
-
-                    {/* mobile: stacked label; sm+: single line */}
                     <span className="sm:hidden leading-tight">
-      <span className="block uppercase tracking-wider opacity-70 -mb-0.5">
-        slots
-      </span>
+            <span className="block uppercase tracking-wider opacity-70 -mb-0.5">slots</span>
                         {slots > 0 ? (
                             <>
                                 <span className="font-semibold tabular-nums">{slots}</span>
@@ -210,18 +234,16 @@ export function ConsultationCTA({
                         ) : (
                             <span className="font-semibold">Filling fast</span>
                         )}
-    </span>
-
+          </span>
                     <span className="hidden sm:inline">
-      {slots > 0 ? (
-          <>
-              <span className="font-semibold tabular-nums">{slots}</span> left this
-              week
-          </>
-      ) : (
-          "Slots filling fast"
-      )}
-    </span>
+            {slots > 0 ? (
+                <>
+                    <span className="font-semibold tabular-nums">{slots}</span> left this week
+                </>
+            ) : (
+                "Slots filling fast"
+            )}
+          </span>
                 </div>
             )}
 
@@ -230,56 +252,74 @@ export function ConsultationCTA({
                     <Trigger />
                 </DialogTrigger>
 
-                {/* Full-height dialog with sticky header */}
-                <DialogContent className="w-[min(100vw,900px)] p-0 overflow-hidden sm:rounded-lg">
-                    {/* ONE Tabs wrapper for header & content */}
-                    <Tabs value={tab} onValueChange={(v) => setTab(v as "cal" | "form")}>
-                        <div className="flex flex-col max-h-[calc(100svh-24px)]">
-                            {/* Sticky header */}
-                            <DialogHeader className="sticky top-0 z-10 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 px-5 sm:px-6 pt-5 pb-4">
-                                <DialogTitle>Book your free consultation</DialogTitle>
-                                <DialogDescription className="mt-1">
-                                    Pick a time right now or leave your details — we’ll respond within 24–48 hours.
-                                </DialogDescription>
+                {/* Overlay + Content in a Portal with higher z-index than your navbar */}
+                <DialogPortal>
+                    <DialogOverlay
+                        className="
+              fixed inset-0 z-[11000]
+              bg-black/70 backdrop-blur-sm
+              data-[state=open]:animate-in data-[state=closed]:animate-out
+              data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0
+            "
+                    />
+                    <DialogContent
+                        className="
+              z-[11010] w-[min(100vw,900px)]
+              p-0 overflow-hidden sm:rounded-lg
+              data-[state=open]:animate-in data-[state=closed]:animate-out
+              data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95
+              data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0
+            "
+                    >
+                        {/* ONE Tabs wrapper for header & content */}
+                        <Tabs value={tab} onValueChange={(v) => setTab(v as "cal" | "form")}>
+                            <div className="flex flex-col max-h-[calc(100svh-24px)]">
+                                {/* Sticky header */}
+                                <DialogHeader className="sticky top-0 z-10 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 px-5 sm:px-6 pt-5 pb-4">
+                                    <DialogTitle>Book your free consultation</DialogTitle>
+                                    <DialogDescription className="mt-1">
+                                        Pick a time right now or leave your details — we’ll respond within 24–48 hours.
+                                    </DialogDescription>
 
-                                <TabsList className="grid grid-cols-2 w-full mt-3">
-                                    <TabsTrigger value="cal">
-                                        <Calendar className="h-4 w-4 mr-2" />
-                                        Book a time
-                                    </TabsTrigger>
-                                    <TabsTrigger value="form">Quick form</TabsTrigger>
-                                </TabsList>
-                            </DialogHeader>
+                                    <TabsList className="grid grid-cols-2 w-full mt-3">
+                                        <TabsTrigger value="cal">
+                                            <Calendar className="h-4 w-4 mr-2" />
+                                            Book a time
+                                        </TabsTrigger>
+                                        <TabsTrigger value="form">Quick form</TabsTrigger>
+                                    </TabsList>
+                                </DialogHeader>
 
-                            {/* Scrollable area */}
-                            <div className="px-5 sm:px-6 pb-[max(16px,env(safe-area-inset-bottom))] overflow-y-auto">
-                                <TabsContent value="cal" className="mt-4">
-                                    <div className="relative overflow-hidden rounded-xl border bg-white">
-                                        <iframe
-                                            title="Calendly booking"
-                                            src={calendlyUrl}
-                                            className="w-full h-[65svh] sm:h-[620px] min-h-[420px]"
-                                            loading="lazy"
-                                            referrerPolicy="no-referrer-when-downgrade"
-                                            allow="clipboard-read; clipboard-write"
-                                            sandbox="allow-forms allow-popups allow-scripts allow-same-origin allow-top-navigation-by-user-activation"
-                                        />
-                                    </div>
-                                    <p className="mt-3 text-xs text-gray-500">
-                                        Don’t see a time that works? Switch to the quick form — we’ll find a slot for you.
-                                    </p>
-                                    <div className="mt-4 flex justify-end">
-                                        <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>
-                                    </div>
-                                </TabsContent>
+                                {/* Scrollable area */}
+                                <div className="px-5 sm:px-6 pb-[max(16px,env(safe-area-inset-bottom))] overflow-y-auto">
+                                    <TabsContent value="cal" className="mt-4">
+                                        <div className="relative overflow-hidden rounded-xl border bg-white">
+                                            <iframe
+                                                title="Calendly booking"
+                                                src={calendlyUrl}
+                                                className="w-full h-[65svh] sm:h-[620px] min-h-[420px]"
+                                                loading="lazy"
+                                                referrerPolicy="no-referrer-when-downgrade"
+                                                allow="clipboard-read; clipboard-write"
+                                                sandbox="allow-forms allow-popups allow-scripts allow-same-origin allow-top-navigation-by-user-activation"
+                                            />
+                                        </div>
+                                        <p className="mt-3 text-xs text-gray-500">
+                                            Don’t see a time that works? Switch to the quick form — we’ll find a slot for you.
+                                        </p>
+                                        <div className="mt-4 flex justify-end">
+                                            <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>
+                                        </div>
+                                    </TabsContent>
 
-                                <TabsContent value="form" className="mt-4">
-                                    <LeadForm onSuccess={() => { handleBooked(); setOpen(false); }} />
-                                </TabsContent>
+                                    <TabsContent value="form" className="mt-4">
+                                        <LeadForm onSuccess={() => { handleBooked(); setOpen(false); }} />
+                                    </TabsContent>
+                                </div>
                             </div>
-                        </div>
-                    </Tabs>
-                </DialogContent>
+                        </Tabs>
+                    </DialogContent>
+                </DialogPortal>
             </Dialog>
         </div>
     );
