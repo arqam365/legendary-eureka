@@ -212,7 +212,10 @@ export default function ServicesPage() {
         </section>
 
         {/* ================== Process (timeline + carousel) ================== */}
-        <section className="py-16 sm:py-20 bg-gray-50" aria-labelledby="process-heading">
+        <section
+            className="py-14 sm:py-20 lg:py-28 bg-[linear-gradient(180deg,#f8fafc,rgba(248,250,252,0))]"
+            aria-labelledby="process-heading"
+        >
           <motion.div
               className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
               variants={sectionReveal}
@@ -221,75 +224,104 @@ export default function ServicesPage() {
               viewport={{ once: true, amount: 0.25 }}
           >
             {/* Header */}
-            <motion.div variants={childReveal} className="text-center mb-10 sm:mb-14">
-              <h2 id="process-heading" className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">
+            <motion.div variants={childReveal} className="text-center mb-10 sm:mb-14 lg:mb-16">
+              <h2
+                  id="process-heading"
+                  className="text-[28px] sm:text-4xl lg:text-[42px] font-heading font-bold tracking-tight text-gray-900"
+              >
                 Our Process
               </h2>
-              <p className="mt-3 text-lg text-gray-600">
-                A proven path from idea to impact — transparent, iterative, measurable.
+              <p className="mt-3 text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
+                A proven path from idea to impact — transparent, iterative, and measurable.
               </p>
+
+              {/* trust chips */}
+              <div className="mt-5 sm:mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+                {[
+                  "NDA-first engagements",
+                  "Security-by-default",
+                  "C-level comms cadence",
+                  "Global time zones",
+                  "Fixed-bid options",
+                ].map((b) => (
+                    <span
+                        key={b}
+                        className="px-2.5 py-1 sm:px-3 rounded-full text-[11px] sm:text-xs font-medium bg-white border border-gray-200 text-gray-800 shadow-sm"
+                    >
+            {b}
+          </span>
+                ))}
+              </div>
             </motion.div>
 
             {/* Mobile: snap carousel */}
             <div className="md:hidden">
               <div className="relative -mx-4 px-4" aria-label="Process steps (horizontally scrollable)">
-                <div className="flex snap-x snap-mandatory overflow-x-auto gap-4 pb-4 no-scrollbar">
+                <div className="flex snap-x snap-mandatory overflow-x-auto gap-4 pb-3 no-scrollbar">
                   {processSteps.map((step, i) => (
                       <motion.article
                           key={step.title}
                           tabIndex={0}
                           aria-label={`Step ${i + 1}: ${step.title}`}
-                          className="snap-center shrink-0 w-[84%] rounded-2xl border border-gray-200 bg-white shadow-sm p-5"
+                          className="snap-center shrink-0 w-[86%] rounded-2xl border border-white/60 bg-white/80 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(2,6,23,0.12)] p-5"
                           variants={childReveal}
-                          whileHover={prefersReduced ? undefined : { y: -2, scale: 1.01 }}
+                          whileHover={!prefersReduced ? { y: -2, scale: 1.01 } : undefined}
                           whileTap={{ scale: 0.995 }}
                           viewport={{ once: true, amount: 0.4 }}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="grid h-12 w-12 place-items-center rounded-full bg-gradient-revzion text-white">
+                        <div className="flex items-center justify-between">
+                          <div className="grid h-11 w-11 place-items-center rounded-full bg-gradient-revzion text-white">
                             {step.icon}
                           </div>
-                          <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full border border-primary/30 px-2 text-xs font-semibold text-primary">
-                        {i + 1}
-                      </span>
+                          <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full border border-primary/30 px-2 text-[11px] font-semibold text-primary">
+                  {`Step ${i + 1}`}
+                </span>
                         </div>
 
                         <h3 className="mt-4 text-lg font-heading font-semibold text-gray-900">
                           {step.title}
                         </h3>
-                        <p className="mt-2 text-gray-600 leading-relaxed">{step.description}</p>
+                        <p className="mt-2 text-[15px] text-gray-700 leading-relaxed">
+                          {step.description}
+                        </p>
+
+                        {"duration" in step && step.duration ? (
+                            <div className="mt-3 text-xs text-gray-500">
+                              Duration: <span className="font-medium text-gray-700">{(step as any).duration}</span>
+                            </div>
+                        ) : null}
                       </motion.article>
                   ))}
                 </div>
 
                 {/* progress rail */}
-                <div className="relative mt-1 h-1 rounded-full bg-gray-200/70">
+                <div className="relative mt-2 h-1 rounded-full bg-gray-200/70 overflow-hidden">
                   <div className="absolute inset-y-0 left-0 w-1/3 rounded-full bg-primary/60 [animation:loadbar_8s_linear_infinite]" />
                 </div>
               </div>
             </div>
 
-            {/* Desktop: connected timeline grid */}
-            <div className="hidden md:grid relative grid-cols-12 gap-8">
-              {/* animated center spine */}
+            {/* Tablet/Desktop: alternating timeline with equal-height cards */}
+            <div className="hidden md:grid relative grid-cols-12 gap-6 lg:gap-8 items-stretch">
+              {/* center spine */}
               <motion.div
                   aria-hidden
-                  className="pointer-events-none absolute left-1/2 top-4 hidden w-[2px] -translate-x-1/2 rounded-full bg-gradient-to-b from-primary/40 via-primary/30 to-transparent md:block"
+                  className="pointer-events-none absolute left-1/2 top-4 hidden w-[2px] -translate-x-1/2 rounded-full bg-gradient-to-b from-primary/40 via-primary/25 to-transparent md:block"
                   initial={{ height: 0, opacity: 0 }}
                   whileInView={{ height: "100%", opacity: 1 }}
                   transition={{ duration: 1.1, ease: "easeOut" }}
               />
 
               {processSteps.map((step, i) => {
-                const leftSide = i % 2 === 0
+                const left = i % 2 === 0;
                 return (
                     <motion.article
                         key={step.title}
                         tabIndex={0}
                         aria-label={`Step ${i + 1}: ${step.title}`}
                         className={[
-                          "col-span-12 md:col-span-6",
-                          leftSide ? "md:pr-8 md:justify-self-end" : "md:pl-8 md:justify-self-start",
+                          "col-span-12 md:col-span-6 flex",          // flex wrapper to allow the card to stretch
+                          left ? "md:pr-6 lg:pr-10 md:justify-self-end" : "md:pl-6 lg:pl-10 md:justify-self-start",
                         ].join(" ")}
                         initial={{ opacity: 0, y: 18, scale: 0.98 }}
                         whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -297,22 +329,34 @@ export default function ServicesPage() {
                         viewport={{ once: true, amount: 0.35 }}
                     >
                       <motion.div
-                          className="relative rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-                          whileHover={prefersReduced ? undefined : { y: -4, boxShadow: "0px 12px 30px -20px rgba(2,6,23,0.25)" }}
+                          className="
+                relative flex flex-col justify-between
+                h-full w-90
+                min-h-[240px] sm:min-h-[260px] lg:min-h-[280px]
+                rounded-2xl
+                border border-white/70
+                bg-white/90
+                backdrop-blur-xl
+                p-6 sm:p-7 lg:p-8
+                shadow-[0_16px_48px_-20px_rgba(2,6,23,0.18)]
+                transition-all duration-300
+              "
+                          whileHover={!prefersReduced ? { y: -4, boxShadow: "0px 22px 62px -28px rgba(2,6,23,0.28)" } : undefined}
                           transition={{ type: "spring", stiffness: 420, damping: 30 }}
                       >
                         {/* node connector */}
                         <motion.span
                             aria-hidden
                             className={[
-                              "absolute top-8 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-white bg-primary/90 shadow-md",
-                              leftSide ? "right-[-10px]" : "left-[-10px]",
+                              "absolute top-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 border-white bg-primary/90 shadow-md",
+                              left ? "right-[-10px]" : "left-[-10px]",
                             ].join(" ")}
                             initial={{ scale: 0, opacity: 0 }}
                             whileInView={{ scale: 1, opacity: 1 }}
                             transition={{ type: "spring", stiffness: 500, damping: 18, delay: 0.05 }}
                         />
 
+                        {/* top row */}
                         <div className="flex items-center gap-3">
                           <motion.div
                               className="grid h-12 w-12 place-items-center rounded-full bg-gradient-revzion text-white"
@@ -327,35 +371,64 @@ export default function ServicesPage() {
                           </div>
                         </div>
 
-                        <h3 className="mt-4 text-xl font-heading font-semibold text-gray-900">
-                          {step.title}
-                        </h3>
-                        <p className="mt-2 text-gray-600 leading-relaxed">{step.description}</p>
+                        {/* body */}
+                        <div className="mt-4 flex flex-wrap items-start justify-between gap-3">
+                          <h3 className="text-lg sm:text-xl font-heading font-semibold text-gray-900">
+                            {step.title}
+                          </h3>
+                          {"duration" in step && (step as any).duration ? (
+                              <span className="inline-flex items-center rounded-full bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-1 border border-gray-200">
+                    {(step as any).duration}
+                  </span>
+                          ) : null}
+                        </div>
+
+                        <p className="mt-2 text-[15px] sm:text-base text-gray-700 leading-relaxed">
+                          {step.description}
+                        </p>
+
+                        {/* optional list */}
+                        {Array.isArray((step as any).deliverables) && (step as any).deliverables.length ? (
+                            <ul className="mt-3 grid gap-1.5 text-sm text-gray-600">
+                              {(step as any).deliverables.map((d: string) => (
+                                  <li key={d} className="flex items-center">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2" /> {d}
+                                  </li>
+                              ))}
+                            </ul>
+                        ) : null}
                       </motion.div>
                     </motion.article>
-                )
+                );
               })}
             </div>
 
-            {/* small CTA/footer under timeline */}
+            {/* CTA / footer */}
             <motion.div
-                className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
+                className="mt-10 sm:mt-12 flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
                 initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: EASE }}
                 viewport={{ once: true, amount: 0.3 }}
             >
-              <Link href="/process" className="text-primary hover:underline font-medium" aria-label="Read about our delivery playbook">
+              <Link
+                  href="/process"
+                  className="text-primary hover:underline font-medium"
+                  aria-label="Read our detailed delivery playbook"
+              >
                 See the detailed playbook
               </Link>
               <span className="hidden sm:inline text-gray-300">•</span>
-              <Link href="/portfolio" className="text-gray-700 hover:text-primary font-medium" aria-label="Explore recent case studies">
+              <Link
+                  href="/portfolio"
+                  className="text-gray-700 hover:text-primary font-medium"
+                  aria-label="Explore recent case studies"
+              >
                 View recent case studies
               </Link>
             </motion.div>
           </motion.div>
 
-          {/* tiny util: hide the scroll bar on mobile carousel */}
           <style jsx>{`
             .no-scrollbar::-webkit-scrollbar { display: none; }
             .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -412,46 +485,70 @@ export default function ServicesPage() {
         </section>
 
         {/* ============================= FAQ ============================= */}
-        <section className="py-16 bg-gray-50">
+        <section className="py-20 bg-gray-50">
           <motion.div
-              className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
+              className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={sectionReveal}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.2 }}
           >
-            <motion.div variants={childReveal} className="text-center mb-10">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-3">FAQ</h2>
-              <p className="text-lg text-gray-600">Short answers to the questions we hear most.</p>
+            {/* Heading */}
+            <motion.div variants={childReveal} className="text-center mb-14">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-3">
+                FAQ
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Short answers to the questions we hear most often.
+              </p>
             </motion.div>
 
-            <motion.div variants={childReveal} className="bg-white/70 rounded-xl backdrop-blur">
-              <Accordion type="single" collapsible>
+            {/* Accordion container */}
+            <motion.div
+                variants={childReveal}
+                className="bg-white/80 rounded-2xl shadow-sm border border-gray-200 backdrop-blur-sm p-6 sm:p-8"
+            >
+              <Accordion type="single" collapsible className="divide-y divide-gray-200">
                 <AccordionItem value="q1">
-                  <AccordionTrigger>How do you estimate timeline and cost?</AccordionTrigger>
-                  <AccordionContent>
-                    We run a short discovery to map scope, risks and milestones, then provide a conservative estimate with options
-                    (fixed scope vs. elastic capacity). You get weekly burn-up charts and demo builds.
+                  <AccordionTrigger className="py-4 text-left text-gray-900 font-medium">
+                    How do you estimate timeline and cost?
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4 text-gray-700 leading-relaxed">
+                    We run a short discovery to map scope, risks and milestones, then
+                    provide a conservative estimate with options (fixed scope vs. elastic
+                    capacity). You get weekly burn-up charts and demo builds.
                   </AccordionContent>
                 </AccordionItem>
+
                 <AccordionItem value="q2">
-                  <AccordionTrigger>Can you work with our in-house team?</AccordionTrigger>
-                  <AccordionContent>
-                    Absolutely. Most engagements pair our pod with your PM/tech lead. We follow your rituals, repos and CI,
-                    and leave a clean knowledge trail.
+                  <AccordionTrigger className="py-4 text-left text-gray-900 font-medium">
+                    Can you work with our in-house team?
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4 text-gray-700 leading-relaxed">
+                    Absolutely. Most engagements pair our pod with your PM/tech lead. We
+                    follow your rituals, repos and CI, and leave a clean knowledge trail.
                   </AccordionContent>
                 </AccordionItem>
+
                 <AccordionItem value="q3">
-                  <AccordionTrigger>Do you provide post-launch support?</AccordionTrigger>
-                  <AccordionContent>
-                    Yes — we offer SLAs with monitoring, incident response, upgrades and a rolling roadmap to keep shipping value.
+                  <AccordionTrigger className="py-4 text-left text-gray-900 font-medium">
+                    Do you provide post-launch support?
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4 text-gray-700 leading-relaxed">
+                    Yes — we offer SLAs with monitoring, incident response, upgrades and
+                    a rolling roadmap to keep shipping value.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
             </motion.div>
 
-            <motion.div variants={childReveal} className="text-center mt-8">
-              <Button asChild className="bg-gradient-revzion hover:opacity-90">
+            {/* CTA */}
+            <motion.div variants={childReveal} className="text-center mt-12">
+              <Button
+                  asChild
+                  size="lg"
+                  className="bg-gradient-revzion hover:opacity-90 rounded-full px-6 py-3"
+              >
                 <Link href="/contact">Ask a different question</Link>
               </Button>
             </motion.div>

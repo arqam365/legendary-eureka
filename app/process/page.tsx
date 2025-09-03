@@ -298,38 +298,69 @@ export default function ProcessPage() {
             </section>
 
             {/* ============================== FAQ ============================== */}
-            <section className="py-16 bg-gray-50">
+            <section className="py-20 bg-gray-50">
                 <motion.div
-                    className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
+                    className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
                     variants={sectionReveal}
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true, amount: 0.25 }}
                 >
-                    <motion.div variants={childReveal} className="text-center mb-10">
-                        <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">Process FAQ</h2>
-                        <p className="mt-3 text-lg text-gray-600">What it’s like to ship with us.</p>
+                    {/* Heading */}
+                    <motion.div variants={childReveal} className="text-center mb-14">
+                        <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">
+                            Process FAQ
+                        </h2>
+                        <p className="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">
+                            What it’s like to ship with us.
+                        </p>
                     </motion.div>
 
-                    <motion.div variants={childReveal} className="bg-white/70 rounded-xl backdrop-blur">
-                        <Accordion type="single" collapsible>
+                    {/* Accordion */}
+                    <motion.div
+                        variants={childReveal}
+                        className="bg-white/80 rounded-2xl shadow-sm border border-gray-200 backdrop-blur-sm p-6 sm:p-8"
+                    >
+                        <Accordion type="single" collapsible className="divide-y divide-gray-200">
                             <AccordionItem value="1">
-                                <AccordionTrigger>How long is discovery?</AccordionTrigger>
-                                <AccordionContent>Usually 1–2 weeks. Enough to map risks, define v1 and build the first prototype plan.</AccordionContent>
+                                <AccordionTrigger className="py-4 text-left text-gray-900 font-medium">
+                                    How long is discovery?
+                                </AccordionTrigger>
+                                <AccordionContent className="pb-4 text-gray-700 leading-relaxed">
+                                    Usually 1–2 weeks. Enough to map risks, define v1 and build the first
+                                    prototype plan.
+                                </AccordionContent>
                             </AccordionItem>
+
                             <AccordionItem value="2">
-                                <AccordionTrigger>Do you handle security & compliance?</AccordionTrigger>
-                                <AccordionContent>Yes — we apply OWASP hardening, secret management, SSO and can align with SOC2/GDPR practices.</AccordionContent>
+                                <AccordionTrigger className="py-4 text-left text-gray-900 font-medium">
+                                    Do you handle security & compliance?
+                                </AccordionTrigger>
+                                <AccordionContent className="pb-4 text-gray-700 leading-relaxed">
+                                    Yes — we apply OWASP hardening, secret management, SSO and can align
+                                    with SOC2/GDPR practices.
+                                </AccordionContent>
                             </AccordionItem>
+
                             <AccordionItem value="3">
-                                <AccordionTrigger>How are changes handled mid-project?</AccordionTrigger>
-                                <AccordionContent>We keep a cutline. New work enters the backlog, is sized, and traded against lower-value scope.</AccordionContent>
+                                <AccordionTrigger className="py-4 text-left text-gray-900 font-medium">
+                                    How are changes handled mid-project?
+                                </AccordionTrigger>
+                                <AccordionContent className="pb-4 text-gray-700 leading-relaxed">
+                                    We keep a cutline. New work enters the backlog, is sized, and traded
+                                    against lower-value scope.
+                                </AccordionContent>
                             </AccordionItem>
                         </Accordion>
                     </motion.div>
 
-                    <motion.div variants={childReveal} className="text-center mt-8">
-                        <Button className="bg-gradient-revzion hover:opacity-90" asChild>
+                    {/* CTA */}
+                    <motion.div variants={childReveal} className="text-center mt-12">
+                        <Button
+                            asChild
+                            size="lg"
+                            className="bg-gradient-revzion hover:opacity-90 rounded-full px-6 py-3"
+                        >
                             <Link href="/contact">Ask something specific</Link>
                         </Button>
                     </motion.div>
