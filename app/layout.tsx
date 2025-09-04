@@ -110,17 +110,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
             </Script>
 
-            {/* (Optional) Direct GA4 loader — remove if GA4 is ONLY via GTM */}
-            <Script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
-            <Script id="rvz-ga4" strategy="afterInteractive">
-                {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${gaId}', { anonymize_ip: true });
-          `}
-            </Script>
-
             {/* Organization + Website JSON-LD */}
             <Script id="rvz-org-ld" type="application/ld+json" strategy="afterInteractive">
                 {JSON.stringify({
