@@ -1,7 +1,8 @@
 "use client"
 
+import React from "react"
 import Link from "next/link"
-import { motion, useReducedMotion, Variants } from "framer-motion"
+import { motion, useReducedMotion, type Variants } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Navigation } from "@/components/navigation"
@@ -28,6 +29,154 @@ const childReveal: Variants = {
   show:   { opacity: 1, y: 0,  scale: 1, transition: { duration: 0.5, ease: EASE } },
 }
 
+/* ======================= Mobile Process Carousel ======================== */
+type ProcStep = {
+  icon: React.ReactNode
+  title: string
+  description: string
+  duration?: string
+  deliverables?: string[]
+}
+
+function ProcessCarouselMobile({
+                                 steps,
+                                 autoMs = 8000,
+                               }: {
+  steps: ProcStep[]
+  autoMs?: number
+}) {
+  const prefersReduced = useReducedMotion()
+  const scrollerRef = React.useRef<HTMLDivElement>(null)
+  const [active, setActive] = React.useState(0)
+  const [paused, setPaused] = React.useState(false)
+
+  const goTo = React.useCallback((idx: number) => {
+    const scroller = scrollerRef.current
+    setActive(idx)
+    const el = scroller?.children[idx] as HTMLElement | undefined
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" })
+  }, [])
+
+  // auto-advance
+  React.useEffect(() => {
+    if (prefersReduced || paused || steps.length <= 1) return
+    const id = setTimeout(() => goTo((active + 1) % steps.length), autoMs)
+    return () => clearTimeout(id)
+  }, [active, paused, prefersReduced, steps.length, autoMs, goTo])
+
+  // sync active with manual scroll
+  const onScrollSync = React.useCallback(() => {
+    const scroller = scrollerRef.current
+    if (!scroller) return
+    let closest = 0
+    let min = Infinity
+    Array.from(scroller.children).forEach((child, idx) => {
+      const rect = (child as HTMLElement).getBoundingClientRect()
+      const center = rect.left + rect.width / 2
+      const viewportCenter = window.innerWidth / 2
+      const dist = Math.abs(center - viewportCenter)
+      if (dist < min) { min = dist; closest = idx }
+    })
+    setActive(closest)
+  }, [])
+
+  return (
+      <div className="md:hidden">
+        <div className="relative -mx-4 px-4" aria-label="Process steps (horizontally scrollable)">
+          <div
+              ref={scrollerRef}
+              onScroll={onScrollSync}
+              onPointerDown={() => setPaused(true)}
+              onPointerUp={() => setPaused(false)}
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => setPaused(false)}
+              className="flex snap-x snap-mandatory overflow-x-auto gap-4 pb-3 no-scrollbar"
+          >
+            {steps.map((step, i) => (
+                <motion.article
+                    key={step.title}
+                    tabIndex={0}
+                    aria-label={`Step ${i + 1}: ${step.title}`}
+                    className="
+            snap-center shrink-0 w-[86%]
+            rounded-2xl
+            border border-primary/20
+            bg-white/80 backdrop-blur-xl
+            shadow-[0_12px_40px_-12px_rgba(37,99,235,0.25)]
+            p-5
+            transition-all duration-300
+          "
+                    variants={childReveal}
+                    whileHover={!prefersReduced ? { y: -3, scale: 1.01, boxShadow: "0 18px 48px -12px rgba(37,99,235,0.3)" } : undefined}
+                    whileTap={{ scale: 0.99 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    onClick={() => goTo(i)}
+                >
+                  <div className="flex items-center justify-between">
+                    {/* Icon bubble */}
+                    <div className="grid h-11 w-11 place-items-center rounded-full bg-gradient-revzion text-white shadow-md">
+                      {step.icon}
+                    </div>
+
+                    {/* Step badge */}
+                    <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full border border-primary/30 bg-primary/10 px-2 text-[11px] font-semibold text-primary">
+              {`Step ${i + 1}`}
+            </span>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="mt-4 text-lg font-heading font-semibold text-gray-900">
+                    {step.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="mt-2 text-[15px] text-gray-700 leading-relaxed">
+                    {step.description}
+                  </p>
+
+                  {/* Optional duration */}
+                  {step.duration ? (
+                      <div className="mt-3 text-xs text-gray-500">
+                        Duration:{" "}
+                        <span className="font-medium text-gray-700">{step.duration}</span>
+                      </div>
+                  ) : null}
+                </motion.article>
+            ))}
+          </div>
+
+          {/* Progress rail (themed) */}
+          <div className="relative mt-3 h-1 rounded-full bg-primary/10 overflow-hidden">
+            <div
+                key={active}
+                className="absolute inset-y-0 left-0 w-0 rounded-full bg-gradient-revzion animate-[loadbar_var(--dur)_linear_1_forwards]"
+                style={{ ["--dur" as any]: `${autoMs}ms` }}
+            />
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes loadbar {
+            from {
+              width: 0%;
+            }
+            to {
+              width: 100%;
+            }
+          }
+          .no-scrollbar::-webkit-scrollbar {
+            display: none;
+          }
+          .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `}</style>
+      </div>
+  )
+}
+
+/* ================================= Page ================================= */
 export default function ServicesPage() {
   const prefersReduced = useReducedMotion()
 
@@ -81,10 +230,10 @@ export default function ServicesPage() {
     },
   ]
 
-  const processSteps = [
-    { icon: <Users className="h-8 w-8" />,  title: "Discover",       description: "Align on goals, scope, risks and KPIs." },
-    { icon: <Rocket className="h-8 w-8" />, title: "Design & Build",  description: "Iterate fast with weekly demos." },
-    { icon: <Shield className="h-8 w-8" />, title: "Test & Launch",   description: "QA, security and smooth rollout." },
+  const processSteps: ProcStep[] = [
+    { icon: <Users className="h-8 w-8" />,  title: "Discover",       description: "Align on goals, scope, risks and KPIs.", duration: "1–2 weeks" },
+    { icon: <Rocket className="h-8 w-8" />, title: "Design & Build",  description: "Iterate fast with weekly demos.",        duration: "2–6 weeks" },
+    { icon: <Shield className="h-8 w-8" />, title: "Test & Launch",   description: "QA, security and smooth rollout.",       duration: "1–2 weeks" },
     { icon: <Zap className="h-8 w-8" />,    title: "Operate & Scale", description: "SLOs, monitoring and roadmap." },
   ]
 
@@ -248,58 +397,14 @@ export default function ServicesPage() {
                         key={b}
                         className="px-2.5 py-1 sm:px-3 rounded-full text-[11px] sm:text-xs font-medium bg-white border border-gray-200 text-gray-800 shadow-sm"
                     >
-            {b}
-          </span>
+                  {b}
+                </span>
                 ))}
               </div>
             </motion.div>
 
-            {/* Mobile: snap carousel */}
-            <div className="md:hidden">
-              <div className="relative -mx-4 px-4" aria-label="Process steps (horizontally scrollable)">
-                <div className="flex snap-x snap-mandatory overflow-x-auto gap-4 pb-3 no-scrollbar">
-                  {processSteps.map((step, i) => (
-                      <motion.article
-                          key={step.title}
-                          tabIndex={0}
-                          aria-label={`Step ${i + 1}: ${step.title}`}
-                          className="snap-center shrink-0 w-[86%] rounded-2xl border border-white/60 bg-white/80 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(2,6,23,0.12)] p-5"
-                          variants={childReveal}
-                          whileHover={!prefersReduced ? { y: -2, scale: 1.01 } : undefined}
-                          whileTap={{ scale: 0.995 }}
-                          viewport={{ once: true, amount: 0.4 }}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="grid h-11 w-11 place-items-center rounded-full bg-gradient-revzion text-white">
-                            {step.icon}
-                          </div>
-                          <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full border border-primary/30 px-2 text-[11px] font-semibold text-primary">
-                  {`Step ${i + 1}`}
-                </span>
-                        </div>
-
-                        <h3 className="mt-4 text-lg font-heading font-semibold text-gray-900">
-                          {step.title}
-                        </h3>
-                        <p className="mt-2 text-[15px] text-gray-700 leading-relaxed">
-                          {step.description}
-                        </p>
-
-                        {"duration" in step && step.duration ? (
-                            <div className="mt-3 text-xs text-gray-500">
-                              Duration: <span className="font-medium text-gray-700">{(step as any).duration}</span>
-                            </div>
-                        ) : null}
-                      </motion.article>
-                  ))}
-                </div>
-
-                {/* progress rail */}
-                <div className="relative mt-2 h-1 rounded-full bg-gray-200/70 overflow-hidden">
-                  <div className="absolute inset-y-0 left-0 w-1/3 rounded-full bg-primary/60 [animation:loadbar_8s_linear_infinite]" />
-                </div>
-              </div>
-            </div>
+            {/* Mobile: snap carousel with auto-advance */}
+            <ProcessCarouselMobile steps={processSteps} autoMs={8000} />
 
             {/* Tablet/Desktop: alternating timeline with equal-height cards */}
             <div className="hidden md:grid relative grid-cols-12 gap-6 lg:gap-8 items-stretch">
@@ -313,14 +418,14 @@ export default function ServicesPage() {
               />
 
               {processSteps.map((step, i) => {
-                const left = i % 2 === 0;
+                const left = i % 2 === 0
                 return (
                     <motion.article
                         key={step.title}
                         tabIndex={0}
                         aria-label={`Step ${i + 1}: ${step.title}`}
                         className={[
-                          "col-span-12 md:col-span-6 flex",          // flex wrapper to allow the card to stretch
+                          "col-span-12 md:col-span-6 flex",
                           left ? "md:pr-6 lg:pr-10 md:justify-self-end" : "md:pl-6 lg:pl-10 md:justify-self-start",
                         ].join(" ")}
                         initial={{ opacity: 0, y: 18, scale: 0.98 }}
@@ -330,17 +435,17 @@ export default function ServicesPage() {
                     >
                       <motion.div
                           className="
-                relative flex flex-col justify-between
-                h-full w-90
-                min-h-[240px] sm:min-h-[260px] lg:min-h-[280px]
-                rounded-2xl
-                border border-white/70
-                bg-white/90
-                backdrop-blur-xl
-                p-6 sm:p-7 lg:p-8
-                shadow-[0_16px_48px_-20px_rgba(2,6,23,0.18)]
-                transition-all duration-300
-              "
+                      relative flex flex-col justify-between
+                      h-full w-90
+                      min-h-[240px] sm:min-h-[260px] lg:min-h-[280px]
+                      rounded-2xl
+                      border border-white/70
+                      bg-white/90
+                      backdrop-blur-xl
+                      p-6 sm:p-7 lg:p-8
+                      shadow-[0_16px_48px_-20px_rgba(2,6,23,0.18)]
+                      transition-all duration-300
+                    "
                           whileHover={!prefersReduced ? { y: -4, boxShadow: "0px 22px 62px -28px rgba(2,6,23,0.28)" } : undefined}
                           transition={{ type: "spring", stiffness: 420, damping: 30 }}
                       >
@@ -376,10 +481,10 @@ export default function ServicesPage() {
                           <h3 className="text-lg sm:text-xl font-heading font-semibold text-gray-900">
                             {step.title}
                           </h3>
-                          {"duration" in step && (step as any).duration ? (
+                          {step.duration ? (
                               <span className="inline-flex items-center rounded-full bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-1 border border-gray-200">
-                    {(step as any).duration}
-                  </span>
+                          {step.duration}
+                        </span>
                           ) : null}
                         </div>
 
@@ -388,9 +493,9 @@ export default function ServicesPage() {
                         </p>
 
                         {/* optional list */}
-                        {Array.isArray((step as any).deliverables) && (step as any).deliverables.length ? (
+                        {Array.isArray(step.deliverables) && step.deliverables.length ? (
                             <ul className="mt-3 grid gap-1.5 text-sm text-gray-600">
-                              {(step as any).deliverables.map((d: string) => (
+                              {step.deliverables.map((d) => (
                                   <li key={d} className="flex items-center">
                                     <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2" /> {d}
                                   </li>
@@ -399,7 +504,7 @@ export default function ServicesPage() {
                         ) : null}
                       </motion.div>
                     </motion.article>
-                );
+                )
               })}
             </div>
 
@@ -432,7 +537,6 @@ export default function ServicesPage() {
           <style jsx>{`
             .no-scrollbar::-webkit-scrollbar { display: none; }
             .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-            @keyframes loadbar { 0% {width: 0%} 100% {width: 100%} }
           `}</style>
         </section>
 
