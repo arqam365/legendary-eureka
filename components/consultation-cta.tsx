@@ -6,14 +6,8 @@ import { useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogTrigger,
-    DialogOverlay,
-    DialogPortal,
+    Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
+    DialogTrigger, DialogOverlay, DialogPortal,
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -22,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { ArrowRight, Calendar, Sparkles } from "lucide-react";
 
-/* -------------------------------- Types ------------------------------- */
+/* ----------------------------- Types ----------------------------- */
 type Appearance = "button" | "pill" | "link";
 
 type Props = {
@@ -37,11 +31,38 @@ type Props = {
 
 const INITIAL_WEEKLY_SLOTS = 5;
 
+/* ----------------------------- Tracking ----------------------------- */
+// type-safety for window integrations
+declare global {
+    interface Window {
+        /** Google Tag Manager dataLayer */
+        dataLayer: any[]; // must match every declaration exactly
+        /** GA4 gtag helper (injected by GTM or GA script) */
+        gtag: (...args: any[]) => void;
+    }
+}
+
+function pushToDataLayer(event: string, params: Record<string, any> = {}) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event, ...params });
+}
+
+function gtagEvent(event: string, params: Record<string, any> = {}) {
+    if (typeof window.gtag === "function") {
+        window.gtag("event", event, params);
+    }
+}
+
+/** Unified tracker: fires both GTM (dataLayer) and GA4 (gtag) */
+function track(event: string, params: Record<string, any> = {}) {
+    pushToDataLayer(event, params);
+    gtagEvent(event, params);
+}
+
 /* -------------------- Weekly slots (localStorage) -------------------- */
 function useWeeklySlots(initial = INITIAL_WEEKLY_SLOTS) {
     const [slots, setSlots] = useState<number>(initial);
     const [mounted, setMounted] = useState(false);
-
     useEffect(() => setMounted(true), []);
 
     useEffect(() => {
@@ -110,6 +131,12 @@ export function ConsultationCTA({
         audioRef.current = a;
     }, []);
 
+    // first paint/impression tracking for CTA
+    useEffect(() => {
+        track("consultation_cta_impression", { component: "ConsultationCTA", slots_available: slots });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     // Lock page scroll (and pause Lenis) while dialog is open
     useEffect(() => {
         const root = document.documentElement;
@@ -118,8 +145,7 @@ export function ConsultationCTA({
         if (open) {
             root.style.overflow = "hidden";
             body.style.overscrollBehavior = "contain";
-            body.style.touchAction = "none"; // iOS
-            // pause Lenis if present (set __lenis in your SmoothScroll)
+            body.style.touchAction = "none";
             (window as any).__lenis?.stop?.();
         } else {
             root.style.overflow = "";
@@ -150,8 +176,25 @@ export function ConsultationCTA({
         confetti({ particleCount: count, spread: 55, startVelocity: 28, gravity: 0.9, ticks: 150, origin: { y: 0.2, x: 1 }, scalar: 1.05, angle: 120 - angleBase });
     };
 
-    const handleOpen = () => { setOpen(true); chime(); popConfetti(48); };
-    const handleBooked = () => { decrement(); chime(); popConfetti(120); onBooked?.(); };
+    const handleOpen = () => {
+        setOpen(true);
+        chime();
+        popConfetti(48);
+        track("consultation_cta_open", { component: "ConsultationCTA", appearance, label });
+    };
+
+    const handleBooked = () => {
+        decrement();
+        chime();
+        popConfetti(120);
+        onBooked?.();
+        track("consultation_booked", { method: tab === "cal" ? "calendly" : "form", slots_left: Math.max(0, slots - 1) });
+    };
+
+    // track tab switches (Calendly vs Form)
+    useEffect(() => {
+        track("consultation_cta_tab_view", { tab });
+    }, [tab]);
 
     /* ---------- Trigger renderer (button/pill/link) ---------- */
     const Trigger = () => {
@@ -160,6 +203,7 @@ export function ConsultationCTA({
                 <button
                     type="button"
                     onClick={handleOpen}
+                    data-gtm="consultation_cta_trigger"
                     className={[
                         "inline-flex items-center justify-center rounded-full",
                         "h-11 px-4 text-sm",
@@ -182,6 +226,7 @@ export function ConsultationCTA({
                 <button
                     type="button"
                     onClick={handleOpen}
+                    data-gtm="consultation_cta_link"
                     className={[
                         "group relative inline-flex items-center text-gray-600 dark:text-gray-300",
                         "hover:text-primary focus:outline-none",
@@ -193,14 +238,19 @@ export function ConsultationCTA({
             );
         }
         return (
-            <Button size={size} className={["bg-gradient-revzion hover:opacity-90 transition-opacity", className].join(" ")} onClick={handleOpen}>
+            <Button
+                size={size}
+                onClick={handleOpen}
+                data-gtm="consultation_cta_button"
+                className={["bg-gradient-revzion hover:opacity-90 transition-opacity", className].join(" ")}
+            >
                 {label} <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
         );
     };
 
     return (
-        <div className="relative inline-flex items-center gap-3">
+        <div className="relative inline-flex items-center gap-3" data-gtm="consultation_cta">
             {/* Slots pill (hide on link appearance) */}
             {mounted && appearance !== "link" && appearance !== "pill" && (
                 <div
@@ -215,6 +265,7 @@ export function ConsultationCTA({
                     role="status"
                     aria-live="polite"
                     title="Estimated free 30-min sessions remaining this week"
+                    data-gtm="slots_pill"
                 >
                     <Sparkles
                         className={[
@@ -247,7 +298,10 @@ export function ConsultationCTA({
                 </div>
             )}
 
-            <Dialog open={open} onOpenChange={setOpen}>
+            <Dialog open={open} onOpenChange={(isOpen) => {
+                setOpen(isOpen);
+                track(isOpen ? "consultation_modal_open" : "consultation_modal_close", { source: "ConsultationCTA" });
+            }}>
                 <DialogTrigger asChild>
                     <Trigger />
                 </DialogTrigger>
@@ -282,11 +336,11 @@ export function ConsultationCTA({
                                     </DialogDescription>
 
                                     <TabsList className="grid grid-cols-2 w-full mt-3">
-                                        <TabsTrigger value="cal">
+                                        <TabsTrigger value="cal" data-gtm="cta_tab_cal">
                                             <Calendar className="h-4 w-4 mr-2" />
                                             Book a time
                                         </TabsTrigger>
-                                        <TabsTrigger value="form">Quick form</TabsTrigger>
+                                        <TabsTrigger value="form" data-gtm="cta_tab_form">Quick form</TabsTrigger>
                                     </TabsList>
                                 </DialogHeader>
 
@@ -302,6 +356,8 @@ export function ConsultationCTA({
                                                 referrerPolicy="no-referrer-when-downgrade"
                                                 allow="clipboard-read; clipboard-write"
                                                 sandbox="allow-forms allow-popups allow-scripts allow-same-origin allow-top-navigation-by-user-activation"
+                                                data-gtm="calendly_iframe"
+                                                onLoad={() => track("consultation_calendly_iframe_loaded", { calendlyUrl })}
                                             />
                                         </div>
                                         <p className="mt-3 text-xs text-gray-500">
@@ -340,6 +396,9 @@ function LeadForm({ onSuccess }: { onSuccess: () => void }) {
             message: String(fd.get("message") || ""),
         };
 
+        // pre-submit event
+        track("lead_form_submit_attempt", { ...payload, projectType });
+
         try {
             setLoading(true);
             const res = await fetch("/api/leads", {
@@ -348,8 +407,12 @@ function LeadForm({ onSuccess }: { onSuccess: () => void }) {
                 body: JSON.stringify(payload),
             });
             if (!res.ok) throw new Error("Failed");
+
+            // success
+            track("lead_form_submitted", { ...payload, status: "success" });
             onSuccess();
         } catch {
+            track("lead_form_submitted", { ...payload, status: "error" });
             alert("Something went wrong. Please try again or email contact@revzion.com");
         } finally {
             setLoading(false);
@@ -357,7 +420,7 @@ function LeadForm({ onSuccess }: { onSuccess: () => void }) {
     }
 
     return (
-        <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-2 gap-4" data-gtm="lead_form">
             <div className="col-span-1">
                 <Label htmlFor="name">Your name</Label>
                 <Input id="name" name="name" placeholder="Jane Doe" required />
@@ -369,7 +432,7 @@ function LeadForm({ onSuccess }: { onSuccess: () => void }) {
 
             <div className="col-span-1">
                 <Label>Project type</Label>
-                <Select value={projectType} onValueChange={setProjectType}>
+                <Select value={projectType} onValueChange={(v) => { setProjectType(v); track("lead_form_project_type_change", { projectType: v }); }}>
                     <SelectTrigger><SelectValue placeholder="Select a project type" /></SelectTrigger>
                     <SelectContent>
                         <SelectItem value="SaaS">SaaS / Web App</SelectItem>
@@ -391,7 +454,13 @@ function LeadForm({ onSuccess }: { onSuccess: () => void }) {
                     <Image src="/logo.svg" alt="" width={16} height={16} />
                     We reply within 24–48 hours.
                 </div>
-                <Button type="submit" disabled={loading} className="bg-gradient-revzion">
+                <Button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-gradient-revzion"
+                    data-gtm="lead_form_submit_btn"
+                    onClick={() => track("lead_form_submit_click", { projectType })}
+                >
                     {loading ? "Sending..." : "Send request"}
                     <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>

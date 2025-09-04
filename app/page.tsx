@@ -11,7 +11,7 @@ import {
   useScroll,
   useTransform,
   type MotionValue,
-  type Variants,
+  type Variants, useSpring,
 } from "framer-motion"
 import { gsap } from "gsap"
 import { SplitText } from "gsap/SplitText"
@@ -609,6 +609,74 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
   )
 }
 
+function BrandCursorGlow({
+                           containerRef,
+                           size = 280,           // circle size (px) — tweak to taste
+                           opacity = 0.22,       // overall subtlety
+                         }: {
+  containerRef: React.RefObject<HTMLElement | HTMLDivElement>
+  size?: number
+  opacity?: number
+}) {
+  const prefersReduced = useReducedMotion()
+  const x = useMotionValue(-9999) // parked offscreen initially
+  const y = useMotionValue(-9999)
+  const sx = useSpring(x, { stiffness: 140, damping: 20, mass: 0.4 })
+  const sy = useSpring(y, { stiffness: 140, damping: 20, mass: 0.4 })
+  const [visible, setVisible] = React.useState(false)
+
+  React.useEffect(() => {
+    if (prefersReduced) return
+    const el = containerRef.current
+    if (!el) return
+
+    const onMove: EventListener = (evt) => {
+      const e = evt as PointerEvent
+      if (e.pointerType === "touch") return
+      const rect = el.getBoundingClientRect()
+      const nx = e.clientX - rect.left - size / 2
+      const ny = e.clientY - rect.top - size / 2
+      x.set(nx)
+      y.set(ny)
+      setVisible(true)
+    }
+    const onLeave = () => {
+      setVisible(false)
+      x.set(-9999)
+      y.set(-9999)
+    }
+
+    el.addEventListener("pointermove", onMove, { passive: true })
+    el.addEventListener("pointerleave", onLeave, { passive: true })
+    return () => {
+      el.removeEventListener("pointermove", onMove)
+      el.removeEventListener("pointerleave", onLeave)
+    }
+  }, [containerRef, prefersReduced, size, x, y])
+
+  if (prefersReduced) return null
+
+  return (
+      <motion.div
+          aria-hidden
+          className="
+        pointer-events-none absolute top-0 left-0 z-0
+        rounded-full bg-gradient-revzion
+        blur-3xl md:blur-[48px]
+        mix-blend-multiply
+      "
+          style={{
+            width: size,
+            height: size,
+            x: sx,
+            y: sy,
+            opacity: visible ? opacity : 0,
+            transition: "opacity 220ms ease",
+          }}
+      />
+  )
+}
+
 /* ----------------------------------- Page ----------------------------------- */
 export default function HomePage() {
   const prefersReduced = useReducedMotion()
@@ -714,15 +782,20 @@ export default function HomePage() {
         <ScrollMilestones sections={sectionsList} hideWhenInView="#site-footer" disableBelow={1024} topOffsetPx={96} />
 
         {/* Hero */}
-        <section id="hero" ref={heroRef} className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50">
+        <section
+            id="hero"
+            ref={heroRef}
+            className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50"
+        >
           <motion.div
-              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32"
+              className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32"
               variants={revealOnce}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.25 }}
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* LEFT */}
               <div className="space-y-8">
                 <div className="space-y-4">
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 leading-tight">
@@ -734,32 +807,12 @@ export default function HomePage() {
                   </p>
                 </div>
 
-                <div
-                    className="
-    flex flex-col sm:flex-row
-    gap-4 sm:gap-6 lg:gap-8
-    justify-center sm:justify-start
-    items-stretch sm:items-center
-    w-full
-    max-w-2xl mx-auto
-  "
-                >
-                  {/* CTA button */}
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 justify-center sm:justify-start items-stretch sm:items-center w-full max-w-2xl mx-auto">
                   <ConsultationCTA label="Free Consultation" />
-
-                  {/* Explore button */}
                   <Button
                       size="lg"
                       variant="outline"
-                      className="
-      text-base sm:text-lg
-      px-6 sm:px-8 py-3
-      border-2 border-primary text-primary
-      hover:bg-primary hover:text-white
-      bg-transparent
-      flex items-center justify-center
-      w-full sm:w-auto
-    "
+                      className="text-base sm:text-lg px-6 sm:px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white bg-transparent flex items-center justify-center w-full sm:w-auto"
                   >
                     <Link href="/services" className="flex items-center">
                       Explore Services
@@ -772,7 +825,7 @@ export default function HomePage() {
                     { value: "50+", label: "Projects Delivered" },
                     { value: "100%", label: "Client Satisfaction" },
                     { value: "24/7", label: "Support" },
-                  ].map(m => (
+                  ].map((m) => (
                       <motion.div key={m.label} whileHover={prefersReduced ? undefined : hoverCard} className="text-center">
                         <div className="text-2xl font-heading font-bold text-gray-900">{m.value}</div>
                         <div className="text-sm text-gray-600">{m.label}</div>
@@ -782,11 +835,14 @@ export default function HomePage() {
               </div>
 
               {/* RIGHT: Interactive mockups */}
-              <div className="relative isolate">
+              <div className="relative isolate z-10">
                 <ProductShowcase blobShift={blobShift} />
               </div>
             </div>
           </motion.div>
+
+          {/* 👇 brand-themed mouse-follow glow (behind content) */}
+          <BrandCursorGlow containerRef={heroRef as React.RefObject<HTMLElement>} size={320} opacity={0.24} />
         </section>
 
         {/* Client Impact / Trust bar */}
