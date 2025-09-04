@@ -9,6 +9,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 // If you added the helper I shared earlier, keep this import.
 // Otherwise, remove it and you'll still get first-load hits via GTM.
 import GtmPageview from "@/app/_components/GtmPageview";
+import {Analytics} from "@vercel/analytics/next";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
@@ -175,6 +176,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" strategy="afterInteractive" />
         <Script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" strategy="afterInteractive" />
         <Script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrambleTextPlugin.min.js" strategy="afterInteractive" />
+        <Analytics />
         </body>
         </html>
     );
