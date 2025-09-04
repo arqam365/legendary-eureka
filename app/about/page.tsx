@@ -79,6 +79,7 @@ export default function AboutPage() {
     { name: "Yash Soni", role: "Engineer", bio: "Performance-minded full-stack." },
     { name: "Bharat Agarwal", role: "Engineer", bio: "Architecture & data." },
     { name: "Harshit Savita", role: "Engineer", bio: "Frontend/UI clean builds." },
+    { name: "Prabar Gupta", role: "Designer", bio: "UI/UX clean designs." },
   ]
 
   const values = [
