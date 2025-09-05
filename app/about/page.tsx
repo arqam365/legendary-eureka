@@ -1,11 +1,13 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import {motion, Variants} from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion, Variants } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
 import {
   ArrowRight,
   Users,
@@ -18,39 +20,43 @@ import {
   Linkedin,
   Twitter,
   Github,
-} from "lucide-react"
-import Link from "next/link"
+} from "lucide-react";
 
-/* ---------- minimal motion ---------- */
+/* ---------------- GSAP ---------------- */
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
+
+/* ---------------- Motion (kept lightweight) ---------------- */
+const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
 const revealOnce: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] }
-  },
-}
-const staggerParent = {
+  hidden: { opacity: 0, y: 14, scale: 0.98 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: EASE } },
+};
+
+const staggerParent: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } },
-}
+};
 
 /* md+ detector: animate immediately on small screens (iOS Safari fixes) */
 const useIsMdUp = () => {
-  const [mdUp, setMdUp] = useState(false)
+  const [mdUp, setMdUp] = useState(false);
   useEffect(() => {
-    const mql = window.matchMedia("(min-width: 768px)")
-    const onChange = () => setMdUp(mql.matches)
-    onChange()
-    mql.addEventListener?.("change", onChange)
-    return () => mql.removeEventListener?.("change", onChange)
-  }, [])
-  return mdUp
-}
+    const mql = window.matchMedia("(min-width: 768px)");
+    const onChange = () => setMdUp(mql.matches);
+    onChange();
+    mql.addEventListener?.("change", onChange);
+    return () => mql.removeEventListener?.("change", onChange);
+  }, []);
+  return mdUp;
+};
 
 export default function AboutPage() {
-  const mdUp = useIsMdUp()
+  const mdUp = useIsMdUp();
 
+  /* ---------------- Data ---------------- */
   const teamMembers = [
     {
       name: "Arqam Ahmad Siddiqui",
@@ -61,14 +67,14 @@ export default function AboutPage() {
       twitter: "https://x.com/arqam365",
       github: "https://github.com/arqam365",
     },
-    { name: "Sharad Pratap Singh Sengar", role: "Mobile Developer", bio: "Kotlin Multiplatform developer building fast, reliable Android & iOS apps.", image: "/team/sharad.jpg", linkedin: "#", twitter: "#", github: "#", },
-    { name: "Raj Dwivedi", role: "Backend Engineer & DevOps Specialist", bio: "APIs, CI/CD, and cloud-native reliability across Node/Ktor and modern infra.", image: "/team/raj.jpg", linkedin: "#", twitter: "#", github: "#", },
-    { name: "Bilal Sheikh", role: "Full Stack Engineer", bio: "Bridging frontend and backend to ship robust, user-centric features.", image: "/team/bilal.jpg", linkedin: "#", twitter: "#", github: "#", },
-    { name: "Sneha Sahu", role: "Head of Business Development", bio: "Building partnerships and growth pipelines aligned with product value.", image: "/team/sneha.jpg", linkedin: "#", twitter: "#", github: "#", },
-    { name: "Aanya Agrawal", role: "Mobile Developer", bio: "Compose & KMP enthusiast focused on smooth UX and performance.", image: "/team/aanya.jpg", linkedin: "#", twitter: "#", github: "#", },
-    { name: "Saniya Khan", role: "UI/UX Developer", bio: "Designs intuitive, accessible interfaces with implementation ownership.", image: "/team/saniya.jpg", linkedin: "#", twitter: "#", github: "#", },
-    { name: "Khushi Chaturvedi", role: "UI/UX Expert", bio: "Crafts delightful, user-first experiences grounded in research.", image: "/team/khushi.jpg", linkedin: "#", twitter: "#", github: "#", },
-  ]
+    { name: "Sharad Pratap Singh Sengar", role: "Mobile Developer", bio: "Kotlin Multiplatform developer building fast, reliable Android & iOS apps.", image: "/team/sharad.jpg", linkedin: "#", twitter: "#", github: "#" },
+    { name: "Raj Dwivedi", role: "Backend Engineer & DevOps Specialist", bio: "APIs, CI/CD, and cloud-native reliability across Node/Ktor and modern infra.", image: "/team/raj.jpg", linkedin: "#", twitter: "#", github: "#" },
+    { name: "Bilal Sheikh", role: "Full Stack Engineer", bio: "Bridging frontend and backend to ship robust, user-centric features.", image: "/team/bilal.jpg", linkedin: "#", twitter: "#", github: "#" },
+    { name: "Sneha Sahu", role: "Head of Business Development", bio: "Building partnerships and growth pipelines aligned with product value.", image: "/team/sneha.jpg", linkedin: "#", twitter: "#", github: "#" },
+    { name: "Aanya Agrawal", role: "Mobile Developer", bio: "Compose & KMP enthusiast focused on smooth UX and performance.", image: "/team/aanya.jpg", linkedin: "#", twitter: "#", github: "#" },
+    { name: "Saniya Khan", role: "UI/UX Developer", bio: "Designs intuitive, accessible interfaces with implementation ownership.", image: "/team/saniya.jpg", linkedin: "#", twitter: "#", github: "#" },
+    { name: "Khushi Chaturvedi", role: "UI/UX Expert", bio: "Crafts delightful, user-first experiences grounded in research.", image: "/team/khushi.jpg", linkedin: "#", twitter: "#", github: "#" },
+  ];
 
   const extendedTeam = [
     { name: "Gagandeep Singh", role: "Engineer", bio: "Full-stack & integrations." },
@@ -80,70 +86,246 @@ export default function AboutPage() {
     { name: "Bharat Agarwal", role: "Engineer", bio: "Architecture & data." },
     { name: "Harshit Savita", role: "Engineer", bio: "Frontend/UI clean builds." },
     { name: "Prabar Gupta", role: "Designer", bio: "UI/UX clean designs." },
-  ]
+  ];
 
   const values = [
-    { icon: <Lightbulb className="h-8 w-8" />, title: "Innovation First", description: "We constantly push boundaries and explore cutting-edge technologies to deliver solutions that are ahead of their time." },
-    { icon: <Users className="h-8 w-8" />, title: "Client Partnership", description: "We believe in long-term partnerships—understanding your vision and growing together." },
-    { icon: <Target className="h-8 w-8" />, title: "Quality Excellence", description: "Every line of code and design detail is crafted with care and purpose." },
-    { icon: <Heart className="h-8 w-8" />, title: "People-Centric", description: "We design with empathy—technology should serve people, not the other way around." },
-    { icon: <Zap className="h-8 w-8" />, title: "Agile Delivery", description: "We deliver value incrementally while maintaining high standards." },
-    { icon: <Globe className="h-8 w-8" />, title: "Global Impact", description: "Built to scale globally and create positive outcomes for businesses and communities." },
-  ]
+    { icon: <Lightbulb className="h-6 w-6 sm:h-7 sm:w-7" />, title: "Innovation First", description: "We ship ahead of the curve—R&D → prototypes → outcomes." },
+    { icon: <Users className="h-6 w-6 sm:h-7 sm:w-7" />, title: "Client Partnership", description: "We co-own the mission. Cadence, clarity, candor." },
+    { icon: <Target className="h-6 w-6 sm:h-7 sm:w-7" />, title: "Quality Excellence", description: "Reliability, perf, and security by default." },
+    { icon: <Heart className="h-6 w-6 sm:h-7 sm:w-7" />, title: "People-Centric", description: "Empathy in design. Accessibility as a rule." },
+    { icon: <Zap className="h-6 w-6 sm:h-7 sm:w-7" />, title: "Agile Delivery", description: "Weekly demos, visible burn-up, zero surprises." },
+    { icon: <Globe className="h-6 w-6 sm:h-7 sm:w-7" />, title: "Global Impact", description: "Built to scale and localize—any market, any region." },
+  ];
 
   const stats = [
     { value: "2019", label: "Founded" },
     { value: "15+ ", label: "Core & Extended Team" },
     { value: "100+", label: "Projects Delivered" },
     { value: "25+", label: "Countries Served" },
-  ]
+  ];
 
   const awards = [
     { title: "Best Tech Startup 2023", organization: "TechCrunch Awards" },
     { title: "Innovation Excellence", organization: "Global Tech Summit" },
     { title: "Top 50 Companies to Watch", organization: "Forbes" },
     { title: "Best Workplace Culture", organization: "Great Place to Work" },
-  ]
+  ];
 
-  const [showMore, setShowMore] = useState(false)
+  const logos = [
+    "/logos/stripe.svg",
+    "/logos/aws.svg",
+    "/logos/azure.svg",
+    "/logos/vercel.svg",
+    "/logos/postgres.svg",
+    "/logos/kubernetes.svg",
+  ];
+
+  const [showMore, setShowMore] = useState(false);
+
+  /* ---------------- GSAP hooks & refs ---------------- */
+  const heroRef = useRef<HTMLElement | null>(null);
+  const logosRowRef = useRef<HTMLDivElement | null>(null);
+  const valuesRef = useRef<HTMLElement | null>(null);
+  const teamRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!heroRef.current) return;
+
+    // Hero headline & paragraph intro
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.from(".gsap-hero-title", { y: 24, opacity: 0, duration: 0.6 })
+          .from(".gsap-hero-copy", { y: 16, opacity: 0, duration: 0.5 }, "-=0.35")
+          .from(".gsap-hero-stats > div", { y: 16, opacity: 0, stagger: 0.08, duration: 0.45 }, "-=0.25");
+
+      // Parallax aurora blobs
+      gsap.to(".gsap-aurora-1", {
+        yPercent: 8,
+        xPercent: -6,
+        ease: "none",
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+      gsap.to(".gsap-aurora-2", {
+        yPercent: -6,
+        xPercent: 8,
+        ease: "none",
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    }, heroRef);
+    return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    if (!logosRowRef.current) return;
+
+    // Infinite marquee (logos)
+    const row = logosRowRef.current;
+    const totalWidth = row.scrollWidth;
+    const viewWidth = row.clientWidth;
+    const distance = totalWidth + viewWidth;
+
+    const tween = gsap.to(row, {
+      x: () => `-${totalWidth}px`,
+      ease: "none",
+      duration: 18,
+      repeat: -1,
+      modifiers: {
+        x: (x) => {
+          const nx = parseFloat(x);
+          return `${((nx % -totalWidth) + 0) }px`;
+        },
+      },
+    });
+
+    // Pause on hover
+    const onEnter = () => tween.pause();
+    const onLeave = () => tween.resume();
+    row.addEventListener("mouseenter", onEnter);
+    row.addEventListener("mouseleave", onLeave);
+
+    return () => {
+      row.removeEventListener("mouseenter", onEnter);
+      row.removeEventListener("mouseleave", onLeave);
+      tween.kill();
+    };
+  }, []);
+
+  useEffect(() => {
+    // Values grid reveal
+    if (!valuesRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.from(".gsap-value-card", {
+        y: 20,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.08,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: valuesRef.current,
+          start: "top 80%",
+        },
+      });
+    }, valuesRef);
+    return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    // Team grid reveal
+    if (!teamRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.from(".gsap-team-card", {
+        y: 24,
+        opacity: 0,
+        duration: 0.55,
+        stagger: 0.06,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: teamRef.current,
+          start: "top 80%",
+        },
+      });
+    }, teamRef);
+    return () => ctx.revert();
+  }, []);
+
+  // Spotlight hover for value cards (updates --mx/--my used by your radial bg)
+  useEffect(() => {
+    const container = valuesRef.current;
+    if (!container) return;
+    const onMove = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest(".rvz-spotlight")) return;
+      const card = (target.closest(".rvz-spotlight") as HTMLElement)!;
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+      card.style.setProperty("--my", `${e.clientY - rect.top}px`);
+    };
+    container.addEventListener("mousemove", onMove);
+    return () => container.removeEventListener("mousemove", onMove);
+  }, []);
 
   return (
       <div className="min-h-screen bg-white">
         <Navigation />
 
-        {/* Hero */}
-        <section className="bg-gradient-to-br from-blue-50 via-white to-blue-50 py-20">
+        {/* ============== HERO (Aurora + Mesh + Grid) ============== */}
+        <section ref={heroRef} className="relative overflow-hidden">
+          {/* soft grid */}
+          <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(2,6,23,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(2,6,23,0.04)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(80%_60%_at_50%_40%,#000_60%,transparent)]"
+          />
+          {/* brand aurora */}
+          <div
+              aria-hidden
+              className="gsap-aurora-1 absolute -top-24 -left-24 h-[40rem] w-[40rem] rounded-full blur-3xl opacity-40 bg-gradient-to-tr from-primary/60 via-fuchsia-400/40 to-sky-400/40"
+          />
+          <div
+              aria-hidden
+              className="gsap-aurora-2 absolute -bottom-24 -right-24 h-[36rem] w-[36rem] rounded-full blur-3xl opacity-40 bg-gradient-to-tl from-sky-400/40 via-violet-400/40 to-primary/60"
+          />
+          {/* mesh shimmer */}
+          <div
+              aria-hidden
+              className="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(60%_60%_at_50%_0%,rgba(59,130,246,0.12)_0%,transparent_70%)]"
+          />
+
           <motion.div
-              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+              className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28"
               variants={revealOnce}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.25 }}
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h1 className="text-4xl sm:text-5xl font-heading font-bold text-gray-900 mb-6">
-                  About <span className="text-gradient-revzion">Revzion</span>
-                </h1>
-                <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                  We're a team of technologists, designers, and innovators transforming businesses through modern software.
-                </p>
+              {/* LEFT */}
+              <div className="space-y-8">
+                <div className="space-y-4">
+                  <h1 className="gsap-hero-title text-4xl sm:text-5xl lg:text-6xl font-heading font-bold leading-tight text-gray-900">
+                    About <span className="text-gradient-revzion">Revzion</span>
+                  </h1>
+                  <p className="gsap-hero-copy text-xl text-gray-600 leading-relaxed max-w-2xl">
+                    A senior product & engineering studio building AI, SaaS, and cross-platform experiences that feel one step into the future.
+                  </p>
+                </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                {/* Stats pills */}
+                <div className="gsap-hero-stats grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-2xl">
                   {stats.map((s) => (
-                      <div key={s.label} className="text-center">
-                        <div className="text-2xl font-heading font-bold text-gray-900 mb-1">{s.value}</div>
-                        <div className="text-sm text-gray-600">{s.label}</div>
+                      <div
+                          key={s.label}
+                          className="rounded-2xl border border-white/60 bg-white/80 backdrop-blur-sm px-4 py-3 shadow-[0_8px_30px_-12px_rgba(2,6,23,0.12)]"
+                      >
+                        <div className="text-2xl font-heading font-bold text-gray-900">{s.value}</div>
+                        <div className="text-xs text-gray-600">{s.label}</div>
                       </div>
                   ))}
                 </div>
 
-                <Button className="bg-gradient-revzion hover:opacity-90 transition-opacity">
-                  <Link href="/contact">Join Our Journey</Link>
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <div className="flex gap-3">
+                  <Button size="lg" className="bg-gradient-revzion hover:opacity-90 transition-opacity">
+                    <Link href="/contact" className="flex items-center">
+                      Join Our Journey
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Link>
+                  </Button>
+                  <Button size="lg" variant="outline" className="border-2 border-primary text-primary hover:bg-primary hover:text-white">
+                    <Link href="/portfolio">See Our Work</Link>
+                  </Button>
+                </div>
               </div>
 
+              {/* RIGHT */}
               <div className="relative">
                 <img
                     src="/modern-tech-team.png"
@@ -164,83 +346,187 @@ export default function AboutPage() {
               </div>
             </div>
           </motion.div>
+
+          {/* logos marquee (GSAP drives the container) */}
+          <div className="relative z-10 border-t border-gray-100/70 bg-white/60 backdrop-blur">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div
+                  ref={logosRowRef}
+                  className="flex items-center gap-6 no-scrollbar"
+                  style={{ willChange: "transform" }}
+              >
+                {logos.concat(logos).map((src, i) => (
+                    <div key={i} className="shrink-0 h-8 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                      <Image src={src} alt="logo" width={110} height={32} className="h-8 w-auto object-contain" />
+                    </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </section>
 
-        {/* Our Story */}
-        <section className="py-20 bg-white">
+        {/* ============== STORY (brand-backed, milestones, quote) ============== */}
+        <section className="relative overflow-hidden py-18 sm:py-20">
+          {/* soft brand grid + aurora wash */}
+          <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(2,6,23,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(2,6,23,0.035)_1px,transparent_1px)] bg-[size:28px_28px] [mask-image:radial-gradient(70%_60%_at_50%_40%,#000_70%,transparent)]"
+          />
+          <div
+              aria-hidden
+              className="absolute -top-24 left-1/2 -translate-x-1/2 h-[34rem] w-[34rem] rounded-full blur-3xl opacity-30 bg-gradient-to-tr from-primary/40 via-fuchsia-400/30 to-sky-400/30"
+          />
+
           <motion.div
-              className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
+              className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.25 }}
           >
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-6">Our Story</h2>
-              <div className="w-20 h-1 bg-gradient-revzion mx-auto mb-8" />
+            <div className="text-center mb-10 sm:mb-12">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">
+                Our Story
+              </h2>
+              <p className="mt-3 text-lg text-gray-600">
+                From a small studio to a global delivery partner—still obsessed with outcomes.
+              </p>
+              <div className="mt-5 h-[3px] w-28 mx-auto rounded-full bg-gradient-revzion/90" />
             </div>
 
-            <div className="prose prose-lg max-w-none">
-              <p className="text-gray-600 leading-relaxed mb-6">
-                Revzion (previously Next Level Programmers) was founded in 2019 by <strong>Arqam Ahmad Siddiqui</strong> to
-                bridge the gap between modern engineering practices and real business outcomes.
-              </p>
-              <p className="text-gray-600 leading-relaxed mb-6">
-                From early consulting to full-scale product builds across KMP, cloud, and AI, we’ve grown into a
-                delivery-first partner for startups and enterprises.
-              </p>
-              <p className="text-gray-600 leading-relaxed">
-                Today, we’ve shipped 100+ projects across 25+ countries—staying true to our mission: make advanced
-                technology accessible, reliable, and genuinely useful.
-              </p>
+            {/* Content: text + visual card */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+              {/* Copy */}
+              <div className="lg:col-span-7">
+                <div className="prose prose-lg max-w-none">
+                  <p className="text-gray-700 leading-relaxed">
+                    Revzion (previously <em>Next Level Programmers</em>) began in 2019 with a simple idea:
+                    combine modern engineering with business clarity. No fluff, just measurable impact.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed mt-5">
+                    What started as hands-on consulting has grown into end-to-end product delivery across
+                    AI, SaaS, and cross-platform experiences. We move fast, but never break trust:
+                    weekly demos, transparent burn-up, and security by default.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed mt-5">
+                    Today we’ve shipped <span className="font-semibold text-gray-900">100+ projects</span> across
+                    <span className="font-semibold text-gray-900"> 25+ countries</span>—and we’re just getting started.
+                  </p>
+                </div>
+
+                {/* Milestone chips */}
+                <div className="mt-6 flex flex-wrap gap-2.5">
+                  {[
+                    "2019 — Founded",
+                    "First AI Pilot (2020)",
+                    "KMP Expansion (2021)",
+                    "Global Pods (2022)",
+                    "100+ Launches (2023)",
+                    "AI Copilots @ Scale (2024→)",
+                  ].map((m) => (
+                      <span
+                          key={m}
+                          className="inline-flex items-center rounded-full border border-white/70 bg-white/80 backdrop-blur px-3 py-1.5 text-[13px] text-gray-700 shadow-[0_8px_24px_-12px_rgba(2,6,23,0.14)]"
+                      >
+              {m}
+            </span>
+                  ))}
+                </div>
+
+                {/* Quote card */}
+                <div className="mt-8">
+                  <div className="rounded-2xl p-[1px] bg-gradient-to-br from-primary/40 via-fuchsia-400/30 to-sky-400/30">
+                    <div className="rounded-[14px] bg-white/90 backdrop-blur p-5 sm:p-6 border border-white/70 shadow-[0_16px_48px_-20px_rgba(2,6,23,0.18)]">
+                      <figure>
+                        <blockquote className="text-gray-800 leading-relaxed">
+                          “Our best work happens when product, design, and engineering sit at the same table.
+                          We keep cycles tight, decisions clear, and outcomes visible.”
+                        </blockquote>
+                        <figcaption className="mt-3 text-sm text-gray-500">
+                          — Revzion Delivery Playbook
+                        </figcaption>
+                      </figure>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Visual / proof card */}
+              <div className="lg:col-span-5">
+                <div className="relative group rounded-2xl p-[1px] bg-gradient-to-br from-primary/40 via-fuchsia-400/30 to-sky-400/30">
+                  <div className="rounded-[14px] overflow-hidden bg-white/90 backdrop-blur border border-white/70 shadow-[0_22px_60px_-24px_rgba(2,6,23,0.22)]">
+                    <div className="aspect-[4/3] bg-gray-100 relative">
+                      <img
+                          src="/about/collage.jpg"
+                          alt="Revzion product snapshots & moments"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                          loading="lazy"
+                      />
+                      {/* subtle corner badge */}
+                      <div className="absolute bottom-3 right-3 rounded-full border border-white/70 bg-white/90 backdrop-blur px-3 py-1.5 text-xs text-gray-700 shadow">
+                        Trusted by teams in 25+ countries
+                      </div>
+                    </div>
+
+                    {/* Credibility bar */}
+                    <div className="p-5">
+                      <div className="flex items-center justify-between gap-3">
+                        {[
+                          { k: "NPS", v: "72" },
+                          { k: "On-Time", v: "96%" },
+                          { k: "Launches", v: "100+" },
+                        ].map((it) => (
+                            <div key={it.k} className="text-center flex-1">
+                              <div className="font-heading text-xl text-gray-900">{it.v}</div>
+                              <div className="text-xs text-gray-500">{it.k}</div>
+                            </div>
+                        ))}
+                      </div>
+                      <div className="mt-4 h-1.5 w-full rounded-full bg-gray-200/70 overflow-hidden">
+                        <div className="h-full w-2/3 bg-gradient-revzion rounded-full" />
+                      </div>
+                      <p className="mt-3 text-xs text-gray-500">
+                        Delivery confidence grows with every weekly demo and decision log.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         </section>
 
-        {/* Values */}
-        <section className="py-20 bg-gray-50">
+        {/* ============== VALUES (bento glass) ============== */}
+        <section ref={valuesRef} className="py-18 sm:py-20 bg-gray-50">
           <motion.div
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
               initial="hidden"
-              /* same md-up trick to ensure it reveals on mobile */
-              {...(mdUp
-                  ? { whileInView: "show", viewport: { once: true, amount: 0.25 } }
-                  : { animate: "show" })}
+              {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.25 } } : { animate: "show" })}
           >
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-6">Our Values</h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Principles that guide every decision and partnership.
+            <div className="text-center mb-14">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">Our Values</h2>
+              <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+                Principles that keep us fast, thoughtful, and reliable.
               </p>
             </div>
 
             <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7"
                 variants={staggerParent}
                 initial="hidden"
-                {...(mdUp
-                    ? { whileInView: "show", viewport: { once: true, amount: 0.2, margin: "-10% 0px" } }
-                    : { animate: "show" })}
+                {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.22, margin: "-10% 0px" } } : { animate: "show" })}
             >
               {values.map((v) => (
                   <motion.div key={v.title} variants={revealOnce}>
-                    <Card className="group border-0 shadow-md hover:shadow-xl transition-shadow rounded-2xl bg-white/70 backdrop-blur h-full">
-                      <div className="flex flex-col items-center text-center h-full p-8">
-                        {/* Icon */}
-                        <div className="text-primary mb-4 flex justify-center">
+                    <Card className="rvz-spotlight group border-0 shadow-md hover:shadow-xl transition-shadow rounded-2xl bg-white/70 backdrop-blur h-full relative overflow-hidden">
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(120px_120px_at_var(--mx,50%)_var(--my,50%),rgba(59,130,246,0.08),transparent_70%)]" />
+                      <div className="p-6 sm:p-7 gsap-value-card">
+                        <div className="inline-flex items-center justify-center rounded-xl bg-gradient-revzion text-white h-11 w-11 sm:h-12 sm:w-12 mb-4">
                           {v.icon}
                         </div>
-
-                        {/* Title */}
-                        <h3 className="text-xl font-heading font-semibold text-gray-900 mb-3">
-                          {v.title}
-                        </h3>
-
-                        {/* Description */}
-                        <p className="text-gray-600 leading-relaxed mb-4 flex-grow">
-                          {v.description}
-                        </p>
+                        <h3 className="text-lg sm:text-xl font-heading font-semibold text-gray-900 mb-2">{v.title}</h3>
+                        <p className="text-gray-600">{v.description}</p>
                       </div>
                     </Card>
                   </motion.div>
@@ -249,87 +535,92 @@ export default function AboutPage() {
           </motion.div>
         </section>
 
-        {/* Team */}
-        <section className="py-20 bg-white">
+        {/* ============== TEAM ============== */}
+        <section ref={teamRef} className="py-18 sm:py-20 bg-white">
           <motion.div
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
               initial="hidden"
-              {...(mdUp
-                  ? { whileInView: "show", viewport: { once: true, amount: 0.25 } }
-                  : { animate: "show" })}
+              {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.25 } } : { animate: "show" })}
           >
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-6">Meet Our Team</h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <div className="text-center mb-14">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">Meet Our Team</h2>
+              <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
                 A compact senior team shipping at startup speed with enterprise discipline.
               </p>
             </div>
 
             <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
                 variants={staggerParent}
                 initial="hidden"
-                {...(mdUp
-                    ? { whileInView: "show", viewport: { once: true, amount: 0.2, margin: "-10% 0px" } }
-                    : { animate: "show" })}
+                {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.22, margin: "-10% 0px" } } : { animate: "show" })}
             >
               {teamMembers.map((m) => (
                   <motion.div key={m.name} variants={revealOnce}>
-                    <Card className="overflow-hidden hover:shadow-xl transition-shadow border-0">
-                      <div className="aspect-square overflow-hidden bg-gray-100">
-                        <img
-                            src={m.image || "/placeholder.svg"}
-                            alt={m.name}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                            loading="lazy"
-                        />
-                      </div>
-                      <div className="p-6">
-                        <h3 className="text-xl font-heading font-semibold text-gray-900 mb-1">{m.name}</h3>
-                        <p className="text-primary font-medium mb-3">{m.role}</p>
-                        <p className="text-gray-600 text-sm leading-relaxed mb-4">{m.bio}</p>
-                        <div className="flex space-x-3">
-                          {m.linkedin && (
-                              <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on LinkedIn`}>
-                                <Linkedin className="h-5 w-5" />
-                              </a>
-                          )}
-                          {m.twitter && (
-                              <a href={m.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on Twitter/X`}>
-                                <Twitter className="h-5 w-5" />
-                              </a>
-                          )}
-                          {m.github && (
-                              <a href={m.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on GitHub`}>
-                                <Github className="h-5 w-5" />
-                              </a>
-                          )}
+                    <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-primary/40 via-fuchsia-400/30 to-sky-400/30 gsap-team-card">
+                      <Card className="overflow-hidden rounded-[15px] border border-white/60 bg-white/80 backdrop-blur shadow-[0_18px_50px_-20px_rgba(2,6,23,0.22)]">
+                        <div className="aspect-square overflow-hidden bg-gray-100">
+                          <Image
+                              src={m.image || "/placeholder.svg"}
+                              alt={m.name}
+                              width={640}
+                              height={640}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                          />
                         </div>
-                      </div>
-                    </Card>
+                        <div className="p-6">
+                          <h3 className="text-xl font-heading font-semibold text-gray-900">{m.name}</h3>
+                          <p className="text-primary font-medium mb-2">{m.role}</p>
+                          <p className="text-gray-600 text-sm leading-relaxed mb-4">{m.bio}</p>
+                          <div className="flex space-x-3">
+                            {m.linkedin && (
+                                <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on LinkedIn`}>
+                                  <Linkedin className="h-5 w-5" />
+                                </a>
+                            )}
+                            {m.twitter && (
+                                <a href={m.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on Twitter/X`}>
+                                  <Twitter className="h-5 w-5" />
+                                </a>
+                            )}
+                            {m.github && (
+                                <a href={m.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on GitHub`}>
+                                  <Github className="h-5 w-5" />
+                                </a>
+                            )}
+                          </div>
+                        </div>
+                      </Card>
+                    </div>
                   </motion.div>
               ))}
             </motion.div>
 
             {/* Extended Team */}
             <div className="text-center mt-10">
-              <Button variant="outline" className="px-6" onClick={() => setShowMore((v) => !v)}>
-                {showMore ? "Hide Extended Team" : `See More Team (${extendedTeam.length})`}
-              </Button>
+              <div className="inline-flex rounded-full p-[1.5px] bg-gradient-to-r from-primary via-fuchsia-400 to-sky-400 shadow-[0_10px_40px_-12px_rgba(2,6,23,0.35)]">
+                <Button
+                    onClick={() => setShowMore(v => !v)}
+                    className="px-6 h-11 rounded-full bg-white/90 backdrop-blur text-gray-900"
+                    variant="ghost"
+                >
+                  {showMore ? "Hide Extended Team" : `See More Team (${extendedTeam.length})`}
+                </Button>
+              </div>
             </div>
 
             {showMore && (
                 <motion.div
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-10"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mt-10"
                     variants={staggerParent}
                     initial="hidden"
                     animate="show"
                 >
                   {extendedTeam.map((m) => (
                       <motion.div key={m.name} variants={revealOnce}>
-                        <Card className="overflow-hidden hover:shadow-md transition-shadow border-0">
-                          <div className="p-4">
+                        <Card className="overflow-hidden border-0 bg-white/80 backdrop-blur shadow-[0_14px_42px_-20px_rgba(2,6,23,0.2)]">
+                          <div className="p-5">
                             <h3 className="text-lg font-heading font-semibold text-gray-900">{m.name}</h3>
                             <p className="text-primary text-sm mb-1">{m.role}</p>
                             <p className="text-gray-600 text-xs">{m.bio}</p>
@@ -342,57 +633,46 @@ export default function AboutPage() {
           </motion.div>
         </section>
 
-        {/* Awards */}
-        <section className="py-20 bg-gray-50">
+        {/* ============== AWARDS (snap carousel) ============== */}
+        <section className="py-18 sm:py-20 bg-gray-50">
           <motion.div
-              className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+              className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
               initial="hidden"
-              {...(mdUp
-                  ? { whileInView: "show", viewport: { once: true, amount: 0.25 } }
-                  : { animate: "show" })}
+              {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.25 } } : { animate: "show" })}
           >
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-6">
-              Awards & Recognition
-            </h2>
-            <p className="text-xl text-gray-600 mb-12">
-              Honored by industry leaders for innovation and excellence.
-            </p>
+            <div className="text-center mb-10">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-3">Awards & Recognition</h2>
+              <p className="text-lg sm:text-xl text-gray-600">Honored by industry leaders for innovation and excellence.</p>
+            </div>
 
-            <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                variants={staggerParent}
-                initial="hidden"
-                {...(mdUp
-                    ? { whileInView: "show", viewport: { once: true, amount: 0.2, margin: "-10% 0px" } }
-                    : { animate: "show" })}
-            >
-              {awards.map((a) => (
-                  <motion.div key={a.title} variants={revealOnce}>
-                    <Card className="p-6 text-left border bg-white/70 backdrop-blur hover:shadow-lg transition-shadow">
-                      <div className="flex items-start space-x-4">
-                        <Award className="h-8 w-8 text-primary flex-shrink-0 mt-1" />
-                        <div>
-                          <h3 className="font-heading font-semibold text-gray-900 mb-1">{a.title}</h3>
-                          <p className="text-gray-600">{a.organization}</p>
+            <div className="-mx-4 px-4">
+              <div className="flex snap-x snap-mandatory overflow-x-auto gap-4 pb-2 no-scrollbar [scrollbar-width:none] [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+                {awards.map((a) => (
+                    <div key={a.title} className="snap-center shrink-0 w-[86%] sm:w-[46%] lg:w-[32%]">
+                      <Card className="p-6 text-left border border-white/70 bg-white/85 backdrop-blur hover:shadow-xl transition-shadow">
+                        <div className="flex items-start space-x-4">
+                          <Award className="h-7 w-7 text-primary flex-shrink-0 mt-1" />
+                          <div>
+                            <h3 className="font-heading font-semibold text-gray-900 mb-1">{a.title}</h3>
+                            <p className="text-gray-600">{a.organization}</p>
+                          </div>
                         </div>
-                      </div>
-                    </Card>
-                  </motion.div>
-              ))}
-            </motion.div>
+                      </Card>
+                    </div>
+                ))}
+              </div>
+            </div>
           </motion.div>
         </section>
 
         {/* CTA */}
         <section className="py-20 bg-gradient-revzion">
           <motion.div
-              className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+              className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
               variants={revealOnce}
               initial="hidden"
-              {...(mdUp
-                  ? { whileInView: "show", viewport: { once: true, amount: 0.25 } }
-                  : { animate: "show" })}
+              {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.25 } } : { animate: "show" })}
           >
             <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-6">
               Ready to Work Together?
@@ -416,6 +696,12 @@ export default function AboutPage() {
         </section>
 
         <Footer />
+
+        {/* small helper: hide scrollbars on snap rows */}
+        <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
       </div>
-  )
+  );
 }
