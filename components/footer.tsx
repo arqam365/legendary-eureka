@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Mail, Linkedin, MessageCircle, ArrowRight, ChevronUp } from "lucide-react"
 import { motion, useScroll, useTransform, Variants, TargetAndTransition } from "framer-motion"
 import { ConsultationCTA } from "@/components/consultation-cta"
+import BackToTopFab from "@/components/BackToTopFab";
 
 const colVariants: Variants = {
   hidden: { opacity: 0, y: 14 },
@@ -355,14 +356,7 @@ export function Footer() {
           </div>
 
           {/* FAB — shares axis with SoundToggle (which sits at right:1rem, bottom:1rem) */}
-          <motion.a
-              href="#top"
-              style={{ opacity: showFab }}
-              className="fixed right-[calc(1rem+env(safe-area-inset-right,0px))] bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] inline-flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white shadow-lg hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary z-[90]"
-              aria-label="Back to top"
-          >
-            <ChevronUp className="h-5 w-5" />
-          </motion.a>
+            <BackToTopFab threshold={400} />
         </div>
 
         {/* marquee & reduced motion */}
