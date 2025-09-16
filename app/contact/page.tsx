@@ -107,14 +107,14 @@ export default function ContactPage() {
     {
       icon: <Mail className="h-6 w-6" />,
       title: "Email Us",
-      details: ["hello@revzion.com", "support@revzion.com"],
+      details: ["connect@revzion.in"],
       description: "Best for proposals, SOWs, and formal queries.",
     },
     {
       icon: <Phone className="h-6 w-6" />,
       title: "Call Us",
-      details: ["+91 (000) 000-0000"],
-      description: "Talk to our solutions team (Mon–Sat).",
+      details: ["+91 (638) 716-1020"],
+      description: "Talk to our solutions team (Mon–Fri).",
     },
     {
       icon: <MapPin className="h-6 w-6" />,
@@ -125,7 +125,7 @@ export default function ContactPage() {
     {
       icon: <Clock className="h-6 w-6" />,
       title: "Business Hours",
-      details: ["Mon–Fri: 10:00–19:00 IST", "Sat: 10:00–14:00 IST"],
+      details: ["Mon–Fri: 09:00–19:00 IST", "Sat: 10:00–14:00 IST"],
       description: "We adapt for overlapping time zones.",
     },
   ]
