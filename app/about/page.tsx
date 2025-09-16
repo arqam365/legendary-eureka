@@ -100,14 +100,13 @@ export default function AboutPage() {
   const stats = [
     { value: "2019", label: "Founded" },
     { value: "15+ ", label: "Core & Extended Team" },
-    { value: "100+", label: "Projects Delivered" },
-    { value: "25+", label: "Countries Served" },
+    { value: "50+", label: "Projects Delivered" },
+    { value: "5+", label: "Countries Served" },
   ];
 
   const awards = [
     { title: "Best Tech Startup 2023", organization: "TechCrunch Awards" },
     { title: "Innovation Excellence", organization: "Global Tech Summit" },
-    { title: "Top 50 Companies to Watch", organization: "Forbes" },
     { title: "Best Workplace Culture", organization: "Great Place to Work" },
   ];
 

@@ -70,7 +70,7 @@ function CaseStudiesCarousel() {
       problem: "Low engagement and high churn.",
       solution: "Rebuilt feed ranking, real-time chat, and creator tools.",
       results: "+42% DAU, 29% session length, 18% retention.",
-      image: "/case-studies/beesocial.jpg",
+      image: "/case-studies/test.png",
       link: "/portfolio/beesocial",
       tags: ["Discovery → MVP → Scale", "Design Systems", "Observability"],
       kpis: [
@@ -852,7 +852,7 @@ export default function HomePage() {
               <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                 <p className="text-sm text-gray-600">
                   Trusted by teams shipping <span className="font-semibold text-gray-900">50+ projects</span> across{" "}
-                  <span className="font-semibold text-gray-900">25+ countries</span>
+                  <span className="font-semibold text-gray-900">5+ countries</span>
                 </p>
                 {/* replace with your client logos */}
                 <div className="flex items-center gap-6 grayscale opacity-80 hover:opacity-100 transition">
