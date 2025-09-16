@@ -23,11 +23,15 @@ export default function SmoothScroll({ children }: Props) {
 
         // 1) Init Lenis
         const lenis = new Lenis({
-            duration: 1.0,                       // tweak 0.8–1.2 to taste
-            easing: (t: number) => 1 - Math.pow(1 - t, 1.5),
+            // Slightly longer duration + stronger ease-out for a floaty feel
+            duration: 1.4,
+            easing: (t: number) => 1 - Math.pow(1 - t, 4), // easeOutQuart-like
             smoothWheel: true,
+            syncTouch: true,
             gestureOrientation: "vertical",
-            touchMultiplier: 1.1,
+            // Dial down multipliers so input feels less twitchy and more glidy
+            wheelMultiplier: 0.9,
+            touchMultiplier: 0.95,
         });
         (lenisRef as any).current = lenis;
         (window as any).__lenis = lenis;
@@ -78,7 +82,7 @@ export default function SmoothScroll({ children }: Props) {
             const el = document.getElementById(id);
             if (!el) return;
             e.preventDefault();
-            lenis.scrollTo(el, { offset: -HEADER_OFFSET });
+            lenis.scrollTo(el, { offset: -HEADER_OFFSET, duration: 1.1, easing: (t: number) => 1 - Math.pow(1 - t, 4) });
         };
         document.addEventListener("click", onClick);
 
