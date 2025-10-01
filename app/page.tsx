@@ -369,26 +369,26 @@ function useCarousel(length: number, autoMs = 6000) {
 
 type ShowcaseProps = { blobShift: MotionValue<number> }
 
-function ProductShowcase({ blobShift }: ShowcaseProps) {
-  const desktopShots = useMemo(
-      () => [
-        { src: "/shots/dashboard-dark.png", alt: "SaaS dashboard" },
-        { src: "/shots/analytics.png", alt: "Analytics & reports" },
-        { src: "/shots/settings.png", alt: "Admin & settings" },
-      ],
-      []
-  )
-  const mobileShots = useMemo(
-      () => [
-        { src: "/shots/mobile-chat.png", alt: "Chat & realtime" },
-        { src: "/shots/mobile-feed.png", alt: "Social feed" },
-        { src: "/shots/mobile-profile.png", alt: "Profile" },
-      ],
-      []
-  )
+// Website configuration - easily add more websites here
+const WEBSITES = [
+  {
+    name: "Packagefy",
+    url: "https://www.packagefy.com",
+    description: "Package tracking solution"
+  },
+  {
+    name: "Scottish Home Bargains",
+    url: "https://www.scottishhomebargains.uk",
+    description: "E-commerce platform"
+  },
+  // Add more websites here
+]
 
-  const desk = useCarousel(desktopShots.length, 5000)
-  const mob = useCarousel(mobileShots.length, 5000)
+function ProductShowcase({ blobShift }: ShowcaseProps) {
+  const websites = useMemo(() => WEBSITES, [])
+
+  const desk = useCarousel(websites.length, 5000)
+  const mob = useCarousel(websites.length, 5000)
   const prefersReduced = useReducedMotion()
 
   // tilt only on non-touch + reducedMotion=false
@@ -464,37 +464,48 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
               dragElastic={0.2}
               onDragEnd={(_, info) => onDragEnd(info.offset.x, desk.next, desk.prev)}
           >
-            <div className="relative rounded-xl bg-neutral-900">
-              <div className="absolute inset-x-0 top-0 h-6 bg-neutral-900/90 rounded-t-xl" />
-              <Image
-                  key={desktopShots[desk.i].src}
-                  src={desktopShots[desk.i].src}
-                  alt={desktopShots[desk.i].alt}
-                  width={1200}
-                  height={750}
-                  sizes="(max-width: 640px) 100vw, 600px"
-                  className="w-full h-auto rounded-xl select-none pointer-events-none"
-                  priority
-              />
+            <div className="relative rounded-xl bg-neutral-900 overflow-hidden">
+              {/* Browser chrome */}
+              <div className="absolute inset-x-0 top-0 h-8 bg-neutral-900/95 rounded-t-xl flex items-center px-3 gap-2 z-10">
+                <div className="flex gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                </div>
+                <div className="flex-1 mx-2 h-5 rounded bg-neutral-800/50 flex items-center px-2">
+                  <span className="text-[9px] text-gray-400 truncate">{websites[desk.i].url}</span>
+                </div>
+              </div>
+              {/* Live website preview */}
+              <div className="relative w-full aspect-[16/10] pt-8">
+                <iframe
+                    key={websites[desk.i].url}
+                    src={websites[desk.i].url}
+                    className="w-full h-full border-0"
+                    title={`${websites[desk.i].name} desktop preview`}
+                    sandbox="allow-scripts allow-same-origin"
+                    loading="lazy"
+                />
+              </div>
             </div>
           </motion.div>
 
           {/* controls: mobile -> below; sm+ -> overlay */}
           <div className="hidden sm:flex absolute bottom-3 left-0 right-0 items-center justify-between px-3">
-            <Button size="sm" variant="outline" onClick={desk.prev} aria-label="Previous desktop shot">
+            <Button size="sm" variant="outline" onClick={desk.prev} aria-label="Previous website">
               ←
             </Button>
             <div className="flex gap-1.5">
-              {desktopShots.map((_, idx) => (
+              {websites.map((_, idx) => (
                   <button
                       key={idx}
                       onClick={() => desk.setI(idx)}
-                      aria-label={`Go to desktop shot ${idx + 1}`}
+                      aria-label={`Go to website ${idx + 1}`}
                       className={`h-2 rounded-full transition-all ${idx === desk.i ? "bg-primary w-6" : "bg-white/70 w-2.5"}`}
                   />
               ))}
             </div>
-            <Button size="sm" onClick={desk.next} aria-label="Next desktop shot">
+            <Button size="sm" onClick={desk.next} aria-label="Next website">
               →
             </Button>
           </div>
@@ -502,20 +513,20 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
 
         {/* mobile-only controls under the desktop card */}
         <div className="mt-3 sm:hidden flex items-center justify-center gap-3">
-          <Button size="sm" variant="outline" onClick={desk.prev} aria-label="Previous desktop shot">
+          <Button size="sm" variant="outline" onClick={desk.prev} aria-label="Previous website">
             ←
           </Button>
           <div className="flex gap-1.5">
-            {desktopShots.map((_, idx) => (
+            {websites.map((_, idx) => (
                 <button
                     key={idx}
                     onClick={() => desk.setI(idx)}
-                    aria-label={`Go to desktop shot ${idx + 1}`}
+                    aria-label={`Go to website ${idx + 1}`}
                     className={`h-2 rounded-full transition-all ${idx === desk.i ? "bg-primary w-6" : "bg-gray-300 w-2.5"}`}
                 />
             ))}
           </div>
-          <Button size="sm" onClick={desk.next} aria-label="Next desktop shot">
+          <Button size="sm" onClick={desk.next} aria-label="Next website">
             →
           </Button>
         </div>
@@ -538,29 +549,31 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.25}
               onDragEnd={(_, info) => onDragEnd(info.offset.x, mob.next, mob.prev)}
-              className="relative bg-neutral-950"
+              className="relative bg-neutral-950 overflow-hidden"
           >
             {/* notch */}
-            <div className="absolute inset-x-12 -top-2 h-5 rounded-b-2xl bg-neutral-950" />
-            <Image
-                key={mobileShots[mob.i].src}
-                src={mobileShots[mob.i].src}
-                alt={mobileShots[mob.i].alt}
-                width={380}
-                height={760}
-                sizes="(max-width: 640px) 220px, 180px"
-                className="w-full h-auto select-none pointer-events-none"
-                priority
-            />
+            <div className="absolute inset-x-12 -top-2 h-5 rounded-b-2xl bg-neutral-950 z-10" />
+            {/* Mobile website preview */}
+            <div className="relative w-full aspect-[9/19.5]">
+              <iframe
+                  key={websites[mob.i].url}
+                  src={websites[mob.i].url}
+                  className="w-full h-full border-0 scale-[0.4] origin-top-left"
+                  style={{ width: '250%', height: '250%' }}
+                  title={`${websites[mob.i].name} mobile preview`}
+                  sandbox="allow-scripts allow-same-origin"
+                  loading="lazy"
+              />
+            </div>
           </motion.div>
 
           {/* phone dots: inside for sm+, below for mobile */}
-          <div className="hidden sm:flex absolute bottom-2 left-0 right-0 justify-center gap-1.5">
-            {mobileShots.map((_, idx) => (
+          <div className="hidden sm:flex absolute bottom-2 left-0 right-0 justify-center gap-1.5 z-10">
+            {websites.map((_, idx) => (
                 <button
                     key={idx}
                     onClick={() => mob.setI(idx)}
-                    aria-label={`Go to mobile shot ${idx + 1}`}
+                    aria-label={`Go to website ${idx + 1}`}
                     className={`h-1.5 rounded-full transition-all ${idx === mob.i ? "bg-primary w-5" : "bg-gray-300 w-2.5"}`}
                 />
             ))}
@@ -569,11 +582,11 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
 
         {/* mobile-only phone dots under the phone mock */}
         <div className="sm:hidden mt-2 flex justify-center gap-1.5">
-          {mobileShots.map((_, idx) => (
+          {websites.map((_, idx) => (
               <button
                   key={idx}
                   onClick={() => mob.setI(idx)}
-                  aria-label={`Go to mobile shot ${idx + 1}`}
+                  aria-label={`Go to website ${idx + 1}`}
                   className={`h-1.5 rounded-full transition-all ${idx === mob.i ? "bg-primary w-5" : "bg-gray-300 w-2.5"}`}
               />
           ))}
