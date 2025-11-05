@@ -147,6 +147,7 @@ export function Navigation() {
             { href: "/", label: "Home" },
             { href: "/services", label: "Services" },
             { href: "/portfolio", label: "Portfolio" },
+            { href: "/labs", label: "Labs" },
             { href: "/about", label: "About" },
             { href: "/blogs", label: "Blogs" },
             { href: "/contact", label: "Contact" },
