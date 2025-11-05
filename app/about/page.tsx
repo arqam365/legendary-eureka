@@ -105,7 +105,6 @@ export default function AboutPage() {
   ];
 
   const awards = [
-    { title: "Best Tech Startup 2023", organization: "TechCrunch Awards" },
     { title: "Innovation Excellence", organization: "Global Tech Summit" },
     { title: "Best Workplace Culture", organization: "Great Place to Work" },
   ];
@@ -419,7 +418,7 @@ export default function AboutPage() {
                   </p>
                   <p className="text-gray-700 leading-relaxed mt-5">
                     Today we’ve shipped <span className="font-semibold text-gray-900">100+ projects</span> across
-                    <span className="font-semibold text-gray-900"> 25+ countries</span>—and we’re just getting started.
+                    <span className="font-semibold text-gray-900"> 5+ countries</span>—and we’re just getting started.
                   </p>
                 </div>
 
@@ -473,7 +472,7 @@ export default function AboutPage() {
                       />
                       {/* subtle corner badge */}
                       <div className="absolute bottom-3 right-3 rounded-full border border-white/70 bg-white/90 backdrop-blur px-3 py-1.5 text-xs text-gray-700 shadow">
-                        Trusted by teams in 25+ countries
+                        Trusted by teams in 5+ countries
                       </div>
                     </div>
 
