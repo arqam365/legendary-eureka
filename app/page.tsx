@@ -371,24 +371,53 @@ type ShowcaseProps = { blobShift: MotionValue<number> }
 
 // Website configuration - easily add more websites here
 const WEBSITES = [
-  {
-    name: "Packagefy",
-    url: "https://test-app-packagefy.vercel.app",
-    description: "Package tracking solution"
-  },
-  {
-    name: "Scottish Home Bargains",
-    url: "https://www.scottishhomebargains.uk",
-    description: "E-commerce platform"
-  },
-  // Add more websites here
+    {
+        name: "Packagefy",
+        url: "https://test-app-packagefy.vercel.app",
+        description: "Package tracking solution"
+    },
+    {
+        name: "Scottish Home Bargains",
+        url: "https://www.scottishhomebargains.uk",
+        description: "E-commerce platform"
+    },
+    {
+        name: "Hello Cloud",
+        url: "https://www.hellocloud.in",
+        description: "E-commerce platform for Skin Care"
+    }
+    // Add more websites here
 ]
+
+// Application configuration – now supporting mockup images instead of live URLs
+const APPS = [
+    {
+        name: "Packagefy",
+        image: "/images/mockups/packagefy.png",
+        description: "Package tracking solution",
+        link: null // Optional—fill it when the real site is live
+    },
+    {
+        name: "Scottish Home Bargains",
+        image: "/images/mockups/shb.png",
+        description: "E-commerce platform",
+        link: null
+    },
+    {
+        name: "Hello Cloud",
+        image: "/images/mockups/hellocloud.png",
+        description: "E-commerce platform for Skin Care",
+        link: null
+    }
+    // Add more apps with mockup images
+];
 
 function ProductShowcase({ blobShift }: ShowcaseProps) {
   const websites = useMemo(() => WEBSITES, [])
+  const apps = useMemo(() => APPS, [])
 
   const desk = useCarousel(websites.length, 5000)
-  const mob = useCarousel(websites.length, 5000)
+  const mob = useCarousel(apps.length, 5000)
   const prefersReduced = useReducedMotion()
 
   // tilt only on non-touch + reducedMotion=false
