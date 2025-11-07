@@ -367,234 +367,257 @@ function useCarousel(length: number, autoMs = 6000) {
   return { i, setI, next, prev, setHover }
 }
 
-type ShowcaseProps = { blobShift: MotionValue<number> }
+type ShowcaseProps = { blobShift: MotionValue<number> };
 
-// Website configuration - easily add more websites here
-const WEBSITES = [
+type WebItem = {
+    name: string;
+    url: string;
+    description?: string;
+};
+
+type AppItem = {
+    name: string;
+    image: string; // path under /public
+    description?: string;
+    link?: string | null;
+};
+
+// ---------- Web config (desktop) ----------
+const WEBSITES: WebItem[] = [
     {
         name: "Packagefy",
         url: "https://test-app-packagefy.vercel.app",
-        description: "Package tracking solution"
+        description: "Package tracking solution",
     },
     {
         name: "Scottish Home Bargains",
         url: "https://www.scottishhomebargains.uk",
-        description: "E-commerce platform"
-    },
-    {
-        name: "Hello Cloud",
-        url: "https://www.hellocloud.in",
-        description: "E-commerce platform for Skin Care"
-    }
-    // Add more websites here
-]
-
-// Application configuration – now supporting mockup images instead of live URLs
-const APPS = [
-    {
-        name: "Packagefy",
-        image: "/images/mockups/packagefy.png",
-        description: "Package tracking solution",
-        link: null // Optional—fill it when the real site is live
-    },
-    {
-        name: "Scottish Home Bargains",
-        image: "/images/mockups/shb.png",
         description: "E-commerce platform",
-        link: null
     },
     {
         name: "Hello Cloud",
-        image: "/images/mockups/hellocloud.png",
+        url: "https://www.hellocloud.co.in",
         description: "E-commerce platform for Skin Care",
-        link: null
+    },
+    // Add more websites here
+];
+
+// ---------- App config (mobile) ----------
+const APPS: AppItem[] = [
+    {
+        name: "Bee Social",
+        image: "/case-studies/beesocial.png",
+        description: "Package tracking solution",
+        link: null, // Optional—fill it when the real site is live
+    },
+    {
+        name: "Evolwe App",
+        image: "/case-studies/evolwe.png",
+        description: "E-commerce platform",
+        link: null,
+    },
+    {
+        name: "Zoop It",
+        image: "/case-studies/zoopit.png",
+        description: "E-commerce platform",
+        link: null,
     }
     // Add more apps with mockup images
 ];
 
-function ProductShowcase({ blobShift }: ShowcaseProps) {
-  const websites = useMemo(() => WEBSITES, [])
-  const apps = useMemo(() => APPS, [])
+export function ProductShowcase({ blobShift }: ShowcaseProps) {
+    const websites = useMemo(() => WEBSITES, []);
+    const apps = useMemo(() => APPS, []);
 
-  const desk = useCarousel(websites.length, 5000)
-  const mob = useCarousel(apps.length, 5000)
-  const prefersReduced = useReducedMotion()
+    const desk = useCarousel(websites.length, 5000);
+    const mob = useCarousel(apps.length, 5000);
+    const prefersReduced = useReducedMotion();
 
-  // tilt only on non-touch + reducedMotion=false
-  const [canTilt, setCanTilt] = useState(false)
-  useEffect(() => {
-    const isTouch =
-        typeof window !== "undefined" &&
-        ("ontouchstart" in window || navigator.maxTouchPoints > 0)
-    setCanTilt(!isTouch && !prefersReduced)
-  }, [prefersReduced])
+    // tilt only on non-touch + reducedMotion=false
+    const [canTilt, setCanTilt] = useState(false);
+    useEffect(() => {
+        const isTouch =
+            typeof window !== "undefined" &&
+            ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+        setCanTilt(!isTouch && !prefersReduced);
+    }, [prefersReduced]);
 
-  // which frame is on top (desktop vs phone) for sm+ layout
-  const [topView, setTopView] = useState<"desktop" | "mobile">("desktop")
-  useEffect(() => {
-    const id = setInterval(
-        () => setTopView(v => (v === "desktop" ? "mobile" : "desktop")),
-        5000
-    )
-    return () => clearInterval(id)
-  }, [])
+    // which frame is on top (desktop vs phone) for sm+ layout
+    const [topView, setTopView] = useState<"desktop" | "mobile">("desktop");
+    useEffect(() => {
+        const id = setInterval(
+            () => setTopView((v) => (v === "desktop" ? "mobile" : "desktop")),
+            5000
+        );
+        return () => clearInterval(id);
+    }, []);
 
-  // tilt
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
-  const rotX = useTransform(y, [-50, 50], [6, -6])
-  const rotY = useTransform(x, [-80, 80], [-8, 8])
-  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!canTilt) return
-    const r = e.currentTarget.getBoundingClientRect()
-    x.set(e.clientX - (r.left + r.width / 2))
-    y.set(e.clientY - (r.top + r.height / 2))
-  }
-  const onDragEnd = (offsetX: number, next: () => void, prev: () => void) => {
-    if (offsetX > 80) prev()
-    else if (offsetX < -80) next()
-  }
+    // tilt
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+    const rotX = useTransform(y, [-50, 50], [6, -6]);
+    const rotY = useTransform(x, [-80, 80], [-8, 8]);
+    const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!canTilt) return;
+        const r = e.currentTarget.getBoundingClientRect();
+        x.set(e.clientX - (r.left + r.width / 2));
+        y.set(e.clientY - (r.top + r.height / 2));
+    };
+    const onDragEnd = (offsetX: number, next: () => void, prev: () => void) => {
+        if (offsetX > 80) prev();
+        else if (offsetX < -80) next();
+    };
 
-  const desktopOnTop = topView === "desktop"
+    const desktopOnTop = topView === "desktop";
 
-  return (
-      <div className="relative isolate w-full">
-        {/* soft blobs (pointer-events disabled so nothing blocks clicks) */}
-        <motion.div
-            aria-hidden
-            style={{ y: blobShift }}
-            className="absolute -top-6 -right-6 w-56 h-56 sm:w-72 sm:h-72 bg-gradient-revzion rounded-full opacity-10 blur-3xl pointer-events-none z-0"
-        />
-        <motion.div
-            aria-hidden
-            style={{ y: blobShift }}
-            className="absolute -bottom-10 -left-10 w-48 h-48 sm:w-64 sm:h-64 bg-blue-200 rounded-full opacity-20 blur-2xl pointer-events-none z-0"
-        />
+    return (
+        <div className="relative isolate w-full">
+            {/* soft blobs (pointer-events disabled so nothing blocks clicks) */}
+            <motion.div
+                aria-hidden
+                style={{ y: blobShift }}
+                className="absolute -top-6 -right-6 w-56 h-56 sm:w-72 sm:h-72 bg-gradient-revzion rounded-full opacity-10 blur-3xl pointer-events-none z-0"
+            />
+            <motion.div
+                aria-hidden
+                style={{ y: blobShift }}
+                className="absolute -bottom-10 -left-10 w-48 h-48 sm:w-64 sm:h-64 bg-blue-200 rounded-full opacity-20 blur-2xl pointer-events-none z-0"
+            />
 
-        {/* ---------- DESKTOP CARD ---------- */}
-        <motion.div
-            className={[
-              "relative w-full max-w-[640px] mx-auto rounded-2xl bg-white/70 backdrop-blur-xl border border-white/60 overflow-hidden shadow-lg",
-              "sm:transition-all sm:duration-500 sm:will-change-transform",
-              desktopOnTop ? "sm:z-40 sm:scale-100" : "sm:z-10 sm:scale-[0.92] sm:pointer-events-none",
-            ].join(" ")}
-            style={canTilt ? { rotateX: rotX, rotateY: rotY } : undefined}
-            onMouseMove={onMove}
-            onMouseLeave={() => {
-              x.set(0)
-              y.set(0)
-            }}
-            onPointerEnter={() => desk.setHover(true)}
-            onPointerLeave={() => desk.setHover(false)}
-        >
-          <motion.div
-              drag={prefersReduced ? false : "x"}
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.2}
-              onDragEnd={(_, info) => onDragEnd(info.offset.x, desk.next, desk.prev)}
-          >
-            <div className="relative rounded-xl bg-neutral-900 overflow-hidden">
-              {/* Browser chrome */}
-              <div className="absolute inset-x-0 top-0 h-8 bg-neutral-900/95 rounded-t-xl flex items-center px-3 gap-2 z-10">
+            {/* ---------- DESKTOP CARD (web) ---------- */}
+            <motion.div
+                className={[
+                    "relative w-full max-w-[640px] mx-auto rounded-2xl bg-white/70 backdrop-blur-xl border border-white/60 overflow-hidden shadow-lg",
+                    "sm:transition-all sm:duration-500 sm:will-change-transform",
+                    desktopOnTop
+                        ? "sm:z-40 sm:scale-100"
+                        : "sm:z-10 sm:scale-[0.92] sm:pointer-events-none",
+                ].join(" ")}
+                style={canTilt ? { rotateX: rotX, rotateY: rotY } : undefined}
+                onMouseMove={onMove}
+                onMouseLeave={() => {
+                    x.set(0);
+                    y.set(0);
+                }}
+                onPointerEnter={() => desk.setHover(true)}
+                onPointerLeave={() => desk.setHover(false)}
+            >
+                <motion.div
+                    drag={prefersReduced ? false : "x"}
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.2}
+                    onDragEnd={(_, info) => onDragEnd(info.offset.x, desk.next, desk.prev)}
+                >
+                    <div className="relative rounded-xl bg-neutral-900 overflow-hidden">
+                        {/* Browser chrome */}
+                        <div className="absolute inset-x-0 top-0 h-8 bg-neutral-900/95 rounded-t-xl flex items-center px-3 gap-2 z-10">
+                            <div className="flex gap-1.5">
+                                <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+                                <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                            </div>
+                            <div className="flex-1 mx-2 h-5 rounded bg-neutral-800/50 flex items-center px-2">
+                <span className="text-[9px] text-gray-400 truncate">
+                  {websites[desk.i].url}
+                </span>
+                            </div>
+                        </div>
+                        {/* Live website preview */}
+                        <div className="relative w-full aspect-[16/10] pt-8">
+                            <iframe
+                                key={websites[desk.i].url}
+                                src={websites[desk.i].url}
+                                className="w-full h-full border-0"
+                                title={`${websites[desk.i].name} desktop preview`}
+                                sandbox="allow-scripts allow-same-origin"
+                                referrerPolicy="no-referrer"
+                                loading="lazy"
+                            />
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* controls: mobile -> below; sm+ -> overlay */}
+                <div className="hidden sm:flex absolute bottom-3 left-0 right-0 items-center justify-between px-3">
+                    <Button size="sm" variant="outline" onClick={desk.prev} aria-label="Previous website">
+                        ←
+                    </Button>
+                    <div className="flex gap-1.5">
+                        {websites.map((w, idx) => (
+                            <button
+                                key={w.name}
+                                onClick={() => desk.setI(idx)}
+                                aria-label={`Go to website ${idx + 1}`}
+                                className={`h-2 rounded-full transition-all ${
+                                    idx === desk.i ? "bg-primary w-6" : "bg-white/70 w-2.5"
+                                }`}
+                            />
+                        ))}
+                    </div>
+                    <Button size="sm" onClick={desk.next} aria-label="Next website">
+                        →
+                    </Button>
+                </div>
+            </motion.div>
+
+            {/* mobile-only controls under the desktop card */}
+            <div className="mt-3 sm:hidden flex items-center justify-center gap-3">
+                <Button size="sm" variant="outline" onClick={desk.prev} aria-label="Previous website">
+                    ←
+                </Button>
                 <div className="flex gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                    {websites.map((w, idx) => (
+                        <button
+                            key={w.name}
+                            onClick={() => desk.setI(idx)}
+                            aria-label={`Go to website ${idx + 1}`}
+                            className={`h-2 rounded-full transition-all ${
+                                idx === desk.i ? "bg-primary w-6" : "bg-gray-300 w-2.5"
+                            }`}
+                        />
+                    ))}
                 </div>
-                <div className="flex-1 mx-2 h-5 rounded bg-neutral-800/50 flex items-center px-2">
-                  <span className="text-[9px] text-gray-400 truncate">{websites[desk.i].url}</span>
-                </div>
-              </div>
-              {/* Live website preview */}
-              <div className="relative w-full aspect-[16/10] pt-8">
-                <iframe
-                    key={websites[desk.i].url}
-                    src={websites[desk.i].url}
-                    className="w-full h-full border-0"
-                    title={`${websites[desk.i].name} desktop preview`}
-                    sandbox="allow-scripts allow-same-origin"
-                    loading="lazy"
-                />
-              </div>
+                <Button size="sm" onClick={desk.next} aria-label="Next website">
+                    →
+                </Button>
             </div>
-          </motion.div>
 
-          {/* controls: mobile -> below; sm+ -> overlay */}
-          <div className="hidden sm:flex absolute bottom-3 left-0 right-0 items-center justify-between px-3">
-            <Button size="sm" variant="outline" onClick={desk.prev} aria-label="Previous website">
-              ←
-            </Button>
-            <div className="flex gap-1.5">
-              {websites.map((_, idx) => (
-                  <button
-                      key={idx}
-                      onClick={() => desk.setI(idx)}
-                      aria-label={`Go to website ${idx + 1}`}
-                      className={`h-2 rounded-full transition-all ${idx === desk.i ? "bg-primary w-6" : "bg-white/70 w-2.5"}`}
-                  />
-              ))}
-            </div>
-            <Button size="sm" onClick={desk.next} aria-label="Next website">
-              →
-            </Button>
-          </div>
-        </motion.div>
+            {/* ---------- PHONE CARD (apps) ---------- */}
+            <motion.div
+                className={[
+                    "relative mt-6 mx-auto w-[220px] rounded-3xl bg-white border border-white/60 overflow-hidden shadow-2xl",
+                    "sm:absolute sm:-bottom-6 sm:-right-6 sm:origin-bottom-right sm:w-[140px] md:w-[160px] lg:w-[180px] sm:transition-all sm:duration-500 sm:will-change-transform",
+                    desktopOnTop
+                        ? "sm:z-10 sm:scale-[0.92] sm:pointer-events-none"
+                        : "sm:z-40 sm:scale-100 sm:pointer-events-auto",
+                ].join(" ")}
+                initial={{ y: 16, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                onPointerEnter={() => mob.setHover(true)}
+                onPointerLeave={() => mob.setHover(false)}
+            >
+                <motion.div
+                    drag={prefersReduced ? false : "x"}
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.25}
+                    onDragEnd={(_, info) => onDragEnd(info.offset.x, mob.next, mob.prev)}
+                    className="relative bg-neutral-950 overflow-hidden"
+                >
+                    {/* notch */}
+                    {/*<div className="absolute inset-x-12 -top-2 h-5 rounded-b-2xl bg-neutral-950 z-10" />*/}
 
-        {/* mobile-only controls under the desktop card */}
-        <div className="mt-3 sm:hidden flex items-center justify-center gap-3">
-          <Button size="sm" variant="outline" onClick={desk.prev} aria-label="Previous website">
-            ←
-          </Button>
-          <div className="flex gap-1.5">
-            {websites.map((_, idx) => (
-                <button
-                    key={idx}
-                    onClick={() => desk.setI(idx)}
-                    aria-label={`Go to website ${idx + 1}`}
-                    className={`h-2 rounded-full transition-all ${idx === desk.i ? "bg-primary w-6" : "bg-gray-300 w-2.5"}`}
-                />
-            ))}
-          </div>
-          <Button size="sm" onClick={desk.next} aria-label="Next website">
-            →
-          </Button>
-        </div>
-
-        {/* ---------- PHONE CARD ---------- */}
-        <motion.div
-            className={[
-              "relative mt-6 mx-auto w-[220px] rounded-3xl bg-white border border-white/60 overflow-hidden shadow-2xl",
-              "sm:absolute sm:-bottom-6 sm:-right-6 sm:origin-bottom-right sm:w-[140px] md:w-[160px] lg:w-[180px] sm:transition-all sm:duration-500 sm:will-change-transform",
-              desktopOnTop ? "sm:z-10 sm:scale-[0.92] sm:pointer-events-none" : "sm:z-40 sm:scale-100 sm:pointer-events-auto",
-            ].join(" ")}
-            initial={{ y: 16, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            onPointerEnter={() => mob.setHover(true)}
-            onPointerLeave={() => mob.setHover(false)}
-        >
-          <motion.div
-              drag={prefersReduced ? false : "x"}
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.25}
-              onDragEnd={(_, info) => onDragEnd(info.offset.x, mob.next, mob.prev)}
-              className="relative bg-neutral-950 overflow-hidden"
-          >
-            {/* notch */}
-            <div className="absolute inset-x-12 -top-2 h-5 rounded-b-2xl bg-neutral-950 z-10" />
-            {/* Mobile website preview */}
-            <div className="relative w-full aspect-[9/19.5]">
-              <iframe
-                  key={websites[mob.i].url}
-                  src={websites[mob.i].url}
-                  className="w-full h-full border-0 scale-[0.4] origin-top-left"
-                  style={{ width: '250%', height: '250%' }}
-                  title={`${websites[mob.i].name} mobile preview`}
-                  sandbox="allow-scripts allow-same-origin"
-                  loading="lazy"
-              />
-            </div>
-          </motion.div>
+                    {/* Mobile app preview: image, not iframe */}
+                    <div className="relative w-full aspect-[9/19.5] bg-neutral-950">
+                        <img
+                            key={apps[mob.i].image}
+                            src={apps[mob.i].image}
+                            alt={`${apps[mob.i].name} mobile mockup`}
+                            loading="lazy"
+                            className="absolute inset-0 w-full h-full object-cover"
+                        />
+                    </div>
+                </motion.div>
 
           {/* phone dots: inside for sm+, below for mobile */}
           <div className="hidden sm:flex absolute bottom-2 left-0 right-0 justify-center gap-1.5 z-10">
@@ -609,46 +632,48 @@ function ProductShowcase({ blobShift }: ShowcaseProps) {
           </div>
         </motion.div>
 
-        {/* mobile-only phone dots under the phone mock */}
-        <div className="sm:hidden mt-2 flex justify-center gap-1.5">
-          {websites.map((_, idx) => (
-              <button
-                  key={idx}
-                  onClick={() => mob.setI(idx)}
-                  aria-label={`Go to website ${idx + 1}`}
-                  className={`h-1.5 rounded-full transition-all ${idx === mob.i ? "bg-primary w-5" : "bg-gray-300 w-2.5"}`}
-              />
-          ))}
-        </div>
+            {/* mobile-only phone dots under the phone mock (map APPS, not WEBSITES) */}
+            <div className="sm:hidden mt-2 flex justify-center gap-1.5">
+                {apps.map((a, idx) => (
+                    <button
+                        key={a.name}
+                        onClick={() => mob.setI(idx)}
+                        aria-label={`Go to app ${idx + 1}`}
+                        className={`h-1.5 rounded-full transition-all ${
+                            idx === mob.i ? "bg-primary w-5" : "bg-gray-300 w-2.5"
+                        }`}
+                    />
+                ))}
+            </div>
 
-        {/* manual top/bottom toggles: hide on mobile (stacked) */}
-        <div className="hidden sm:flex mt-6 gap-3 justify-center">
-          <Button
-              size="icon"
-              variant={desktopOnTop ? "default" : "outline"}
-              className={desktopOnTop ? "bg-primary text-white" : ""}
-              onClick={() => setTopView("desktop")}
-              aria-pressed={desktopOnTop}
-              title="Desktop on top"
-          >
-            <Monitor className="h-5 w-5" />
-            <span className="sr-only">Desktop on top</span>
-          </Button>
+            {/* manual top/bottom toggles: hide on mobile (stacked) */}
+            <div className="hidden sm:flex mt-6 gap-3 justify-center">
+                <Button
+                    size="icon"
+                    variant={desktopOnTop ? "default" : "outline"}
+                    className={desktopOnTop ? "bg-primary text-white" : ""}
+                    onClick={() => setTopView("desktop")}
+                    aria-pressed={desktopOnTop}
+                    title="Desktop on top"
+                >
+                    <Monitor className="h-5 w-5" />
+                    <span className="sr-only">Desktop on top</span>
+                </Button>
 
-          <Button
-              size="icon"
-              variant={!desktopOnTop ? "default" : "outline"}
-              className={!desktopOnTop ? "bg-primary text-white" : ""}
-              onClick={() => setTopView("mobile")}
-              aria-pressed={!desktopOnTop}
-              title="Mobile on top"
-          >
-            <Smartphone className="h-5 w-5" />
-            <span className="sr-only">Mobile on top</span>
-          </Button>
+                <Button
+                    size="icon"
+                    variant={!desktopOnTop ? "default" : "outline"}
+                    className={!desktopOnTop ? "bg-primary text-white" : ""}
+                    onClick={() => setTopView("mobile")}
+                    aria-pressed={!desktopOnTop}
+                    title="Mobile on top"
+                >
+                    <Smartphone className="h-5 w-5" />
+                    <span className="sr-only">Mobile on top</span>
+                </Button>
+            </div>
         </div>
-      </div>
-  )
+    );
 }
 
 function BrandCursorGlow({
