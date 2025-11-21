@@ -389,11 +389,11 @@ const WEBSITES: WebItem[] = [
         url: "https://test-app-packagefy.vercel.app",
         description: "Package tracking solution",
     },
-    {
-        name: "Scottish Home Bargains",
-        url: "https://www.scottishhomebargains.uk",
-        description: "E-commerce platform",
-    },
+    // {
+    //     name: "Scottish Home Bargains",
+    //     url: "https://www.scottishhomebargains.uk",
+    //     description: "E-commerce platform",
+    // },
     {
         name: "Hello Cloud",
         url: "https://www.hellocloud.co.in",
@@ -416,12 +416,12 @@ const APPS: AppItem[] = [
         description: "E-commerce platform",
         link: null,
     },
-    {
-        name: "Zoop It",
-        image: "/case-studies/zoopit.png",
-        description: "E-commerce platform",
-        link: null,
-    }
+    // {
+    //     name: "Zoop It",
+    //     image: "/case-studies/zoopit.png",
+    //     description: "E-commerce platform",
+    //     link: null,
+    // }
     // Add more apps with mockup images
 ];
 
