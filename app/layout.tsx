@@ -7,6 +7,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import { Suspense } from "react";                // ✅ add
 import GtmPageview from "@/app/_components/GtmPageview";
 import { Analytics } from "@vercel/analytics/next";
+import UpgradeModal from "@/app/UpgradeModal";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
@@ -110,6 +111,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             style={{ overscrollBehaviorX: "contain" }}
             suppressHydrationWarning
         >
+        <UpgradeModal />
         {/* splash init */}
         <Script id="rvz-splash-init" strategy="beforeInteractive">
             {`document.documentElement.classList.add('rvz-splashing');`}
