@@ -7,6 +7,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import { Suspense } from "react";                // ✅ add
 import GtmPageview from "@/app/_components/GtmPageview";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import UpgradeModal from "@/app/UpgradeModal";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
@@ -148,6 +149,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Suspense fallback={null}>
             <GtmPageview />
         </Suspense>
+
+        <SpeedInsights />
 
         {/* GSAP + Vercel analytics */}
         <Script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" strategy="afterInteractive" />
