@@ -21,15 +21,15 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import {
-  ArrowRight,
-  Users,
-  Code,
-  Brain,
-  TrendingUp,
-  Monitor,
-  Smartphone,
-  Building2,
-  Star,
+    ArrowRight,
+    Users,
+    Code,
+    Brain,
+    TrendingUp,
+    Monitor,
+    Smartphone,
+    Building2,
+    Star, Zap, Layers, Cloud, Database, Shield,
 } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { ConsultationCTA } from "@/components/consultation-cta"
@@ -933,112 +933,130 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Services */}
-        <section id="services" className="py-20 bg-gray-50" data-st-section>
-          <motion.div
-              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-              variants={revealOnce}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.25 }}
-          >
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">What We Do Best</h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                From cutting-edge AI solutions to scalable SaaS platforms, we deliver technology that drives your business forward.
-              </p>
-            </div>
+          {/* Services */}
+          <section id="services" className="py-20 bg-gray-50" data-st-section>
+              <motion.div
+                  className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+                  variants={revealOnce}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: true, amount: 0.25 }}
+              >
+                  <div className="text-center mb-16">
+                      <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">What We Do Best</h2>
+                      <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                          From cutting-edge AI solutions to scalable SaaS platforms, we deliver technology that drives your business forward.
+                      </p>
+                  </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-st-stagger>
-              {[
-                {
-                  icon: <Code className="h-8 w-8" />,
-                  title: "Custom Development",
-                  description: "Tailored solutions built with modern technologies to meet your unique business requirements.",
-                  stack: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "Tailwind CSS"],
-                },
-                {
-                  icon: <Brain className="h-8 w-8" />,
-                  title: "AI & Automation",
-                  description: "Intelligent systems that streamline operations and unlock new possibilities for growth.",
-                  stack: ["AI SDK", "OpenAI/Groq/xAI", "Vector DB", "Embeddings", "Workers/Queues"],
-                },
-                {
-                  icon: <Users className="h-8 w-8" />,
-                  title: "Consulting",
-                  description: "Strategic guidance to help you make informed technology decisions.",
-                  stack: ["Architecture", "Migrations", "Performance", "Security", "Roadmapping"],
-                },
-                {
-                  icon: <Users className="h-8 w-8" />,
-                  title: "SaaS Solutions",
-                  description: "Scalable software-as-a-service platforms designed for rapid deployment and growth.",
-                  stack: ["Multi-tenant", "RBAC", "Billing", "Webhooks", "Audit Logs"],
-                },
-                {
-                  icon: <Users className="h-8 w-8" />,
-                  title: "Cloud & DevOps",
-                  description: "Secure, reliable infrastructure that scales with your business needs.",
-                  stack: ["Vercel", "Neon/Supabase", "CI/CD", "Observability", "RLS/Policies"],
-                },
-                {
-                  icon: <Users className="h-8 w-8" />,
-                  title: "Mobile & Web Apps",
-                  description: "Cross-platform applications that deliver exceptional user experiences.",
-                  stack: ["React Native", "Expo", "PWA", "Offline-first", "App Store/Play"],
-                },
-              ].map((service, index) => (
-                  <motion.div
-                      key={service.title}
-                      whileHover={prefersReduced ? undefined : hoverCard}
-                      transition={{ type: "spring", stiffness: 200, damping: 24 }}
-                  >
-                    <Card className="group border-0 shadow-md hover:shadow-lg transition-shadow h-full">
-                      <CardContent className="p-8 flex flex-col h-full">
-                        {/* Icon */}
-                        <motion.div
-                            className="text-primary mb-4"
-                            whileHover={prefersReduced ? undefined : hoverIcon}
-                        >
-                          {service.icon}
-                        </motion.div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-st-stagger>
+                      {[
+                          {
+                              icon: <Code className="h-8 w-8" />,
+                              title: "Custom Development",
+                              description: "Tailored solutions built with modern technologies to meet your unique business requirements.",
+                              stack: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "Tailwind CSS", "React", "GraphQL"],
+                          },
+                          {
+                              icon: <Brain className="h-8 w-8" />,
+                              title: "AI & Automation",
+                              description: "Intelligent systems that streamline operations and unlock new possibilities for growth.",
+                              stack: ["AI SDK", "OpenAI", "Groq", "xAI", "Vector DB", "Embeddings", "Workers", "Queues", "LangChain"],
+                          },
+                          {
+                              icon: <Zap className="h-8 w-8" />,
+                              title: "No-Code Solutions",
+                              description: "Rapid application development across all global platforms—from Shopify to Salla and beyond. We work with every regional platform, not just a few.",
+                              stack: ["Shopify", "WooCommerce", "Salla", "Zid", "Webflow", "Bubble", "Wix", "Squarespace", "Framer", "Airtable", "Make", "Zapier", "n8n", "Glide", "Flutterflow", "All Regions"],
+                          },
+                          {
+                              icon: <TrendingUp className="h-8 w-8" />,
+                              title: "Consulting",
+                              description: "Strategic guidance to help you make informed technology decisions and accelerate your digital transformation.",
+                              stack: ["Architecture", "Tech Stack", "Migrations", "Performance", "Security", "Scalability", "Roadmapping", "Team Building"],
+                          },
+                          {
+                              icon: <Layers className="h-8 w-8" />,
+                              title: "SaaS Solutions",
+                              description: "Scalable software-as-a-service platforms designed for rapid deployment and growth.",
+                              stack: ["Multi-tenant", "RBAC", "Stripe Billing", "Webhooks", "Audit Logs", "Analytics", "API Design", "White-label"],
+                          },
+                          {
+                              icon: <Cloud className="h-8 w-8" />,
+                              title: "Cloud & DevOps",
+                              description: "Secure, reliable infrastructure that scales with your business needs.",
+                              stack: ["Vercel", "AWS", "Neon", "Supabase", "Docker", "CI/CD", "Monitoring", "Observability", "RLS"],
+                          },
+                          {
+                              icon: <Smartphone className="h-8 w-8" />,
+                              title: "Mobile & Web Apps",
+                              description: "Cross-platform applications that deliver exceptional user experiences on any device.",
+                              stack: ["React Native", "Expo", "Kotlin MP", "PWA", "Jetpack Compose", "Offline-first", "App Store", "Play Store"],
+                          },
+                          {
+                              icon: <Database className="h-8 w-8" />,
+                              title: "Data & Analytics",
+                              description: "Transform raw data into actionable insights with modern data pipelines and visualization tools.",
+                              stack: ["PostgreSQL", "MongoDB", "Redis", "Prisma", "Drizzle", "Data Pipelines", "Dashboards", "BigQuery"],
+                          },
+                          {
+                              icon: <Shield className="h-8 w-8" />,
+                              title: "Security & Compliance",
+                              description: "Protect your digital assets with enterprise-grade security implementations and compliance frameworks.",
+                              stack: ["Authentication", "OAuth", "JWT", "Encryption", "GDPR", "SOC 2", "Penetration Testing", "Audit Trails"],
+                          },
+                      ].map((service, index) => (
+                          <motion.div
+                              key={service.title}
+                              whileHover={prefersReduced ? undefined : hoverCard}
+                              transition={{ type: "spring", stiffness: 200, damping: 24 }}
+                          >
+                              <Card className="group border-0 shadow-md hover:shadow-lg transition-shadow h-full">
+                                  <CardContent className="p-8 flex flex-col h-full">
+                                      {/* Icon */}
+                                      <motion.div
+                                          className="text-primary mb-4"
+                                          whileHover={prefersReduced ? undefined : hoverIcon}
+                                      >
+                                          {service.icon}
+                                      </motion.div>
 
-                        {/* Title + description */}
-                        <h3 className="text-xl font-heading font-semibold text-gray-900 mb-3">
-                          {service.title}
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed mb-4 flex-grow">
-                          {service.description}
-                        </p>
+                                      {/* Title + description */}
+                                      <h3 className="text-xl font-heading font-semibold text-gray-900 mb-3">
+                                          {service.title}
+                                      </h3>
+                                      <p className="text-gray-600 leading-relaxed mb-4 flex-grow">
+                                          {service.description}
+                                      </p>
 
-                        {/* Accordion stays pinned at bottom */}
-                        <Accordion type="single" collapsible className="mt-auto">
-                          <AccordionItem value={`stack-${index}`}>
-                            <AccordionTrigger className="text-left text-primary font-medium hover:no-underline">
-                              View Tech Stack
-                            </AccordionTrigger>
-                            <AccordionContent>
-                              <div className="flex flex-wrap gap-2">
-                                {service.stack.map((tech) => (
-                                    <span
-                                        key={tech}
-                                        className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs"
-                                        aria-label={`Technology ${tech}`}
-                                    >
+                                      {/* Accordion stays pinned at bottom */}
+                                      <Accordion type="single" collapsible className="mt-auto">
+                                          <AccordionItem value={`stack-${index}`}>
+                                              <AccordionTrigger className="text-left text-primary font-medium hover:no-underline">
+                                                  View Tech Stack
+                                              </AccordionTrigger>
+                                              <AccordionContent>
+                                                  <div className="flex flex-wrap gap-2">
+                                                      {service.stack.map((tech) => (
+                                                          <span
+                                                              key={tech}
+                                                              className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs"
+                                                              aria-label={`Technology ${tech}`}
+                                                          >
                 {tech}
               </span>
-                                ))}
-                              </div>
-                            </AccordionContent>
-                          </AccordionItem>
-                        </Accordion>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </section>
+                                                      ))}
+                                                  </div>
+                                              </AccordionContent>
+                                          </AccordionItem>
+                                      </Accordion>
+                                  </CardContent>
+                              </Card>
+                          </motion.div>
+                      ))}
+                  </div>
+              </motion.div>
+          </section>
 
         {/* Why Choose Us */}
         <section id="why" className="py-20 bg-white" data-st-section>
