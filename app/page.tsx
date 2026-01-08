@@ -544,7 +544,6 @@ export function ProductShowcase({ blobShift }: ShowcaseProps) {
             />
 
             {/* ---------- DESKTOP CARD (web) ---------- */}
-            // Around line 558-578, find this code:
             <motion.div
                 className={[
                     "relative w-full max-w-[640px] mx-auto rounded-2xl bg-white/70 backdrop-blur-xl border border-white/60 overflow-hidden shadow-lg",
