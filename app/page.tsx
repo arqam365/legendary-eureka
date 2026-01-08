@@ -807,13 +807,14 @@ export default function HomePage() {
     const [hydrated, setHydrated] = useState(false)
 
     useEffect(() => {
-        setHydrated(true)
+        setHydrated(true) // only run after hydration
     }, [])
 
     useLayoutEffect(() => {
         if (!hydrated) return
 
         const ctx = gsap.context(() => {
+            // 1) Hero headline (SplitText)
             if (splitRef.current) {
                 const split = new SplitText(splitRef.current, { type: "words,chars" })
                 gsap.set(split.chars, { opacity: 0, y: 60, rotateX: -90 })
@@ -835,6 +836,7 @@ export default function HomePage() {
                 })
             }
 
+            // 2) Fade/slide each section when it scrolls in
             gsap.utils.toArray<HTMLElement>("[data-st-section]").forEach((section) => {
                 gsap.set(section, { opacity: 0, y: 24 })
 
@@ -847,6 +849,7 @@ export default function HomePage() {
                     },
                 })
 
+                // 3) Optional stagger for inner grid/cards
                 const container = section.querySelector<HTMLElement>("[data-st-stagger]")
                 const items = container ? Array.from(container.children) : []
 
@@ -873,6 +876,7 @@ export default function HomePage() {
         return () => ctx.revert()
     }, [hydrated])
 
+    // left tracker sections (IDs must exist below)
     const sectionsList: Milestone[] = [
         { id: "hero", label: "Hero" },
         { id: "trust", label: "Trusted By" },
@@ -883,108 +887,705 @@ export default function HomePage() {
         { id: "cta", label: "Get Started" },
     ]
 
+    // just under other hooks in HomePage()
     const [open, setOpen] = useState<null | string>(null);
+// helpers to feed each column
     const leftValue  = open?.startsWith("L:") ? open.slice(2) : undefined;
     const rightValue = open?.startsWith("R:") ? open.slice(2) : undefined;
 
     return (
-        <>
-            {/* ============================================
-              JSON-LD SCHEMA MARKUP FOR SEO
-          ============================================ */}
-            <Script
-                id="home-breadcrumb"
-                type="application/ld+json"
-                strategy="afterInteractive"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(homeBreadcrumb) }}
-            />
-            <Script
-                id="home-faq"
-                type="application/ld+json"
-                strategy="afterInteractive"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageFAQ) }}
-            />
+        <div className="min-h-screen bg-white">
+            <Navigation />
 
-            {/* ============================================
-              PAGE CONTENT
-          ============================================ */}
-            <div className="min-h-screen bg-white">
-                <Navigation />
+            {/* Left milestone tracker (lg+) */}
+            <ScrollMilestones sections={sectionsList} hideWhenInView="#site-footer" disableBelow={1024} topOffsetPx={96} />
 
-                {/* Left milestone tracker (lg+) */}
-                <ScrollMilestones sections={sectionsList} hideWhenInView="#site-footer" disableBelow={1024} topOffsetPx={96} />
-
-                {/* Hero */}
-                <section
-                    id="hero"
-                    ref={heroRef}
-                    className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50"
+            {/* Hero */}
+            <section
+                id="hero"
+                ref={heroRef}
+                className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50"
+            >
+                <motion.div
+                    className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32"
+                    variants={revealOnce}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, amount: 0.25 }}
                 >
-                    <motion.div
-                        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32"
-                        variants={revealOnce}
-                        initial="hidden"
-                        whileInView="show"
-                        viewport={{ once: true, amount: 0.25 }}
-                    >
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                            {/* LEFT */}
-                            <div className="space-y-8">
-                                <div className="space-y-4">
-                                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 leading-tight">
-                                        <span ref={splitRef}>Innovating Products</span>{" "}
-                                        <span className="text-gradient-revzion">Empowering Businesses.</span>
-                                    </h1>
-                                    <p className="text-xl text-gray-600 leading-relaxed max-w-2xl">
-                                        Revzion builds scalable SaaS, AI, and cross-platform solutions for startups and enterprises.
-                                    </p>
-                                </div>
-
-                                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 justify-center sm:justify-start items-stretch sm:items-center w-full max-w-2xl mx-auto">
-                                    <ConsultationCTA label="Free Consultation" />
-                                    <Button
-                                        size="lg"
-                                        variant="outline"
-                                        className="text-base sm:text-lg px-6 sm:px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white bg-transparent flex items-center justify-center w-full sm:w-auto"
-                                    >
-                                        <Link href="/services" className="flex items-center">
-                                            Explore Services
-                                        </Link>
-                                    </Button>
-                                </div>
-
-                                <div className="flex items-center space-x-8 pt-4">
-                                    {[
-                                        { value: "50+", label: "Projects Delivered" },
-                                        { value: "100%", label: "Client Satisfaction" },
-                                        { value: "24/7", label: "Support" },
-                                    ].map((m) => (
-                                        <motion.div key={m.label} whileHover={prefersReduced ? undefined : hoverCard} className="text-center">
-                                            <div className="text-2xl font-heading font-bold text-gray-900">{m.value}</div>
-                                            <div className="text-sm text-gray-600">{m.label}</div>
-                                        </motion.div>
-                                    ))}
-                                </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        {/* LEFT */}
+                        <div className="space-y-8">
+                            <div className="space-y-4">
+                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 leading-tight">
+                                    <span ref={splitRef}>Innovating Products</span>{" "}
+                                    <span className="text-gradient-revzion">Empowering Businesses.</span>
+                                </h1>
+                                <p className="text-xl text-gray-600 leading-relaxed max-w-2xl">
+                                    Revzion builds scalable SaaS, AI, and cross-platform solutions for startups and enterprises.
+                                </p>
                             </div>
 
-                            {/* RIGHT: Interactive mockups */}
-                            <div className="relative isolate z-10">
-                                <ProductShowcase blobShift={blobShift} />
+                            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 justify-center sm:justify-start items-stretch sm:items-center w-full max-w-2xl mx-auto">
+                                <ConsultationCTA label="Free Consultation" />
+                                <Button
+                                    size="lg"
+                                    variant="outline"
+                                    className="text-base sm:text-lg px-6 sm:px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white bg-transparent flex items-center justify-center w-full sm:w-auto"
+                                >
+                                    <Link href="/services" className="flex items-center">
+                                        Explore Services
+                                    </Link>
+                                </Button>
+                            </div>
+
+                            <div className="flex items-center space-x-8 pt-4">
+                                {[
+                                    { value: "50+", label: "Projects Delivered" },
+                                    { value: "100%", label: "Client Satisfaction" },
+                                    { value: "24/7", label: "Support" },
+                                ].map((m) => (
+                                    <motion.div key={m.label} whileHover={prefersReduced ? undefined : hoverCard} className="text-center">
+                                        <div className="text-2xl font-heading font-bold text-gray-900">{m.value}</div>
+                                        <div className="text-sm text-gray-600">{m.label}</div>
+                                    </motion.div>
+                                ))}
                             </div>
                         </div>
-                    </motion.div>
 
-                    <BrandCursorGlow containerRef={heroRef as React.RefObject<HTMLElement>} size={320} opacity={0.24} />
-                </section>
+                        {/* RIGHT: Interactive mockups */}
+                        <div className="relative isolate z-10">
+                            <ProductShowcase blobShift={blobShift} />
+                        </div>
+                    </div>
+                </motion.div>
 
-                {/* ALL YOUR REMAINING SECTIONS CONTINUE HERE... */}
-                {/* I'm truncating for brevity, but include ALL your existing sections */}
+                {/* 👇 brand-themed mouse-follow glow (behind content) */}
+                <BrandCursorGlow containerRef={heroRef as React.RefObject<HTMLElement>} size={320} opacity={0.24} />
+            </section>
 
-                {/* Trust section, Services, Why Choose Us, Case Studies, Tech Stacks, CTA sections all stay the same */}
+            {/* Client Impact / Trust bar */}
+            <section id="trust" className="bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div className="rounded-2xl border border-gray-100 bg-gray-50/60 backdrop-blur-sm px-6 py-5">
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <p className="text-sm text-gray-600">
+                                Trusted by teams shipping <span className="font-semibold text-gray-900">50+ projects</span> across{" "}
+                                <span className="font-semibold text-gray-900">5+ countries</span>
+                            </p>
+                            {/* replace with your client logos */}
+                            <div className="flex items-center gap-6 grayscale opacity-80 hover:opacity-100 transition">
+                                <Image src="/logos/client-1.png" alt="Client 1" width={96} height={24} />
+                                <Image src="/logos/client-2.png" alt="Client 2" width={96} height={24} />
+                                <Image src="/logos/client-3.png" alt="Client 3" width={96} height={24} />
+                                <Image src="/logos/client-4.png" alt="Client 4" width={96} height={24} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-                <Footer />
-                <SoundToggle />
-            </div>
-        </>
-    );
+            {/* Services */}
+            <section id="services" className="py-20 bg-gray-50" data-st-section>
+                <motion.div
+                    className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+                    variants={revealOnce}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, amount: 0.25 }}
+                >
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">What We Do Best</h2>
+                        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                            From cutting-edge AI solutions to scalable SaaS platforms, we deliver technology that drives your business forward.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-st-stagger>
+                        {[
+                            {
+                                icon: <Code className="h-8 w-8" />,
+                                title: "Custom Development",
+                                description: "Tailored solutions built with modern technologies to meet your unique business requirements.",
+                                stack: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "Tailwind CSS", "React", "GraphQL"],
+                            },
+                            {
+                                icon: <Brain className="h-8 w-8" />,
+                                title: "AI & Automation",
+                                description: "Intelligent systems that streamline operations and unlock new possibilities for growth.",
+                                stack: ["AI SDK", "OpenAI", "Groq", "xAI", "Vector DB", "Embeddings", "Workers", "Queues", "LangChain"],
+                            },
+                            {
+                                icon: <Zap className="h-8 w-8" />,
+                                title: "No-Code Solutions",
+                                description: "Rapid application development across all global platforms—from Shopify to Salla and beyond. We work with every regional platform, not just a few.",
+                                stack: ["Shopify", "WooCommerce", "Salla", "Zid", "Webflow", "Bubble", "Wix", "Squarespace", "Framer", "Airtable", "Make", "Zapier", "n8n", "Glide", "Flutterflow", "All Regions"],
+                            },
+                            {
+                                icon: <TrendingUp className="h-8 w-8" />,
+                                title: "Consulting",
+                                description: "Strategic guidance to help you make informed technology decisions and accelerate your digital transformation.",
+                                stack: ["Architecture", "Tech Stack", "Migrations", "Performance", "Security", "Scalability", "Roadmapping", "Team Building"],
+                            },
+                            {
+                                icon: <Layers className="h-8 w-8" />,
+                                title: "SaaS Solutions",
+                                description: "Scalable software-as-a-service platforms designed for rapid deployment and growth.",
+                                stack: ["Multi-tenant", "RBAC", "Stripe Billing", "Webhooks", "Audit Logs", "Analytics", "API Design", "White-label"],
+                            },
+                            {
+                                icon: <Cloud className="h-8 w-8" />,
+                                title: "Cloud & DevOps",
+                                description: "Secure, reliable infrastructure that scales with your business needs.",
+                                stack: ["Vercel", "AWS", "Neon", "Supabase", "Docker", "CI/CD", "Monitoring", "Observability", "RLS"],
+                            },
+                            {
+                                icon: <Smartphone className="h-8 w-8" />,
+                                title: "Mobile & Web Apps",
+                                description: "Cross-platform applications that deliver exceptional user experiences on any device.",
+                                stack: ["React Native", "Expo", "Kotlin MP", "PWA", "Jetpack Compose", "Offline-first", "App Store", "Play Store"],
+                            },
+                            {
+                                icon: <Database className="h-8 w-8" />,
+                                title: "Data & Analytics",
+                                description: "Transform raw data into actionable insights with modern data pipelines and visualization tools.",
+                                stack: ["PostgreSQL", "MongoDB", "Redis", "Prisma", "Drizzle", "Data Pipelines", "Dashboards", "BigQuery"],
+                            },
+                            {
+                                icon: <Shield className="h-8 w-8" />,
+                                title: "Security & Compliance",
+                                description: "Protect your digital assets with enterprise-grade security implementations and compliance frameworks.",
+                                stack: ["Authentication", "OAuth", "JWT", "Encryption", "GDPR", "SOC 2", "Penetration Testing", "Audit Trails"],
+                            },
+                        ].map((service, index) => (
+                            <motion.div
+                                key={service.title}
+                                whileHover={prefersReduced ? undefined : hoverCard}
+                                transition={{ type: "spring", stiffness: 200, damping: 24 }}
+                            >
+                                <Card className="group border-0 shadow-md hover:shadow-lg transition-shadow h-full">
+                                    <CardContent className="p-8 flex flex-col h-full">
+                                        {/* Icon */}
+                                        <motion.div
+                                            className="text-primary mb-4"
+                                            whileHover={prefersReduced ? undefined : hoverIcon}
+                                        >
+                                            {service.icon}
+                                        </motion.div>
+
+                                        {/* Title + description */}
+                                        <h3 className="text-xl font-heading font-semibold text-gray-900 mb-3">
+                                            {service.title}
+                                        </h3>
+                                        <p className="text-gray-600 leading-relaxed mb-4 flex-grow">
+                                            {service.description}
+                                        </p>
+
+                                        {/* Accordion stays pinned at bottom */}
+                                        <Accordion type="single" collapsible className="mt-auto">
+                                            <AccordionItem value={`stack-${index}`}>
+                                                <AccordionTrigger className="text-left text-primary font-medium hover:no-underline">
+                                                    View Tech Stack
+                                                </AccordionTrigger>
+                                                <AccordionContent>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {service.stack.map((tech) => (
+                                                            <span
+                                                                key={tech}
+                                                                className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs"
+                                                                aria-label={`Technology ${tech}`}
+                                                            >
+                {tech}
+              </span>
+                                                        ))}
+                                                    </div>
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                        </Accordion>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        ))}
+                    </div>
+                </motion.div>
+            </section>
+
+            {/* Why Choose Us */}
+            <section id="why" className="py-20 bg-white" data-st-section>
+                <motion.div
+                    className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+                    variants={revealOnce}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, amount: 0.25 }}
+                >
+                    <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-8">Why Choose Revzion?</h2>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" data-st-stagger>
+                        {[
+                            { title: "Proven Expertise", description: "Years of experience delivering successful projects across various industries and technologies." },
+                            { title: "Agile Approach", description: "Fast, iterative development process that adapts to your changing needs and market demands." },
+                            { title: "End-to-End Solutions", description: "From concept to deployment and beyond, we handle every aspect of your project lifecycle." },
+                            { title: "Future-Ready Technology", description: "We use cutting-edge tools and frameworks to ensure your solutions remain competitive." },
+                        ].map((item) => (
+                            <motion.div key={item.title} whileHover={prefersReduced ? undefined : hoverCard}>
+                                <div className="flex items-start space-x-4">
+                                    <div className="flex-shrink-0 w-6 h-6 bg-gradient-revzion rounded-full flex items-center justify-center mt-1">
+                                        <div className="w-2 h-2 bg-white rounded-full" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-heading font-semibold text-gray-900 mb-2">{item.title}</h3>
+                                        <p className="text-gray-600">{item.description}</p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </motion.div>
+            </section>
+
+            {/* Case Studies */}
+            <CaseStudiesCarousel />
+
+            {/* Tech Stacks */}
+            <section id="stacks" className="py-20 relative overflow-hidden">
+                {/* soft background */}
+                <div className="pointer-events-none absolute inset-0 opacity-[0.08]">
+                    <div className="absolute -top-24 -right-24 w-[38rem] h-[38rem] rounded-full bg-gradient-revzion blur-3xl" />
+                    <div className="absolute -bottom-24 -left-24 w-[32rem] h-[32rem] rounded-full bg-blue-200 blur-3xl" />
+                </div>
+
+                <motion.div
+                    className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+                    variants={revealOnce}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, amount: 0.25 }}
+                >
+                    {/* header */}
+                    <div className="text-center mb-12 sm:mb-16">
+                        <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-3">
+                            Our Tech Stacks
+                        </h2>
+                        <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+                            We pick tools that are fast, secure, and scalable—then combine them with the right
+                            patterns so your product ships reliably and grows safely.
+                        </p>
+
+                        {/* category badges */}
+                        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                            {["Performance-first", "Security & Compliance", "DX that scales", "Cloud-native"].map((b) => (
+                                <span key={b} className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+            {b}
+          </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* two-column accordions */}
+                    {/* two-column accordions */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* LEFT */}
+                        <Accordion
+                            type="single"
+                            collapsible
+                            value={leftValue}
+                            onValueChange={(v) => setOpen(v ? `L:${v}` : null)}
+                            className="w-full rounded-2xl shadow-sm border border-gray-100 bg-white/70 backdrop-blur"
+                        >
+                            {/* Frontend Technologies */}
+                            <AccordionItem value="frontend">
+                                <AccordionTrigger className="px-6 text-left">
+                                    <div className="flex items-center gap-3">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">
+            {"</>"}
+          </span>
+                                        <span className="font-semibold">Frontend Technologies</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="px-6 pb-6">
+                                    <p className="text-gray-600 leading-relaxed mb-4">
+                                        Component-driven UIs with accessibility and performance baked in. Ship SSR/SSG/ISR
+                                        with great Core Web Vitals and minimal bundles.
+                                    </p>
+
+                                    {/* We use it for */}
+                                    <div className="mb-4">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1.5">We use it for</h4>
+                                        <ul className="space-y-1.5 text-sm text-gray-600">
+                                            {[
+                                                "Design systems & theming",
+                                                "App Router SSR/ISR + edge streaming",
+                                                "Animations & micro-interactions",
+                                            ].map((li) => (
+                                                <li key={li} className="flex items-center">
+                                                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2" /> {li}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    {/* Primary stack */}
+                                    <div className="mb-4">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Primary stack</h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {[
+                                                "React",
+                                                "Next.js (App Router)",
+                                                "TypeScript",
+                                                "Tailwind CSS",
+                                                "React Native",
+                                                "Expo",
+                                                "Vite",
+                                            ].map((t) => (
+                                                <motion.span
+                                                    key={t}
+                                                    whileHover={{ scale: 1.04 }}
+                                                    className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium"
+                                                >
+                                                    {t}
+                                                </motion.span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Often paired with */}
+                                    <div className="mb-4">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Often paired with</h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {["Zustand / Redux", "React Query", "Next Image/CDN", "Framer Motion", "shadcn/ui"].map(
+                                                (t) => (
+                                                    <span
+                                                        key={t}
+                                                        className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs border border-gray-200"
+                                                    >
+                  {t}
+                </span>
+                                                )
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Confidence */}
+                                    <div>
+                                        <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                            <span>Confidence</span>
+                                            <span>Expert</span>
+                                        </div>
+                                        <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                                            <div className="h-full w-[92%] bg-gradient-revzion" />
+                                        </div>
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+
+                            {/* Mobile, PWA & Performance */}
+                            <AccordionItem value="mobile-webperf">
+                                <AccordionTrigger className="px-6 text-left">
+                                    <div className="flex items-center gap-3">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">
+            ⚡
+          </span>
+                                        <span className="font-semibold">Mobile, PWA & Performance</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="px-6 pb-6">
+                                    <p className="text-gray-600 leading-relaxed mb-4">
+                                        Cross-platform reach with offline-first patterns and Lighthouse-friendly builds.
+                                    </p>
+
+                                    <div className="mb-4">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1.5">We use it for</h4>
+                                        <ul className="space-y-1.5 text-sm text-gray-600">
+                                            {["Add-to-Home PWA", "Background sync", "Perf budgets & RUM"].map((li) => (
+                                                <li key={li} className="flex items-center">
+                                                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2" /> {li}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Primary tools</h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {["PWA", "Workbox", "Web Animations", "Framer Motion", "Lighthouse CI", "React Query"].map(
+                                                (t) => (
+                                                    <motion.span
+                                                        key={t}
+                                                        whileHover={{ scale: 1.04 }}
+                                                        className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium"
+                                                    >
+                                                        {t}
+                                                    </motion.span>
+                                                )
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                            <span>Confidence</span>
+                                            <span>Advanced</span>
+                                        </div>
+                                        <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                                            <div className="h-full w-[88%] bg-gradient-revzion" />
+                                        </div>
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+
+                            {/* Design Systems & Accessibility */}
+                            <AccordionItem value="design-accessibility">
+                                <AccordionTrigger className="px-6 text-left">
+                                    <div className="flex items-center gap-3">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">
+            🎨
+          </span>
+                                        <span className="font-semibold">Design Systems & Accessibility</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="px-6 pb-6">
+                                    <p className="text-gray-600 leading-relaxed mb-4">
+                                        Maintainable component libraries with tokens, dark mode, and WCAG-compliant UX.
+                                    </p>
+
+                                    <div className="mb-4">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1.5">We use it for</h4>
+                                        <ul className="space-y-1.5 text-sm text-gray-600">
+                                            {["Theming & tokens", "A11y audits (WCAG 2.2)", "Docs & Storybook"].map((li) => (
+                                                <li key={li} className="flex items-center">
+                                                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2" /> {li}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Primary stack</h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {["Tailwind CSS", "shadcn/ui", "Radix Primitives", "Storybook", "Figma"].map((t) => (
+                                                <motion.span
+                                                    key={t}
+                                                    whileHover={{ scale: 1.04 }}
+                                                    className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium"
+                                                >
+                                                    {t}
+                                                </motion.span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                            <span>Confidence</span>
+                                            <span>Advanced</span>
+                                        </div>
+                                        <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                                            <div className="h-full w-[87%] bg-gradient-revzion" />
+                                        </div>
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+
+                        {/* RIGHT */}
+                        <Accordion
+                            type="single"
+                            collapsible
+                            value={rightValue}
+                            onValueChange={(v) => setOpen(v ? `R:${v}` : null)}
+                            className="w-full rounded-2xl shadow-sm border border-gray-100 bg-white/70 backdrop-blur"
+                        >
+                            <AccordionItem value="backend">
+                                <AccordionTrigger className="px-6 text-left">
+                                    <div className="flex items-center gap-3">
+                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">🛠️</span>
+                                        <span className="font-semibold">Backend & APIs</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="px-6 pb-6">
+                                    <p className="text-gray-600 leading-relaxed mb-4">
+                                        Reliable services with clean contracts, validations, and strong observability.
+                                    </p>
+
+                                    <div className="mb-4">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1.5">We use it for</h4>
+                                        <ul className="space-y-1.5 text-sm text-gray-600">
+                                            {["Multi-tenant SaaS", "Billing & webhooks", "Auth (JWT/OAuth)"].map((li) => (
+                                                <li key={li} className="flex items-center">
+                                                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2" /> {li}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Primary stack</h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {["Node.js", "tRPC / REST", "Webhooks", "GraphQL", "Zod", "JWT/OAuth", "Rate limiting"].map((t) => (
+                                                <motion.span key={t} whileHover={{ scale: 1.04 }} className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
+                                                    {t}
+                                                </motion.span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                            <span>Confidence</span>
+                                            <span>Expert</span>
+                                        </div>
+                                        <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                                            <div className="h-full w-[93%] bg-gradient-revzion" />
+                                        </div>
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+
+                            <AccordionItem value="data-cloud">
+                                <AccordionTrigger className="px-6 text-left">
+                                    <div className="flex items-center gap-3">
+                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">☁️</span>
+                                        <span className="font-semibold">Data, Cloud & DevOps</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="px-6 pb-6">
+                                    <p className="text-gray-600 leading-relaxed mb-4">
+                                        Scale safely with IaC, observability, cost controls, and zero-downtime deploys.
+                                    </p>
+
+                                    <div className="mb-4">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Primary stack</h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {["PostgreSQL", "Redis", "Neon/Supabase", "S3", "CI/CD (GH Actions)", "Docker", "Kubernetes", "Terraform", "OpenTelemetry"].map((t) => (
+                                                <motion.span key={t} whileHover={{ scale: 1.04 }} className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
+                                                    {t}
+                                                </motion.span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1.5">We monitor</h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {["Error Budget", "P95 latency", "Throughput", "Cost per tenant"].map((m) => (
+                                                <span key={m} className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs border border-gray-200">
+                {m}
+              </span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                            <span>Confidence</span>
+                                            <span>Advanced</span>
+                                        </div>
+                                        <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                                            <div className="h-full w-[89%] bg-gradient-revzion" />
+                                        </div>
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+
+                            <AccordionItem value="ai">
+                                <AccordionTrigger className="px-6 text-left">
+                                    <div className="flex items-center gap-3">
+                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">🧠</span>
+                                        <span className="font-semibold">AI & Automation</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="px-6 pb-6">
+                                    <p className="text-gray-600 leading-relaxed mb-4">
+                                        Practical AI that ships: copilots, RAG pipelines, and workflow automation.
+                                    </p>
+
+                                    <div className="mb-4">
+                                        <h4 className="text-sm font-semibold text-gray-900 mb-1.5">Primary stack</h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {["OpenAI / Groq / xAI", "Embeddings", "Vector DB", "RAG", "LangChain", "Workers/Queues"].map((t) => (
+                                                <motion.span key={t} whileHover={{ scale: 1.04 }} className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
+                                                    {t}
+                                                </motion.span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                            <span>Confidence</span>
+                                            <span>Advanced</span>
+                                        </div>
+                                        <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+                                            <div className="h-full w-[86%] bg-gradient-revzion" />
+                                        </div>
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </div>
+
+                    {/* tool strip */}
+                    <div className="mt-12">
+                        <div className="rounded-2xl border border-gray-100 bg-white/60 backdrop-blur px-5 py-4">
+                            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600">
+                                {[
+                                    "Next.js", "TypeScript", "Tailwind", "React Query", "tRPC", "GraphQL",
+                                    "PostgreSQL", "Redis", "Neon", "S3", "Docker", "Terraform", "Kubernetes",
+                                ].map((t) => (
+                                    <span key={t} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                        {t}
+            </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* CTA */}
+                    <div className="mt-10 text-center">
+                        <Link
+                            href="/services"
+                            className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-primary text-primary hover:bg-primary hover:text-white transition-colors"
+                        >
+                            See how we pick the right stack for your use case
+                            <span className="ml-2">→</span>
+                        </Link>
+                    </div>
+                </motion.div>
+            </section>
+
+            {/* CTA */}
+            <section id="cta" className="py-20 bg-gradient-revzion">
+                <motion.div
+                    className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+                    variants={revealOnce}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, amount: 0.25 }}
+                >
+                    <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-6">
+                        Ready to Transform Your Business?
+                    </h2>
+                    <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+                        Let's discuss how we can help you build innovative solutions that drive growth and success.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-3">
+                            <Link href="/contact">Start Your Project</Link>
+                        </Button>
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            className="border-2 border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-3 bg-transparent"
+                        >
+                            <Link href="/portfolio">View Our Work</Link>
+                        </Button>
+                    </div>
+                </motion.div>
+            </section>
+
+            <Footer />
+            <SoundToggle />
+        </div>
+    )
 }
