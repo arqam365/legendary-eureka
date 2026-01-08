@@ -1,0 +1,174 @@
+REVZION CANONICAL IDENTITY DOCUMENT
+DO NOT MODIFY WITHOUT UPDATING ALL PLATFORMS
+===============================================
+Version: 1.0
+Last Updated: 2026-01-08
+
+================================================================================
+COMPANY BIO - MULTIPLE FORMATS
+================================================================================
+
+## ELEVATOR PITCH (25 words)
+Revzion builds scalable SaaS, AI solutions, and cross-platform mobile apps using Kotlin Multiplatform, Next.js, and modern technologies. Founded 2024.
+
+## STANDARD BIO (58 words)
+Revzion is a mobile-first technology company founded by Arqam Ahmad Siddiqui in 2024. We specialize in SaaS development, AI solutions, and cross-platform mobile applications using Kotlin Multiplatform, Next.js, React, and modern web/mobile technologies. We serve startups and enterprises globally, building scalable solutions that drive business growth.
+
+## COMPREHENSIVE BIO (150 words)
+Revzion (formerly Next Level Programmers) is a mobile-first technology company founded by Arqam Ahmad Siddiqui in January 2024, headquartered in Meerut, India. We specialize in building scalable SaaS platforms, AI-powered solutions, and cross-platform mobile applications.
+
+Our expertise spans SaaS development with multi-tenant architecture and billing integration, AI & automation using OpenAI and Groq, mobile apps with Kotlin Multiplatform and React Native, web development with Next.js and React, and cloud & DevOps with AWS and Firebase.
+
+We build solutions for health tech, e-commerce, fintech, and enterprise clients worldwide. Our approach combines modern technologies with best practices in architecture, security, and scalability. We serve both startups building MVPs and established companies scaling their platforms.
+
+Founded by Arqam Ahmad Siddiqui (@arqam365), Revzion operates as a remote-first company serving clients globally.
+
+================================================================================
+FOUNDER BIO - ARQAM AHMAD SIDDIQUI
+================================================================================
+
+## STANDARD BIO (58 words)
+Arqam Ahmad Siddiqui (@arqam365) is the Founder and CEO of Revzion, a mobile-first technology company. He specializes in Kotlin Multiplatform development, building cross-platform health monitoring applications like Evolwe that integrate with wearable devices. His expertise spans iOS/Android native development, BLE connectivity, health data visualization, SaaS architecture, and modern web development.
+
+## CONTACT
+Website: https://arqam365.com
+GitHub: https://github.com/arqam365
+LinkedIn: https://linkedin.com/in/arqam365
+Twitter: https://twitter.com/arqam365
+Email: arqam@revzion.com
+
+================================================================================
+TAGLINES & SLOGANS
+================================================================================
+
+Primary Tagline: "Innovating Products. Empowering Businesses."
+
+Alternative Taglines:
+- "Making technology accessible through world-class engineering"
+- "Building the future of SaaS, AI, and mobile technology"
+- "Your partner in digital transformation"
+- "From concept to scale, we build solutions that matter"
+
+Short Descriptor:
+- "Mobile-first SaaS, AI & cross-platform solutions"
+
+================================================================================
+KEY MESSAGING POINTS
+================================================================================
+
+1. Mobile-first technology company
+2. Founded 2024 by Arqam Ahmad Siddiqui (@arqam365)
+3. Specializes in SaaS, AI, and cross-platform mobile apps
+4. Expert in Kotlin Multiplatform, Next.js, React
+5. Serves startups and enterprises globally
+6. Remote-first, headquartered in Meerut, India
+7. 50+ projects delivered across 5+ countries
+8. 100% client satisfaction rate
+9. 24/7 support and ongoing maintenance
+10. Focus on scalability, security, and performance
+
+================================================================================
+PLATFORMS WHERE COMPANY BIO MUST APPEAR
+================================================================================
+
+- revzion.com homepage (hero section)
+- revzion.com/about page
+- LinkedIn company page (About section)
+- GitHub organization description
+- Twitter/X bio
+- All press releases
+- Email signatures
+- Pitch decks
+- Client proposals
+
+================================================================================
+PLATFORMS WHERE FOUNDER BIO MUST APPEAR
+================================================================================
+
+- revzion.com/about page (team section)
+- arqam365.com (personal site)
+- LinkedIn personal profile (About section)
+- Twitter/X bio (@arqam365)
+- GitHub profile (@arqam365)
+- Conference speaker bios
+- Guest blog author bios
+- Podcast guest descriptions
+
+Always link to both:
+- https://www.revzion.com (company)
+- https://arqam365.com (founder personal site)
+
+================================================================================
+CONSISTENCY RULES
+================================================================================
+
+1. Always use "@arqam365" when referencing founder's handle
+2. Always write "Revzion" (capital R, not "revzion" or "REVZION")
+3. Always write "Kotlin Multiplatform" (not "KMP" in formal contexts)
+4. Former name reference: "formerly Next Level Programmers" (use once per document)
+5. Location: "Meerut, Uttar Pradesh, India" or "Meerut, India"
+6. Founded: "2024" or "January 2024" (both acceptable)
+7. Company type: "mobile-first technology company" (preferred)
+
+================================================================================
+DO NOT USE
+================================================================================
+
+❌ Avoid buzzwords without substance:
+- "Revolutionary"
+- "Cutting-edge" (use "modern" instead)
+- "Disruptive"
+- "Synergy"
+- "Paradigm shift"
+
+❌ Avoid vague claims:
+- "World's best"
+- "Industry-leading" (unless with proof)
+- "#1" (unless with source)
+
+✅ Use specific, verifiable statements:
+- "50+ projects delivered"
+- "100% client satisfaction"
+- "70% code sharing with Kotlin Multiplatform"
+- "Serving clients in 5+ countries"
+
+================================================================================
+APPROVED COLOR PALETTE
+================================================================================
+
+Primary: #0066CC (Blue)
+Secondary: Various (gradient effects)
+Background: #FFFFFF (White)
+Text: #0A0A0A (Near Black)
+
+================================================================================
+CONTACT INFORMATION
+================================================================================
+
+## General
+Website: https://www.revzion.com
+Email: contact@revzion.com
+Support: support@revzion.com
+
+## Founder
+Arqam Ahmad Siddiqui
+Email: arqam@revzion.com
+Personal Site: https://arqam365.com
+
+## Social Media
+LinkedIn: https://linkedin.com/company/revzion
+GitHub: https://github.com/revzion
+Twitter: https://twitter.com/revzion
+
+## Office
+Revzion Technologies
+Meerut, Uttar Pradesh 250001
+India
+
+================================================================================
+END OF IDENTITY DOCUMENT
+================================================================================
+
+For questions or updates: contact@revzion.com
+Document Owner: Arqam Ahmad Siddiqui
+Next Review Date: 2026-02-08
