@@ -36,6 +36,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ConsultationCTA } from "@/components/consultation-cta"
 import SoundToggle from "@/components/SoundToggle"
 import ScrollMilestones, { type Milestone } from "@/components/scroll-milestones"
+import TrustSection from "@/components/TrustSection";
 
 // gsap.registerPlugin(ScrambleTextPlugin);
 gsap.registerPlugin(SplitText)
@@ -964,25 +965,59 @@ export default function HomePage() {
             </section>
 
             {/* Client Impact / Trust bar */}
-            <section id="trust" className="bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <div className="rounded-2xl border border-gray-100 bg-gray-50/60 backdrop-blur-sm px-6 py-5">
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                            <p className="text-sm text-gray-600">
-                                Trusted by teams shipping <span className="font-semibold text-gray-900">50+ projects</span> across{" "}
-                                <span className="font-semibold text-gray-900">5+ countries</span>
-                            </p>
-                            {/* replace with your client logos */}
-                            <div className="flex items-center gap-6 grayscale opacity-80 hover:opacity-100 transition">
-                                <Image src="/logos/client-1.png" alt="Client 1" width={96} height={24} />
-                                <Image src="/logos/client-2.png" alt="Client 2" width={96} height={24} />
-                                <Image src="/logos/client-3.png" alt="Client 3" width={96} height={24} />
-                                <Image src="/logos/client-4.png" alt="Client 4" width={96} height={24} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <TrustSection />
+            {/*<section id="trust" className="bg-white">*/}
+            {/*    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">*/}
+            {/*        <div className="rounded-2xl border border-gray-100 bg-gray-50/60 backdrop-blur-sm px-6 py-5">*/}
+            {/*            <div className="flex flex-col md:flex-row items-center justify-between gap-6">*/}
+            {/*                <p className="text-sm text-gray-600">*/}
+            {/*                    Trusted by teams shipping <span className="font-semibold text-gray-900">50+ projects</span> across{" "}*/}
+            {/*                    <span className="font-semibold text-gray-900">5+ countries</span>*/}
+            {/*                </p>*/}
+
+            {/*                /!* Client names with links *!/*/}
+            {/*                <div className="flex items-center gap-6 transition">*/}
+            {/*                    <a*/}
+            {/*                        href="https://evolwering.com"*/}
+            {/*                        target="_blank"*/}
+            {/*                        rel="noopener noreferrer"*/}
+            {/*                        className="text-lg font-medium text-gray-400 hover:text-gray-600 transition-colors"*/}
+            {/*                    >*/}
+            {/*                        EvolWe*/}
+            {/*                    </a>*/}
+            {/*                    <a*/}
+            {/*                        href="https://hellocloud.co.in"*/}
+            {/*                        target="_blank"*/}
+            {/*                        rel="noopener noreferrer"*/}
+            {/*                        className="text-lg font-medium text-gray-400 hover:text-gray-600 transition-colors"*/}
+            {/*                    >*/}
+            {/*                        HelloCloud*/}
+            {/*                    </a>*/}
+            {/*                    <a*/}
+            {/*                        href="https://rynox.io"*/}
+            {/*                        target="_blank"*/}
+            {/*                        rel="noopener noreferrer"*/}
+            {/*                        className="text-lg font-medium text-gray-400 hover:text-gray-600 transition-colors"*/}
+            {/*                    >*/}
+            {/*                        Rynox*/}
+            {/*                    </a>*/}
+            {/*                    <a*/}
+            {/*                        href="#"*/}
+            {/*                        className="text-lg font-medium text-gray-400 hover:text-gray-600 transition-colors cursor-default pointer-events-none"*/}
+            {/*                    >*/}
+            {/*                        Packagefy*/}
+            {/*                    </a>*/}
+            {/*                    <a*/}
+            {/*                        href="#"*/}
+            {/*                        className="text-lg font-medium text-gray-400 hover:text-gray-600 transition-colors cursor-default pointer-events-none"*/}
+            {/*                    >*/}
+            {/*                        BeeSocial*/}
+            {/*                    </a>*/}
+            {/*                </div>*/}
+            {/*            </div>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</section>*/}
 
             {/* Services */}
             <section id="services" className="py-20 bg-gray-50" data-st-section>
