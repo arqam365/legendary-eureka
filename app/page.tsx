@@ -37,6 +37,7 @@ import { ConsultationCTA } from "@/components/consultation-cta"
 import SoundToggle from "@/components/SoundToggle"
 import ScrollMilestones, { type Milestone } from "@/components/scroll-milestones"
 import TrustSection from "@/components/TrustSection";
+import BuildarcSection from "@/components/BuildarcSection";
 
 // gsap.registerPlugin(ScrambleTextPlugin);
 gsap.registerPlugin(SplitText)
@@ -1143,6 +1144,8 @@ export default function HomePage() {
                     </div>
                 </motion.div>
             </section>
+
+            <BuildarcSection/>
 
             {/* Why Choose Us */}
             <section id="why" className="py-20 bg-white" data-st-section>

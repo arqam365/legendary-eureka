@@ -343,7 +343,17 @@ export function Footer() {
         {/* ===== Bottom bar & FAB ===== */}
         <div className="bg-gray-50/90 dark:bg-neutral-950 border-t border-gray-200/80 dark:border-white/10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-gray-500 dark:text-gray-400 text-sm">© {year} Revzion. All rights reserved.</p>
+              {/* 👇 Buildarc attribution added here */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-sm text-gray-500">
+                  <span>© {year} Revzion. All rights reserved.</span>
+                  <span className="hidden sm:inline text-gray-300" aria-hidden>•</span>
+                  <span>
+              Estimation & delivery platform by Revzion:{" "}
+                      <Link href="/estimate" className="font-medium text-primary hover:underline">
+                Buildarc
+              </Link>
+            </span>
+              </div>
             <div className="flex items-center gap-4 text-sm">
               <Link href="/privacy-policy" className="text-gray-500 hover:text-primary">
                 Privacy
