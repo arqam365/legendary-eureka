@@ -159,25 +159,30 @@ function CaseStudiesCarousel() {
             ],
         },
         {
-            id: "finlytics",
-            title: "Finlytics – Analytics SaaS",
-            problem: "Complex reporting slowed decisions.",
-            solution: "Built multi-tenant dashboards, alerts, and ETL pipelines.",
-            results: "3× faster insights, 35% conversion lift, NPS +14.",
-            image: "/case-studies/finlytics.jpg",
-            link: "/portfolio/finlytics",
-            tags: ["Multi-tenant", "Dashboards", "ETL Pipelines"],
+            id: "rynox",
+            title: "Rynox – Enterprise Billing & Management Platform",
+            problem: "Multi-location and franchise businesses struggled with fragmented billing, inconsistent pricing, and lack of real-time operational visibility.",
+            solution: "Built a unified enterprise platform to centralize billing, pricing, inventory, customer data, and performance analytics across all locations.",
+            results: "Standardized operations at scale, reduced manual errors, improved financial control, and enabled faster data-driven decisions.",
+            image: "/case-studies/rynox.jpg",
+            link: "/portfolio/rynox",
+            tags: [
+                "Enterprise Billing",
+                "Franchise Management",
+                "Multi-location Operations",
+                "Real-time Analytics"
+            ],
             kpis: [
-                { label: "Insights", value: "3× faster" },
-                { label: "Conversion", value: "+35%" },
-                { label: "NPS", value: "+14" },
+                { label: "Operational Efficiency", value: "Significantly Improved" },
+                { label: "Billing Accuracy", value: "Reduced Errors" },
+                { label: "Decision Speed", value: "Real-time Insights" },
             ],
             clients: [
-                { name: "Fiscus", logo: "/logos/clients/fiscus.svg" },
-                { name: "BlueRock", logo: "/logos/clients/bluerock.svg" },
-                { name: "Helios", logo: "/logos/clients/helios.svg" },
+                { name: "Franchise Businesses", logo: "/logos/clients/franchise.svg" },
+                { name: "Service Enterprises", logo: "/logos/clients/service.svg" },
+                { name: "Multi-location Brands", logo: "/logos/clients/multilocation.svg" },
             ],
-        },
+        }
     ]
 
     const [active, setActive] = React.useState(0)
