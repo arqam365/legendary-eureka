@@ -30,23 +30,26 @@ export default function BuildarcSection() {
                 </p>
 
                 <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                    {/* Internal navigation */}
                     <Button
-                        className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3"
+                        className="px-6 py-3 h-12"
                         onClick={() => router.push("/estimate")}
                     >
                         Get Instant Estimate
                     </Button>
 
-                    {/* External navigation */}
-                    <a
-                        href="https://buildarc.vercel.app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center border border-gray-300 px-6 py-3 rounded-md font-medium hover:bg-gray-50 transition"
+                    <Button
+                        variant="outline"
+                        className="px-6 py-3 h-12"
+                        asChild
                     >
-                        Visit Buildarc
-                    </a>
+                        <a
+                            href="https://buildarc.vercel.app"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Visit Buildarc
+                        </a>
+                    </Button>
                 </div>
             </div>
         </section>
