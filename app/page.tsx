@@ -129,7 +129,11 @@ type Study = {
     problem: string
     solution: string
     results: string
-    image: string
+    kind: "web" | "mobile"
+    images: {
+        desktop?: string
+        mobile?: string
+    }
     link?: string
     tags?: string[]
     kpis?: { label: string; value: string }[]
@@ -141,10 +145,13 @@ function CaseStudiesCarousel() {
         {
             id: "beesocial",
             title: "BeeSocial – Social Media App",
+            kind: "mobile",
             problem: "Low engagement and high churn.",
             solution: "Rebuilt feed ranking, real-time chat, and creator tools.",
             results: "+42% DAU, 29% session length, 18% retention.",
-            image: "/case-studies/test.png",
+            images: {
+                mobile: "/case-studies/beesocial.png"
+            },
             link: "/portfolio/beesocial",
             tags: ["Discovery → MVP → Scale", "Design Systems", "Observability"],
             kpis: [
@@ -161,10 +168,13 @@ function CaseStudiesCarousel() {
         {
             id: "rynox",
             title: "Rynox – Enterprise Billing Platform",
+            kind: "web",
             problem: "Disconnected billing systems and limited visibility across franchise locations.",
             solution: "Centralized billing, pricing controls, and real-time analytics for multi-location businesses.",
             results: "3× faster reporting, 40% fewer billing errors, 25% operational cost reduction.",
-            image: "/case-studies/rynox.png",
+            images: {
+                desktop: "/case-studies/rynox.jpeg"
+            },
             link: "/portfolio/rynox",
             tags: ["Enterprise SaaS", "Franchise Ops", "Billing & Analytics"],
             kpis: [
@@ -181,10 +191,13 @@ function CaseStudiesCarousel() {
         {
             id: "evolve-ring",
             title: "Evolve – Smart Ring Companion App",
+            kind: "mobile",
             problem: "Health data from wearable devices was fragmented, delayed, and hard for users to understand.",
             solution: "Built a cross-platform companion app with real-time BLE sync, health insights, and device management.",
             results: "2× faster data sync, 35% higher daily engagement, 99.9% device sync reliability.",
-            image: "/case-studies/evolve-ring.png",
+            images: {
+                mobile: "/case-studies/evolwe.jpeg"
+            },
             link: "/portfolio/evolve-ring",
             tags: ["Wearable Tech", "BLE", "Health Analytics", "Kotlin Multiplatform"],
             kpis: [
@@ -201,10 +214,13 @@ function CaseStudiesCarousel() {
         {
             id: "hellocloud",
             title: "HelloCloud – Skincare Brand for Indian Skin",
+            kind: "web",
             problem: "Generic skincare products failed to suit Indian skin and climate.",
             solution: "Launched dermatologist-tested serums with targeted active ingredients.",
             results: "91% clearer skin in 4 weeks, 88% fewer breakouts, 92% long-lasting hydration. ",
-            image: "/case-studies/hellocloud.png",
+            images: {
+                desktop: "/case-studies/hellocloud.jpeg"
+            },
             link: "/portfolio/hellocloud",
             tags: ["Dermatologist-Tested", "Skin Balance", "Climate-Smart"],
             kpis: [
@@ -289,20 +305,37 @@ function CaseStudiesCarousel() {
                                 className="grid grid-cols-1 lg:grid-cols-5"
                             >
                                 {/* Visual */}
-                                <div className="relative lg:col-span-2">
-                                    {/* Mobile: keep a sane ratio; Desktop: fill */}
-                                    <div className="relative aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:min-h-[520px]">
-                                        <Image
-                                            src={s.image}
-                                            alt={s.title}
-                                            fill
-                                            sizes="(max-width: 1024px) 100vw, 40vw"
-                                            className="object-cover"
-                                            priority
-                                        />
-                                        {/* soft fade into content on lg+ */}
-                                        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 hidden lg:block bg-gradient-to-l from-white/80 to-transparent" />
-                                    </div>
+                                <div className="relative lg:col-span-2 flex items-center px-4 sm:px-6 lg:px-8 py-6">
+                                    {/* WEB / SAAS */}
+                                    {s.kind === "web" && s.images.desktop && (
+                                        <div className="w-full flex justify-center">
+                                            <div className="relative w-full max-w-[520px] aspect-[16/10] rounded-2xl overflow-hidden shadow-2xl border bg-white">
+                                                <Image
+                                                    src={s.images.desktop}
+                                                    alt={`${s.title} desktop mockup`}
+                                                    fill
+                                                    className="object-cover"
+                                                    sizes="(max-width: 1024px) 90vw, 520px"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* MOBILE APP */}
+                                    {s.kind === "mobile" && s.images.mobile && (
+                                        <div className="w-full flex justify-center">
+                                            <div className="relative w-[240px] aspect-[9/19.5] rounded-3xl overflow-hidden shadow-2xl border bg-white">
+                                                <Image
+                                                    src={s.images.mobile}
+                                                    alt={`${s.title} mobile mockup`}
+                                                    fill
+                                                    className="object-cover"
+                                                    sizes="240px"
+                                                    priority
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Content */}
