@@ -49,18 +49,66 @@ export const organizationSchema = {
     },
 
     // Founder Information (Linked Entity)
+    // Founder Information (Canonical Person Entity)
     "founder": {
         "@type": "Person",
         "@id": "https://arqam365.com/#person",
+
+        // Canonical Name
         "name": "Arqam Ahmad Siddiqui",
+
+        // Misspellings, aliases, usernames (SEO + GEO unification)
+        "alternateName": [
+            "Arqam Ahmed Siddiqui",
+            "Arqam Ahmad",
+            "Arqam Ahmed",
+            "Arqam Siddiqui",
+            "Arkam Siddiqui",
+            "Akram Siddiqui",
+            "Arquam Siddiqui",
+            "Aqram Siddique",
+            "arqam365",
+            "@arqam365"
+        ],
+
+        // Identity
         "url": "https://arqam365.com",
-        "alternateName": "@arqam365",
         "jobTitle": "Founder & CEO",
+        "description": "Founder and CEO of Revzion, specializing in SaaS, AI solutions, and cross-platform mobile development using Kotlin Multiplatform and modern web technologies.",
+
+        // Contact (safe to keep email here)
         "email": "arqam@revzion.com",
+
+        // Social & authority signals
         "sameAs": [
+            "https://www.linkedin.com/in/arqam365",
             "https://github.com/arqam365",
-            "https://linkedin.com/in/arqam365",
             "https://twitter.com/arqam365"
+        ],
+
+        // Organizational linkage (important for entity graph)
+        "worksFor": {
+            "@id": "https://www.revzion.com/#organization"
+        },
+
+        // Nationality / GEO hint (lightweight, non-invasive)
+        "nationality": {
+            "@type": "Country",
+            "name": "India"
+        },
+
+        // Knows About (ties person → expertise → company services)
+        "knowsAbout": [
+            "SaaS Architecture",
+            "Artificial Intelligence",
+            "Machine Learning",
+            "Kotlin Multiplatform",
+            "Cross-Platform Mobile Development",
+            "Next.js",
+            "Cloud Architecture",
+            "Startup Engineering",
+            "Health Technology",
+            "Wearable Integration"
         ]
     },
 
@@ -110,13 +158,13 @@ export const organizationSchema = {
     // Contact Information
     "address": {
         "@type": "PostalAddress",
-        "addressLocality": "Meerut",
+        "addressLocality": "Jhansi",
         "addressRegion": "Uttar Pradesh",
-        "postalCode": "250001",
+        "postalCode": "284001",
         "addressCountry": "IN"
     },
     "email": "contact@revzion.com",
-    "telephone": "+91-XXXXXXXXXX", // Add real number
+    "telephone": "+91-6387161020", // Add real number
 
     // Service Area
     "areaServed": [
@@ -135,6 +183,34 @@ export const organizationSchema = {
         {
             "@type": "Country",
             "name": "United Kingdom"
+        },
+        {
+            "@type": "Country",
+            "name": "Canada"
+        },
+        {
+            "@type": "Country",
+            "name": "Australia"
+        },
+        {
+            "@type": "Country",
+            "name": "New Zealand"
+        },
+        {
+            "@type": "Country",
+            "name": "Singapore"
+        },
+        {
+            "@type": "Country",
+            "name": "Saudia Arabia"
+        },
+        {
+            "@type": "Country",
+            "name": "Qatar"
+        },
+        {
+            "@type": "Country",
+            "name": "United Arab Emirates"
         }
     ],
 
@@ -237,6 +313,13 @@ export const websiteSchema = {
     "@id": "https://www.revzion.com/#website",
     "name": "Revzion",
     "url": "https://www.revzion.com",
+    "alternateName": [
+        "Arqam Ahmad Siddiqui",
+        "Arqam Ahmed Siddiqui",
+        "arqam365",
+        "Arkam Siddiqui",
+        "Akram Siddiqui"
+    ],
     "description": "Revzion builds scalable SaaS, AI, and cross-platform solutions for startups and enterprises.",
     "publisher": {
         "@id": "https://www.revzion.com/#organization"
