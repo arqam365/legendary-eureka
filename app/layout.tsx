@@ -38,6 +38,19 @@ export const metadata: Metadata = {
         // Brand
         "Revzion",
         "Revzion Technologies",
+        "Next Level Programmers",
+
+        // Services
+        "SaaS development",
+        "AI solutions",
+        "Artificial Intelligence development",
+        "Machine Learning solutions",
+        "Kotlin Multiplatform development",
+        "KMP development",
+        "Cross-platform mobile apps",
+        "iOS app development",
+        "Android app development",
+        "React Native development",
         "Global software development company",
         "SaaS development company",
         "AI software development",
@@ -61,10 +74,33 @@ export const metadata: Metadata = {
 
         // Cloud & DevOps
         "Cloud architecture",
+        "AWS development",
+        "Firebase development",
+        "DevOps services",
+        "CI/CD implementation",
+
+        // Technologies
+        "Jetpack Compose",
+        "SwiftUI",
+        "Tailwind CSS",
+        "GraphQL",
+        "tRPC",
+        "PostgreSQL",
+
+        // Business
+        "Software consulting",
+        "Technical architecture",
+        "MVP development",
+        "Startup development",
+        "Enterprise solutions",
+
+        // Location
         "Software consulting company",
         "Offshore development partner",
         "Software company India",
-        "Tech company Meerut",
+        "Tech company Jhansi",
+        "Middle East Technologies",
+        "Saudia Arabia Tech Company",
         "Mobile app development India",
 
         // Founder & Brand Association
@@ -123,10 +159,10 @@ export const metadata: Metadata = {
     // AUTHORSHIP & BRAND AUTHORITY
     // =========================================================
     authors: [
-        { name: "Revzion", url: "https://www.revzion.com" },
+        { name: "Revzion Tea,", url: "https://www.revzion.com" },
         { name: "Arqam Ahmad Siddiqui", url: "https://arqam365.com" }
     ],
-    creator: "Arqam Ahmad Siddiqui",
+    creator: "Arqam Ahmad Siddiqui (@arqam365)",
     publisher: "Revzion Technologies",
 
     // =========================================================
@@ -291,8 +327,9 @@ export default function RootLayout({
             {`document.documentElement.classList.add('rvz-splashing');`}
         </Script>
 
-        <div className="fixed inset-0 z-[9998] bg-black grid place-items-center">
-            <img src="/logo.svg" alt="Revzion" width="36" height="36" />
+        {/* SSR splash */}
+        <div id="rvz-ssr-splash" className="fixed inset-0 z-[9998] bg-black grid place-items-center">
+            <img src="/logo.svg" alt="Revzion" width="36" height="36" style={{ opacity: 0.9 }} />
         </div>
 
         <ClientSplash />
