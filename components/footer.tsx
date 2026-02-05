@@ -314,24 +314,13 @@ export function Footer() {
                       <div className="relative min-w-0 flex-1 overflow-hidden">
                           <div className="marquee flex gap-8">
                               {[
-                                  "Stripe",
-                                  "AWS",
-                                  "Azure",
-                                  "Vercel",
-                                  "PostgreSQL",
-                                  "Kubernetes",
-                                  "Razorpay",
-                                  "MongoDB",
-                                  "Google Cloud",
-                                  "Stripe",
-                                  "AWS",
-                                  "Azure",
-                                  "Vercel",
-                                  "PostgreSQL",
-                                  "Kubernetes",
-                                  "Razorpay",
-                                  "MongoDB",
-                                  "Google Cloud",
+                                  "Rynox",
+                                  "Packagefy",
+                                  "Evolwe",
+                                  "Techxellent",
+                                  "Hello Cloud",
+                                  "Bee Social",
+                                  "BuildArc"
                               ].map((name, i) => (
                                   <span
                                       key={`${name}-${i}`}
