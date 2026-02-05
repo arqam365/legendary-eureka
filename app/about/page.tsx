@@ -61,7 +61,7 @@ export default function AboutPage() {
     {
       name: "Arqam Ahmad Siddiqui",
       role: "Founder & CEO",
-      bio: "Driving Revzion’s vision with hands-on KMP, scalable cloud, and product leadership.",
+      bio: "Driving Revzion's vision with hands-on KMP, scalable cloud, and product leadership.",
       image: "/team/arqam.jpg",
       linkedin: "https://www.linkedin.com/in/arqam365/",
       twitter: "https://x.com/arqam365",
@@ -114,8 +114,11 @@ export default function AboutPage() {
     "/logos/aws.svg",
     "/logos/azure.svg",
     "/logos/vercel.svg",
-    "/logos/postgres.svg",
+    "/logos/postgresql.svg",
     "/logos/kubernetes.svg",
+    "/logos/razorpay.svg",
+    "/logos/mongodb.svg",
+    "/logos/google.svg"
   ];
 
   const [showMore, setShowMore] = useState(false);
@@ -166,35 +169,43 @@ export default function AboutPage() {
   useEffect(() => {
     if (!logosRowRef.current) return;
 
-    // Infinite marquee (logos)
     const row = logosRowRef.current;
-    const totalWidth = row.scrollWidth;
-    const viewWidth = row.clientWidth;
-    const distance = totalWidth + viewWidth;
 
-    const tween = gsap.to(row, {
-      x: () => `-${totalWidth}px`,
-      ease: "none",
-      duration: 18,
-      repeat: -1,
-      modifiers: {
-        x: (x) => {
-          const nx = parseFloat(x);
-          return `${((nx % -totalWidth) + 0) }px`;
-        },
-      },
-    });
+    // Simple, bulletproof approach
+    let animationId: number;
+    let position = 0;
+    const singleSetWidth = row.scrollWidth / 3;
+    let speed = 0.5; // pixels per frame
 
-    // Pause on hover
-    const onEnter = () => tween.pause();
-    const onLeave = () => tween.resume();
+    const animate = () => {
+      position -= speed;
+
+      // Reset when we've scrolled one full set
+      if (Math.abs(position) >= singleSetWidth) {
+        position = 0;
+      }
+
+      row.style.transform = `translateX(${position}px)`;
+      animationId = requestAnimationFrame(animate);
+    };
+
+    // Start after DOM is ready
+    const startTimeout = setTimeout(() => {
+      animate();
+    }, 100);
+
+    // Hover interactions
+    const onEnter = () => { speed = 0.15; };
+    const onLeave = () => { speed = 0.5; };
+
     row.addEventListener("mouseenter", onEnter);
     row.addEventListener("mouseleave", onLeave);
 
     return () => {
+      clearTimeout(startTimeout);
+      cancelAnimationFrame(animationId);
       row.removeEventListener("mouseenter", onEnter);
       row.removeEventListener("mouseleave", onLeave);
-      tween.kill();
     };
   }, []);
 
@@ -355,17 +366,37 @@ export default function AboutPage() {
             </div>
           </motion.div>
 
-          {/* logos marquee (GSAP drives the container) */}
-          <div className="relative z-10 border-t border-gray-100/70 bg-white/60 backdrop-blur">
+          {/* ============== PREMIUM TRUST STRIP / CREDIBILITY MARQUEE ============== */}
+          <div className="relative z-10 border-t border-gray-100/70 bg-white/60 backdrop-blur overflow-hidden">
+            {/* Soft edge fade masks */}
+            <div
+                aria-hidden
+                className="absolute left-0 top-0 bottom-0 w-24 sm:w-32 bg-gradient-to-r from-white/60 to-transparent z-10 pointer-events-none"
+            />
+            <div
+                aria-hidden
+                className="absolute right-0 top-0 bottom-0 w-24 sm:w-32 bg-gradient-to-l from-white/60 to-transparent z-10 pointer-events-none"
+            />
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
               <div
                   ref={logosRowRef}
-                  className="flex items-center gap-6 no-scrollbar"
+                  className="flex items-center gap-8 sm:gap-12 no-scrollbar"
                   style={{ willChange: "transform" }}
               >
-                {logos.concat(logos).map((src, i) => (
-                    <div key={i} className="shrink-0 h-8 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
-                      <Image src={src} alt="logo" width={110} height={32} className="h-8 w-auto object-contain" />
+                {/* Render logos 3 times for seamless infinite loop */}
+                {[...logos, ...logos, ...logos].map((src, i) => (
+                    <div
+                        key={i}
+                        className="shrink-0 h-7 sm:h-8 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+                    >
+                      <Image
+                          src={src}
+                          alt="Technology partner logo"
+                          width={110}
+                          height={32}
+                          className="h-7 sm:h-8 w-auto object-contain"
+                      />
                     </div>
                 ))}
               </div>
@@ -417,8 +448,8 @@ export default function AboutPage() {
                     weekly demos, transparent burn-up, and security by default.
                   </p>
                   <p className="text-gray-700 leading-relaxed mt-5">
-                    Today we’ve shipped <span className="font-semibold text-gray-900">100+ projects</span> across
-                    <span className="font-semibold text-gray-900"> 5+ countries</span>—and we’re just getting started.
+                    Today we've shipped <span className="font-semibold text-gray-900">100+ projects</span> across
+                    <span className="font-semibold text-gray-900"> 5+ countries</span>—and we're just getting started.
                   </p>
                 </div>
 
@@ -447,8 +478,8 @@ export default function AboutPage() {
                     <div className="rounded-[14px] bg-white/90 backdrop-blur p-5 sm:p-6 border border-white/70 shadow-[0_16px_48px_-20px_rgba(2,6,23,0.18)]">
                       <figure>
                         <blockquote className="text-gray-800 leading-relaxed">
-                          “Our best work happens when product, design, and engineering sit at the same table.
-                          We keep cycles tight, decisions clear, and outcomes visible.”
+                          "Our best work happens when product, design, and engineering sit at the same table.
+                          We keep cycles tight, decisions clear, and outcomes visible."
                         </blockquote>
                         <figcaption className="mt-3 text-sm text-gray-500">
                           — Revzion Delivery Playbook
@@ -499,6 +530,88 @@ export default function AboutPage() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* ============== RECOGNITION & PARTNERSHIPS ============== */}
+        <section className="py-18 sm:py-20 bg-white">
+          <motion.div
+              className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.45, ease: "easeOut" }}
+          >
+            <div className="text-center mb-10">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">
+                Recognition & Global Partnerships
+              </h2>
+              <p className="mt-3 text-lg text-gray-600 max-w-3xl mx-auto">
+                External validation and regional collaboration that strengthen delivery.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {/* Copy */}
+              <div className="text-gray-700 leading-relaxed space-y-4">
+                <p>
+                  Revzion is recognized on <strong>GoodFirms</strong> as a verified
+                  software development and consulting company, acknowledged for
+                  delivering reliable, scalable, and high-quality digital solutions.
+                </p>
+
+                <p>
+                  To support clients across the Middle East with local alignment and
+                  faster execution, we collaborate with <strong>TechXellent</strong>, a
+                  Saudi Arabia–based technology company. This partnership enables
+                  region-specific delivery while Revzion retains full ownership of
+                  engineering standards, architecture, and accountability.
+                </p>
+              </div>
+
+              {/* Logos */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12">
+
+                {/* GoodFirms Partner Badge (PRIMARY) */}
+                <div className="flex justify-center">
+                  <Image
+                      src="/logos/goodfirms_partner.svg"
+                      alt="GoodFirms Partner Badge"
+                      width={260}
+                      height={260}
+                      priority
+                      className="
+        w-[200px]
+        sm:w-[240px]
+        md:w-[280px]
+        lg:w-[300px]
+        h-auto
+        object-contain
+        drop-shadow-md
+      "
+                  />
+                </div>
+
+                {/* TechXellent Logo (SECONDARY) */}
+                <div className="flex justify-center">
+                  <Image
+                      src="/logos/techxellent.svg"
+                      alt="TechXellent Saudi Arabia"
+                      width={260}
+                      height={80}
+                      className="
+        w-[160px]
+        sm:w-[200px]
+        md:w-[240px]
+        h-auto
+        object-contain
+        opacity-90
+      "
+                  />
+                </div>
+
               </div>
             </div>
           </motion.div>
@@ -686,7 +799,7 @@ export default function AboutPage() {
               Ready to Work Together?
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Let’s bring your vision to life with thoughtful design and solid engineering.
+              Let's bring your vision to life with thoughtful design and solid engineering.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-3">
@@ -707,9 +820,9 @@ export default function AboutPage() {
 
         {/* small helper: hide scrollbars on snap rows */}
         <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
+          .no-scrollbar::-webkit-scrollbar { display: none; }
+          .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        `}</style>
       </div>
   );
 }

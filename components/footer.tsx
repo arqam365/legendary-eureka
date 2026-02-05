@@ -304,41 +304,47 @@ export function Footer() {
           </div>
         </section>
 
-        {/* ===== Client strip ===== */}
-        <div className="border-t border-gray-200/80 dark:border-white/10 bg-white/70 dark:bg-neutral-950/70 backdrop-blur">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-500 dark:text-gray-400">
-            <span className="whitespace-nowrap">
-              We’ve helped over <strong className="text-gray-800 dark:text-gray-200">200+</strong> companies including
+          {/* ===== Client strip ===== */}
+          <div className="border-t border-gray-200/80 dark:border-white/10 bg-white/70 dark:bg-neutral-950/70 backdrop-blur">
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+                  <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-500 dark:text-gray-400">
+      <span className="whitespace-nowrap">
+        We've helped over <strong className="text-gray-800 dark:text-gray-200">200+</strong> companies including
+      </span>
+                      <div className="relative min-w-0 flex-1 overflow-hidden">
+                          <div className="marquee flex gap-8">
+                              {[
+                                  "Stripe",
+                                  "AWS",
+                                  "Azure",
+                                  "Vercel",
+                                  "PostgreSQL",
+                                  "Kubernetes",
+                                  "Razorpay",
+                                  "MongoDB",
+                                  "Google Cloud",
+                                  "Stripe",
+                                  "AWS",
+                                  "Azure",
+                                  "Vercel",
+                                  "PostgreSQL",
+                                  "Kubernetes",
+                                  "Razorpay",
+                                  "MongoDB",
+                                  "Google Cloud",
+                              ].map((name, i) => (
+                                  <span
+                                      key={`${name}-${i}`}
+                                      className="whitespace-nowrap text-sm font-medium text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                                  >
+              {name}
             </span>
-              <div className="relative min-w-0 flex-1 overflow-hidden">
-                <div className="marquee flex gap-8">
-                  {[
-                    "whatsapp",
-                    "amazon",
-                    "dropbox",
-                    "shopify",
-                    "youtube",
-                    "whatsapp",
-                    "amazon",
-                    "dropbox",
-                    "shopify",
-                    "youtube",
-                  ].map((n, i) => (
-                      <Image
-                          key={`${n}-${i}`}
-                          src={`/logos/${n}.svg`}
-                          alt={n}
-                          width={104}
-                          height={24}
-                          className="opacity-70 hover:opacity-100 transition"
-                      />
-                  ))}
-                </div>
+                              ))}
+                          </div>
+                      </div>
+                  </div>
               </div>
-            </div>
           </div>
-        </div>
 
         {/* ===== Bottom bar & FAB ===== */}
         <div className="bg-gray-50/90 dark:bg-neutral-950 border-t border-gray-200/80 dark:border-white/10">
