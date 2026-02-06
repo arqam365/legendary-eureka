@@ -12,6 +12,7 @@ import {
   CheckCircle, Zap, Shield, Users, Rocket, BadgeDollarSign, Clock4, Handshake,
 } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import {EstimateCallout} from "@/components/EstimateCallout";
 
 /* ----------------------- Motion system (consistent) ----------------------- */
 const EASE = [0.16, 1, 0.3, 1] as const
@@ -359,6 +360,8 @@ export default function ServicesPage() {
             </div>
           </motion.div>
         </section>
+
+          <EstimateCallout />
 
         {/* ================== Process (timeline + carousel) ================== */}
         <section

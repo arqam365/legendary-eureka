@@ -150,6 +150,8 @@ export function Navigation() {
             { href: "/labs", label: "Labs" },
             { href: "/about", label: "About" },
             { href: "/blogs", label: "Blogs" },
+            { href: "/estimate", label: "Get Estimate" },
+
             { href: "/contact", label: "Contact" },
         ],
         []

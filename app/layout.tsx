@@ -4,58 +4,293 @@ import "./globals.css";
 import Script from "next/script";
 import ClientSplash from "@/components/ClientSplash";
 import SmoothScroll from "@/components/SmoothScroll";
-import { Suspense } from "react";                // ✅ add
+import { Suspense } from "react";
 import GtmPageview from "@/app/_components/GtmPageview";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import UpgradeModal from "@/app/UpgradeModal";
+import { organizationSchema, websiteSchema } from "@/lib/schemas";
 
-const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
+const inter = Inter({
+    subsets: ["latin"],
+    display: "swap",
+    variable: "--font-inter"
+});
 
 export const metadata: Metadata = {
-    title: { default: "Revzion - Innovating Products. Empowering Businesses.", template: "%s | Revzion" },
+    // =========================================================
+    // GLOBAL, TRUST-FIRST TITLE
+    // =========================================================
+    title: {
+        default: "Revzion | Global SaaS, AI & Cross-Platform Engineering Company",
+        template: "%s | Revzion"
+    },
+
+    // =========================================================
+    // DESCRIPTION (ENTERPRISE-GRADE, WORLDWIDE)
+    // =========================================================
     description:
-        "Revzion builds scalable SaaS, AI, and cross-platform solutions for startups and enterprises. Trusted globally for AI, Cloud, and modern product engineering.",
+        "Revzion is a global software engineering company delivering scalable SaaS platforms, AI-driven systems, and cross-platform mobile applications for startups and enterprises worldwide.",
+
+    // =========================================================
+    // HIGH-SIGNAL KEYWORDS (NO SPAM)
+    // =========================================================
     keywords: [
-        "Revzion","SaaS development","AI solutions","Kotlin Multiplatform","Next.js","Cloud & DevOps",
-        "Mobile Apps","Cross-platform apps","Custom Software Development",
+        // Brand
+        "Revzion",
+        "Revzion Technologies",
+        "Next Level Programmers",
+
+        // Services
+        "SaaS development",
+        "AI solutions",
+        "Artificial Intelligence development",
+        "Machine Learning solutions",
+        "Kotlin Multiplatform development",
+        "KMP development",
+        "Cross-platform mobile apps",
+        "iOS app development",
+        "Android app development",
+        "React Native development",
+        "Global software development company",
+        "SaaS development company",
+        "AI software development",
+        "Artificial Intelligence solutions",
+        "Cross-platform app development",
+        "Kotlin Multiplatform development",
+        "Enterprise software engineering",
+        "Startup MVP development",
+        "Mobile app development company",
+        "Next.js development",
+        "React development",
+        "TypeScript development",
+
+        // Specializations
+        "Health tech solutions",
+        "Wearable device integration",
+        "BLE connectivity",
+        "Smart ring integration",
+        "E-commerce development",
+        "Custom software development",
+
+        // Cloud & DevOps
+        "Cloud architecture",
+        "AWS development",
+        "Firebase development",
+        "DevOps services",
+        "CI/CD implementation",
+
+        // Technologies
+        "Jetpack Compose",
+        "SwiftUI",
+        "Tailwind CSS",
+        "GraphQL",
+        "tRPC",
+        "PostgreSQL",
+
+        // Business
+        "Software consulting",
+        "Technical architecture",
+        "MVP development",
+        "Startup development",
+        "Enterprise solutions",
+
+        // Location
+        "Software consulting company",
+        "Offshore development partner",
+        "Software company India",
+        "Tech company Jhansi",
+        "Middle East Technologies",
+        "Saudia Arabia Tech Company",
+        "Mobile app development India",
+
+        // Founder & Brand Association
+        "Arqam Ahmad Siddiqui",
+        "Arqam Ahmed Siddiqui",
+        "Arqam Ahmad",
+        "Arqam Ahmed",
+        "Arqam Siddiqui",
+        "@arqam365",
+
+        // First-name misspellings
+        "arqam",
+        "arkam",
+        "akram",
+        "arquam",
+        "aqram",
+        "aqruam",
+        "arqham",
+        "arkaam",
+        "arqaam",
+
+        // Middle-name variations
+        "ahmad",
+        "ahmed",
+        "ahmd",
+        "ahamed",
+        "ahamad",
+
+        // Full-name misspellings
+        "Arkam Ahmad Siddiqui",
+        "Arkam Ahmed Siddiqui",
+        "Akram Ahmad Siddiqui",
+        "Akram Ahmed Siddiqui",
+        "Arquam Siddiqui",
+        "Aqram Siddique",
+
+        // Username / handle intent
+        "arqam365",
+        "arqam_365",
+        "arqam365dev",
+        "arqam founder",
+        "arqam developer",
+        "arqam software engineer",
+        "arqam ceo",
+
+        // Brand association
+        "Revzion founder",
+        "Revzion Arqam",
+        "Revzion Arqam Ahmad",
+        "Revzion Arqam Ahmed",
+        "Next Level Programmers founder",
+        "Arqam Next Level Programmers"
     ],
-    authors: [{ name: "Revzion Team", url: "https://www.revzion.com" }],
-    creator: "Revzion",
-    publisher: "Revzion",
+
+    // =========================================================
+    // AUTHORSHIP & BRAND AUTHORITY
+    // =========================================================
+    authors: [
+        { name: "Revzion Tea,", url: "https://www.revzion.com" },
+        { name: "Arqam Ahmad Siddiqui", url: "https://arqam365.com" }
+    ],
+    creator: "Arqam Ahmad Siddiqui (@arqam365)",
+    publisher: "Revzion Technologies",
+
+    // =========================================================
+    // CANONICAL BASE
+    // =========================================================
     metadataBase: new URL("https://www.revzion.com"),
-    icons: { icon: "/logo.svg", shortcut: "/favicon-16x16.png", apple: "/apple-touch-icon.png" },
+
+    alternates: {
+        canonical: "/",
+        languages: {
+            "en-US": "/",
+            "en-GB": "/"
+        }
+    },
+
+    // =========================================================
+    // ICONS
+    // =========================================================
+    icons: {
+        icon: "/logo.svg",
+        shortcut: "/favicon-16x16.png",
+        apple: "/apple-touch-icon.png"
+    },
+
+    // =========================================================
+    // OPEN GRAPH (GLOBAL TRUST SIGNAL)
+    // =========================================================
     openGraph: {
         type: "website",
         locale: "en_US",
         url: "https://www.revzion.com",
         siteName: "Revzion",
-        title: "Revzion - Innovating Products. Empowering Businesses.",
-        description: "We build scalable SaaS, AI, and cross-platform solutions for startups and enterprises worldwide.",
-        images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Revzion - Innovating Products. Empowering Businesses." }],
+        title: "Revzion | Global SaaS, AI & Cross-Platform Engineering",
+        description:
+            "Trusted global partner for SaaS platforms, AI-powered products, and cross-platform mobile applications.",
+        images: [
+            {
+                url: "/og-global.png",
+                width: 1200,
+                height: 630,
+                alt: "Revzion - Global Software Engineering Company",
+                type: "image/png"
+            }
+        ]
     },
+
+    // =========================================================
+    // TWITTER (CONSISTENT WITH OG)
+    // =========================================================
     twitter: {
         card: "summary_large_image",
         site: "@revzion",
         creator: "@arqam365",
-        title: "Revzion - Innovating Products. Empowering Businesses.",
-        description: "Scalable SaaS, AI, and cross-platform solutions engineered for growth.",
-        images: ["/og-image.png"],
+        title: "Revzion | Global Software Engineering",
+        description:
+            "SaaS platforms, AI systems, and cross-platform mobile apps built for global scale.",
+        images: ["/og-global.png"]
     },
-    // themeColor is fine in the root metadata, but NOT in not-found.tsx
+
+    // =========================================================
+    // ROBOTS
+    // =========================================================
+    robots: {
+        index: true,
+        follow: true,
+        nocache: false,
+        googleBot: {
+            index: true,
+            follow: true,
+            noimageindex: false,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1
+        }
+    },
+
+    // =========================================================
+    // MISC
+    // =========================================================
     themeColor: "#0a0a0a",
     manifest: "/site.webmanifest",
     category: "technology",
-    formatDetection: { telephone: false, address: false, email: false },
+    classification: "Business",
+    referrer: "origin-when-cross-origin",
+
+    formatDetection: {
+        telephone: false,
+        address: false,
+        email: false
+    },
+
+    verification: {
+        google: "your-google-verification-code",
+        yandex: "your-yandex-verification-code"
+    }
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+                                       children
+                                   }: {
+    children: React.ReactNode;
+}) {
     const gtmId = process.env.NEXT_PUBLIC_GTM_ID || "GTM-M8ZCMGDZ";
 
     return (
         <html lang="en" className="scroll-smooth rvz-splashing">
         <head>
-            {/* Consent defaults */}
+            {/* ================= JSON-LD SCHEMAS ================= */}
+            <Script
+                id="schema-organization"
+                type="application/ld+json"
+                strategy="beforeInteractive"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(organizationSchema)
+                }}
+            />
+
+            <Script
+                id="schema-website"
+                type="application/ld+json"
+                strategy="beforeInteractive"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(websiteSchema)
+                }}
+            />
+
+            {/* ================= CONSENT ================= */}
             <Script id="rvz-consent-defaults" strategy="afterInteractive">
                 {`
             window.dataLayer = window.dataLayer || [];
@@ -70,7 +305,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
             </Script>
 
-            {/* GTM */}
+            {/* ================= GTM ================= */}
             <Script id="rvz-gtm" strategy="afterInteractive">
                 {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -80,31 +315,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             })(window,document,'script','dataLayer','${gtmId}');
           `}
             </Script>
-
-            {/* JSON-LD */}
-            <Script id="rvz-org-ld" type="application/ld+json" strategy="afterInteractive">
-                {JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "Organization",
-                    name: "Revzion",
-                    url: "https://www.revzion.com",
-                    logo: "https://www.revzion.com/og/logo.png",
-                    sameAs: ["https://www.linkedin.com/company/your-company","https://twitter.com/yourhandle"],
-                })}
-            </Script>
-            <Script id="rvz-website-ld" type="application/ld+json" strategy="afterInteractive">
-                {JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "WebSite",
-                    name: "Revzion",
-                    url: "https://www.revzion.com",
-                    potentialAction: {
-                        "@type": "SearchAction",
-                        target: "https://www.revzion.com/search?q={search_term_string}",
-                        "query-input": "required name=search_term_string",
-                    },
-                })}
-            </Script>
         </head>
 
         <body
@@ -113,7 +323,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             suppressHydrationWarning
         >
         <UpgradeModal />
-        {/* splash init */}
+
         <Script id="rvz-splash-init" strategy="beforeInteractive">
             {`document.documentElement.classList.add('rvz-splashing');`}
         </Script>
@@ -125,7 +335,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <ClientSplash />
 
-        {/* GTM noscript */}
         <noscript>
             <iframe
                 src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
@@ -136,16 +345,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </noscript>
 
         <SmoothScroll>
-            <div
-                id="rvz-app-root"
-                data-app-root
-                className="min-h-screen px-4 sm:px-6 lg:px-8 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))]"
-            >
+            <div className="min-h-screen px-4 sm:px-6 lg:px-8">
                 {children}
             </div>
         </SmoothScroll>
 
-        {/* ✅ wrap in Suspense because it uses useSearchParams/usePathname */}
         <Suspense fallback={null}>
             <GtmPageview />
         </Suspense>
