@@ -66,9 +66,10 @@ export default function AboutPage() {
       linkedin: "https://www.linkedin.com/in/arqam365/",
       twitter: "https://x.com/arqam365",
       github: "https://github.com/arqam365",
+      email: "arqamahmad365.au@gmail.com",
+      portfolio: "https://arqam365.com/",
     },
-    { name: "Sharad Pratap Singh Sengar", role: "Mobile Developer", bio: "Kotlin Multiplatform developer building fast, reliable Android & iOS apps.", image: "/team/sharad.jpg", linkedin: "#", twitter: "#", github: "#" },
-    { name: "Raj Dwivedi", role: "Backend Engineer & DevOps Specialist", bio: "APIs, CI/CD, and cloud-native reliability across Node/Ktor and modern infra.", image: "/team/raj.jpg", linkedin: "#", twitter: "#", github: "#" },
+    { name: "Raj Dwivedi", role: "Backend Engineer & DevOps Specialist", bio: "APIs, CI/CD, and cloud-native reliability across Node/Ktor and modern infra.", image: "/team/raj.jpg", linkedin: "https://www.linkedin.com/in/badenforcer/", twitter: "#", github: "https://github.com/BadEnforcer", email: "rajdwivedipc@gmail.com", portfolio: "https://rajdwivedi.vercel.app/"},
     { name: "Bilal Sheikh", role: "Full Stack Engineer", bio: "Bridging frontend and backend to ship robust, user-centric features.", image: "/team/bilal.jpg", linkedin: "#", twitter: "#", github: "#" },
     { name: "Sneha Sahu", role: "Head of Business Development", bio: "Building partnerships and growth pipelines aligned with product value.", image: "/team/sneha.jpg", linkedin: "#", twitter: "#", github: "#" },
     { name: "Aanya Agrawal", role: "Mobile Developer", bio: "Compose & KMP enthusiast focused on smooth UX and performance.", image: "/team/aanya.jpg", linkedin: "#", twitter: "#", github: "#" },
@@ -691,10 +692,34 @@ export default function AboutPage() {
                           />
                         </div>
                         <div className="p-6">
-                          <h3 className="text-xl font-heading font-semibold text-gray-900">{m.name}</h3>
+                          <h3 className="text-xl font-heading font-semibold text-gray-900">
+                            {m.portfolio && m.portfolio !== "#" ? (
+                                <a
+                                    href={m.portfolio}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-primary transition-colors"
+                                >
+                                  {m.name}
+                                </a>
+                            ) : (
+                                m.name
+                            )}
+                          </h3>
                           <p className="text-primary font-medium mb-2">{m.role}</p>
                           <p className="text-gray-600 text-sm leading-relaxed mb-4">{m.bio}</p>
                           <div className="flex space-x-3">
+                            {m.portfolio && m.portfolio !== "#" && (
+                                <a
+                                    href={m.portfolio}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-gray-400 hover:text-primary transition-colors"
+                                    aria-label={`${m.name} personal portfolio`}
+                                >
+                                  <Globe className="h-5 w-5" />
+                                </a>
+                            )}
                             {m.linkedin && (
                                 <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on LinkedIn`}>
                                   <Linkedin className="h-5 w-5" />
