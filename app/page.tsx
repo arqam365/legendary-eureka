@@ -210,29 +210,6 @@ function CaseStudiesCarousel() {
                 { name: "Health Tech Brands", logo: "/logos/clients/health.svg" },
                 { name: "Consumer Fitness", logo: "/logos/clients/fitness.svg" },
             ],
-        },
-        {
-            id: "hellocloud",
-            title: "HelloCloud – Skincare Brand for Indian Skin",
-            kind: "web",
-            problem: "Generic skincare products failed to suit Indian skin and climate.",
-            solution: "Launched dermatologist-tested serums with targeted active ingredients.",
-            results: "91% clearer skin in 4 weeks, 88% fewer breakouts, 92% long-lasting hydration. ",
-            images: {
-                desktop: "/case-studies/hellocloud.jpeg"
-            },
-            link: "/portfolio/hellocloud",
-            tags: ["Dermatologist-Tested", "Skin Balance", "Climate-Smart"],
-            kpis: [
-                { label: "Clearer Skin", value: "91% users" },
-                { label: "Breakouts Reduced", value: "88% users" },
-                { label: "Hydration Satisfaction", value: "92% users" },
-            ],
-            clients: [
-                { name: "Young Professionals", logo: "/logos/clients/professionals.svg" },
-                { name: "College Goers", logo: "/logos/clients/college.svg" },
-                { name: "Skincare Enthusiasts", logo: "/logos/clients/enthusiasts.svg" },
-            ],
         }
     ]
 
@@ -535,12 +512,7 @@ const WEBSITES: WebItem[] = [
         name: "Packagefy",
         url: "https://test-app-packagefy.vercel.app",
         description: "Package tracking solution",
-    },
-    {
-        name: "Hello Cloud",
-        url: "https://www.hellocloud.co.in",
-        description: "E-commerce platform for Skin Care",
-    },
+    }
 ];
 
 // ---------- App config (mobile) ----------

@@ -16,7 +16,6 @@ export default function TrustSection() {
 
     const clients: Client[] = [
         { name: 'EvolWe', url: 'https://evolwering.com', hasLink: true },
-        { name: 'HelloCloud', url: 'https://hellocloud.co.in', hasLink: true },
         { name: 'Rynox', url: 'https://rynox.io', hasLink: true },
         { name: 'Packagefy', url: '#', hasLink: false },
         { name: 'BeeSocial', url: '#', hasLink: false },
