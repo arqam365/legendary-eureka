@@ -6,7 +6,12 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
-import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion"
+import {
+    AnimatePresence,
+    motion,
+    useScroll,
+    useMotionValueEvent,
+} from "framer-motion"
 
 type NavItem = { href: string; label: string }
 const CTA_DEST = "/contact"
@@ -20,127 +25,39 @@ export function Navigation() {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [state, setState] = useState<BarState>("top")
-    const [scrolled, setScrolled] = useState(false)
+    const [hoveredTab, setHoveredTab] = useState<string | null>(null)
 
     const { scrollY, scrollYProgress } = useScroll()
     const lastY = useRef(0)
 
-    // ── NEW: refs for hot-edge reveal + hover + auto-hide timer
-    const hotRevealRef = useRef(false)
-    const hoveredRef = useRef(false)
-    const autoHideT = useRef<number | null>(null)
-    const AUTOHIDE_MS = 1000
-
-    const H = 64
+    const H = 72
     const HIDE_AFTER = 20
     const SHOW_DELTA = 12
-    const HOTZONE = 14
 
     useEffect(() => {
         document.documentElement.style.setProperty("--nav-h", `${H}px`)
     }, [])
 
-    // scroll-based hide/pin
+    // Scroll logic
     useMotionValueEvent(scrollY, "change", (y) => {
         const prev = lastY.current
         const diff = y - prev
         lastY.current = y
-        setScrolled(y > 2)
 
         if (y <= HIDE_AFTER) {
             setState("top")
             return
         }
+
         if (diff > 0) {
             setState("hidden")
             return
         }
+
         if (diff < 0 && prev - y > SHOW_DELTA) {
-            // scrolling up – this is not a hot-edge reveal
-            hotRevealRef.current = false
             setState("pinned")
         }
     })
-
-    // Hot-edge reveal (mouse + touch)
-    useEffect(() => {
-        let frame = 0
-
-        const onEdge = (y: number) => {
-            if (state === "hidden" && y <= HOTZONE) {
-                hotRevealRef.current = true // mark as hot-edge reveal
-                setState("pinned")
-            }
-        }
-
-        const onMouseMove = (e: MouseEvent) => {
-            if (frame) return
-            frame = requestAnimationFrame(() => {
-                frame = 0
-                onEdge(e.clientY)
-            })
-        }
-
-        const onTouchStart = (e: TouchEvent) => {
-            const y = e.touches?.[0]?.clientY ?? 9999
-            onEdge(y)
-        }
-
-        window.addEventListener("mousemove", onMouseMove, { passive: true })
-        window.addEventListener("touchstart", onTouchStart, { passive: true })
-        return () => {
-            window.removeEventListener("mousemove", onMouseMove)
-            window.removeEventListener("touchstart", onTouchStart)
-            if (frame) cancelAnimationFrame(frame)
-        }
-    }, [state])
-
-    // ── NEW: auto-hide after hot-edge reveal (1s), unless hovered or menu is open
-    useEffect(() => {
-        // clear old timer
-        if (autoHideT.current) {
-            window.clearTimeout(autoHideT.current)
-            autoHideT.current = null
-        }
-
-        // only schedule if it was a hot-edge reveal
-        if (state === "pinned" && hotRevealRef.current && !isMenuOpen && !hoveredRef.current) {
-            autoHideT.current = window.setTimeout(() => {
-                // hide only if still pinned and still flagged as hot reveal
-                if (hotRevealRef.current) {
-                    setState("hidden")
-                    hotRevealRef.current = false // consume the flag
-                }
-            }, AUTOHIDE_MS) as unknown as number
-        }
-
-        // cleanup on unmount
-        return () => {
-            if (autoHideT.current) window.clearTimeout(autoHideT.current)
-        }
-    }, [state, isMenuOpen])
-
-    // ── NEW: hover cancels auto-hide; leaving may re-arm it if still hot reveal
-    const onPointerEnter = () => {
-        hoveredRef.current = true
-        if (autoHideT.current) {
-            window.clearTimeout(autoHideT.current)
-            autoHideT.current = null
-        }
-    }
-    const onPointerLeave = () => {
-        hoveredRef.current = false
-        // if it's a hot-edge reveal and menu not open, re-arm timer
-        if (state === "pinned" && hotRevealRef.current && !isMenuOpen) {
-            if (autoHideT.current) window.clearTimeout(autoHideT.current)
-            autoHideT.current = window.setTimeout(() => {
-                if (hotRevealRef.current) {
-                    setState("hidden")
-                    hotRevealRef.current = false
-                }
-            }, AUTOHIDE_MS) as unknown as number
-        }
-    }
 
     const navItems: NavItem[] = useMemo(
         () => [
@@ -151,8 +68,6 @@ export function Navigation() {
             { href: "/about", label: "About" },
             { href: "/blogs", label: "Blogs" },
             { href: "/estimate", label: "Get Estimate" },
-
-            { href: "/contact", label: "Contact" },
         ],
         []
     )
@@ -160,164 +75,188 @@ export function Navigation() {
     const isActive = (href: string) =>
         href === "/" ? pathname === "/" : pathname?.startsWith(href)
 
+    const currentUnderline = hoveredTab || navItems.find(i => isActive(i.href))?.href
+
     return (
         <>
-            {/* progress bar */}
+            {/* Scroll progress */}
             <motion.div
-                className="fixed left-0 right-0 top-0 z-[95] h-[2px] bg-primary origin-left"
+                className="fixed left-0 right-0 top-0 z-[95] h-[2px] bg-blue-600 origin-left"
                 style={{ scaleX: scrollYProgress }}
             />
 
             <motion.nav
-                role="navigation"
-                aria-label="Main"
                 initial={false}
                 animate={{
-                    y: state === "hidden" ? -H - 12 : 0,
+                    y: isMenuOpen ? -10 : state === "hidden" ? -H - 12 : 0,
+                    opacity: isMenuOpen ? 0 : 1,
                     backgroundColor:
-                        state === "top" ? "rgba(255,255,255,0)" : "rgba(255,255,255,0.72)",
+                        state === "top"
+                            ? "rgba(255,255,255,0)"
+                            : "rgba(255,255,255,0.92)",
                     backdropFilter:
-                        state === "top" ? "blur(0px)" : "saturate(180%) blur(12px)",
+                        state === "top"
+                            ? "blur(0px)"
+                            : "saturate(180%) blur(14px)",
                     boxShadow:
                         state === "hidden" || state === "top"
                             ? "0 0 0 rgba(0,0,0,0)"
-                            : "0 8px 30px -18px rgba(2,6,23,.24)",
+                            : "0 8px 30px -12px rgba(0,0,0,.12)",
                 }}
-                transition={{ type: "spring", stiffness: 520, damping: 44 }}
-                className={[
-                    "fixed inset-x-0 top-0 z-[90]",
-                    "border-b",
-                    state === "top" ? "border-transparent" : "border-gray-100/70",
-                ].join(" ")}
-                // ── NEW: hover listeners
-                onPointerEnter={onPointerEnter}
-                onPointerLeave={onPointerLeave}
+                transition={{ type: "spring", stiffness: 500, damping: 42 }}
+                className="fixed inset-x-0 top-0 z-[90] border-b border-black/5 md:pointer-events-auto"
+                style={{
+                    pointerEvents: isMenuOpen ? "none" : "auto",
+                }}
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="h-[64px] flex items-center justify-between">
+                    <div className="h-[72px] flex items-center justify-between">
+
                         {/* Logo */}
-                        <Link href="/" className="flex items-center gap-2 group" aria-label="Revzion home">
-                            <Image src="/logo.svg" alt="Revzion logo" width={36} height={36} className="rounded-lg" />
-                            <span className="font-heading font-bold text-xl text-gray-900 group-hover:opacity-90">
+                        <Link href="/" className="flex items-center gap-3">
+                            <Image
+                                src="/logo.svg"
+                                alt="Revzion logo"
+                                width={34}
+                                height={34}
+                            />
+                            <span className="text-xl font-semibold text-gray-900 tracking-tight">
                 Revzion
               </span>
                         </Link>
 
-                        {/* Desktop nav */}
-                        <div className="hidden md:flex items-center gap-6">
-                            {navItems.map((item) => {
-                                const active = isActive(item.href)
-                                return (
-                                    <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        className={[
-                                            "relative font-medium transition-colors",
-                                            active ? "text-gray-900" : "text-gray-600 hover:text-primary",
-                                        ].join(" ")}
-                                    >
-                                        {item.label}
-                                        <span
-                                            aria-hidden
-                                            className={[
-                                                "absolute -bottom-1 left-0 h-0.5 rounded-full transition-all",
-                                                active ? "w-full bg-primary" : "w-0 bg-transparent group-hover:w-full",
-                                            ].join(" ")}
-                                        />
-                                    </Link>
-                                )
-                            })}
+                        {/* Desktop Nav */}
+                        <div className="hidden md:flex items-center gap-8 relative">
+                            {navItems.map((item) => (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    onMouseEnter={() => setHoveredTab(item.href)}
+                                    onMouseLeave={() => setHoveredTab(null)}
+                                    className="relative text-[15px] font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                                >
+                                    {item.label}
 
-                            <Button asChild className="relative overflow-hidden bg-gradient-revzion">
+                                    {currentUnderline === item.href && (
+                                        <motion.div
+                                            layoutId="nav-underline"
+                                            className="absolute -bottom-2 left-0 right-0 h-[2px] bg-blue-600 rounded-full"
+                                            transition={{
+                                                type: "spring",
+                                                stiffness: 500,
+                                                damping: 35,
+                                            }}
+                                        />
+                                    )}
+                                </Link>
+                            ))}
+
+                            <Button
+                                asChild
+                                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-xl shadow-sm hover:shadow-md transition-all"
+                            >
                                 <MotionLink
                                     href={CTA_DEST}
-                                    aria-label="Get started with a free consultation"
-                                    whileHover={{ scale: 1.02 }}
+                                    whileHover={{ y: -1 }}
                                     whileTap={{ scale: 0.98 }}
-                                    className="px-4 py-2"
                                 >
-                                    <span className="relative z-10">Get Started</span>
-                                    <motion.span
-                                        aria-hidden
-                                        initial={{ x: "-120%" }}
-                                        whileHover={{ x: "120%" }}
-                                        transition={{ duration: 0.8, ease: "easeOut" }}
-                                        className="pointer-events-none absolute inset-y-0 left-0 w-1/3 skew-x-[-20deg] bg-white/30"
-                                    />
+                                    Get Started
                                 </MotionLink>
                             </Button>
                         </div>
 
-                        {/* Mobile toggle */}
+                        {/* Mobile Toggle */}
                         <div className="md:hidden">
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setIsMenuOpen((v) => !v)}
-                                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                                aria-expanded={isMenuOpen}
-                                aria-controls="mobile-nav"
                             >
-                                {isMenuOpen ? <Menu className="h-5 w-5 rotate-90 transition" /> : <Menu className="h-5 w-5" />}
-                                {isMenuOpen && <X className="sr-only" />} {/* a11y */}
+                                {isMenuOpen ? (
+                                    <X className="h-5 w-5 text-gray-900" />
+                                ) : (
+                                    <Menu className="h-5 w-5 text-gray-900" />
+                                )}
                             </Button>
                         </div>
                     </div>
-
-                    {/* Mobile drawer */}
-                    <AnimatePresence>
-                        {isMenuOpen && (
-                            <motion.div
-                                id="mobile-nav"
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.22, ease: "easeOut" }}
-                                className="md:hidden overflow-hidden border-t border-gray-100 bg-white backdrop-blur"
-                            >
-                                <div className="py-4 flex flex-col gap-2">
-                                    {navItems.map((item) => {
-                                        const active = isActive(item.href)
-                                        return (
-                                            <Link
-                                                key={item.href}
-                                                href={item.href}
-                                                onClick={() => setIsMenuOpen(false)}
-                                                className={[
-                                                    "px-1 py-2 rounded-md font-medium transition-colors",
-                                                    active ? "text-gray-900 bg-gray-100" : "text-gray-700 hover:text-primary hover:bg-gray-50",
-                                                ].join(" ")}
-                                            >
-                                                {item.label}
-                                            </Link>
-                                        )
-                                    })}
-                                    <Button
-                                        className="mt-2 relative overflow-hidden bg-gradient-revzion"
-                                        onClick={() => {
-                                            setIsMenuOpen(false)
-                                            router.push(CTA_DEST)
-                                        }}
-                                    >
-                                        <motion.span whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="relative z-10">
-                                            Get Started
-                                        </motion.span>
-                                        <motion.span
-                                            aria-hidden
-                                            initial={{ x: "-120%" }}
-                                            whileHover={{ x: "120%" }}
-                                            transition={{ duration: 0.8, ease: "easeOut" }}
-                                            className="pointer-events-none absolute inset-y-0 left-0 w-1/3 skew-x-[-20deg] bg-white/30"
-                                        />
-                                    </Button>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
                 </div>
             </motion.nav>
 
-            <div style={{ height: "var(--nav-h, 64px)" }} />
+            {/* Mobile Drawer */}
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[80] bg-black/30 backdrop-blur-sm md:hidden"
+                        onClick={() => setIsMenuOpen(false)}
+                    >
+                        <motion.div
+                            initial={{ x: "100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "100%" }}
+                            transition={{ type: "spring", stiffness: 400, damping: 40 }}
+                            className="absolute right-0 top-0 h-full w-[85%] bg-white shadow-2xl flex flex-col"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Mobile Header FIXED */}
+                            <div className="flex items-center justify-between px-6 py-5 border-b">
+                                <div className="flex items-center gap-2">
+                                    <Image
+                                        src="/logo.svg"
+                                        alt="Revzion logo"
+                                        width={26}
+                                        height={26}
+                                    />
+                                    <span className="font-semibold text-gray-900">
+                    Revzion
+                  </span>
+                                </div>
+
+                                <X
+                                    className="h-5 w-5 text-gray-700 cursor-pointer"
+                                    onClick={() => setIsMenuOpen(false)}
+                                />
+                            </div>
+
+                            <div className="flex flex-col gap-6 px-6 py-8">
+                                {navItems.map((item) => {
+                                    const active = isActive(item.href)
+
+                                    return (
+                                        <Link
+                                            key={item.href}
+                                            href={item.href}
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className={`text-lg font-medium transition-colors ${
+                                                active
+                                                    ? "text-blue-600"
+                                                    : "text-gray-700 hover:text-gray-900"
+                                            }`}
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    )
+                                })}
+
+                                <Button
+                                    className="mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl"
+                                    onClick={() => {
+                                        setIsMenuOpen(false)
+                                        router.push(CTA_DEST)
+                                    }}
+                                >
+                                    Get Started
+                                </Button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <div style={{ height: "var(--nav-h, 72px)" }} />
         </>
     )
 }
