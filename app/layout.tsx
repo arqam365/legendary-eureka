@@ -160,7 +160,7 @@ export const metadata: Metadata = {
     // AUTHORSHIP & BRAND AUTHORITY
     // =========================================================
     authors: [
-        { name: "Revzion Team,", url: "https://www.revzion.com" },
+        { name: "Revzion Tea,", url: "https://www.revzion.com" },
         { name: "Arqam Ahmad Siddiqui", url: "https://arqam365.com" }
     ],
     creator: "Arqam Ahmad Siddiqui (@arqam365)",
