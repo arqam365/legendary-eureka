@@ -56,25 +56,41 @@ const useIsMdUp = () => {
 export default function AboutPage() {
   const mdUp = useIsMdUp();
 
+  /* ---------------- Helper: Generate avatar URL with gender matching ---------------- */
+  const getAvatarUrl = (name: string, gender: 'male' | 'female') => {
+    // Use Lorelei for all with beard options for males
+    const seed = encodeURIComponent(name);
+
+    // Theme-matching background colors (blue/purple/pink palette from your site)
+    const backgrounds = 'b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf';
+
+    // Add beard for males, explicitly disable for females
+    const beardParams = gender === 'male'
+        ? '&beard=variant01,variant02&beardProbability=100'
+        : '&beardProbability=0';
+
+    return `https://api.dicebear.com/9.x/lorelei/svg?seed=${seed}&backgroundColor=${backgrounds}${beardParams}`;
+  };
+
   /* ---------------- Data ---------------- */
   const teamMembers = [
     {
       name: "Arqam Ahmad Siddiqui",
       role: "Founder & CEO",
       bio: "Driving Revzion's vision with hands-on KMP, scalable cloud, and product leadership.",
-      image: "/team/arqam.jpg",
+      image: getAvatarUrl("Arqam Ahmad Siddiqui", 'male'),
       linkedin: "https://www.linkedin.com/in/arqam365/",
       twitter: "https://x.com/arqam365",
       github: "https://github.com/arqam365",
       email: "arqamahmad365.au@gmail.com",
       portfolio: "https://arqam365.com/",
     },
-    { name: "Raj Dwivedi", role: "Backend Engineer & DevOps Specialist", bio: "APIs, CI/CD, and cloud-native reliability across Node/Ktor and modern infra.", image: "/team/raj.jpg", linkedin: "https://www.linkedin.com/in/badenforcer/", twitter: "#", github: "https://github.com/BadEnforcer", email: "rajdwivedipc@gmail.com", portfolio: "https://rajdwivedi.vercel.app/"},
-    { name: "Bilal Sheikh", role: "Full Stack Engineer", bio: "Bridging frontend and backend to ship robust, user-centric features.", image: "/team/bilal.jpg", linkedin: "#", twitter: "#", github: "#",email: "#", portfolio: "https://stunning-waffle-2001.vercel.app/"  },
-    { name: "Sneha Sahu", role: "Head of Business Development", bio: "Building partnerships and growth pipelines aligned with product value.", image: "/team/sneha.jpg", linkedin: "#", twitter: "#", github: "#" },
-    { name: "Aanya Agrawal", role: "Mobile Developer", bio: "Compose & KMP enthusiast focused on smooth UX and performance.", image: "/team/aanya.jpg", linkedin: "#", twitter: "#", github: "#" },
-    { name: "Saniya Khan", role: "UI/UX Developer", bio: "Designs intuitive, accessible interfaces with implementation ownership.", image: "/team/saniya.jpg", linkedin: "#", twitter: "#", github: "#" },
-    { name: "Khushi Chaturvedi", role: "UI/UX Expert", bio: "Crafts delightful, user-first experiences grounded in research.", image: "/team/khushi.jpg", linkedin: "#", twitter: "#", github: "#" },
+    { name: "Raj Dwivedi", role: "Backend Engineer & DevOps Specialist", bio: "APIs, CI/CD, and cloud-native reliability across Node/Ktor and modern infra.", image: getAvatarUrl("Raj Dwivedi", 'male'), linkedin: "https://www.linkedin.com/in/badenforcer/", twitter: "#", github: "https://github.com/BadEnforcer", email: "rajdwivedipc@gmail.com", portfolio: "https://rajdwivedi.vercel.app/"},
+    { name: "Bilal Sheikh", role: "Full Stack Engineer", bio: "Bridging frontend and backend to ship robust, user-centric features.", image: getAvatarUrl("Bilal Sheikh", 'male'), linkedin: "#", twitter: "#", github: "#",email: "#", portfolio: "https://stunning-waffle-2001.vercel.app/"  },
+    { name: "Sneha Sahu", role: "Head of Business Development", bio: "Building partnerships and growth pipelines aligned with product value.", image: getAvatarUrl("Sneha Sahu", 'female'), linkedin: "#", twitter: "#", github: "#" },
+    { name: "Aanya Agrawal", role: "Mobile Developer", bio: "Compose & KMP enthusiast focused on smooth UX and performance.", image: getAvatarUrl("Aanya Agrawal", 'female'), linkedin: "#", twitter: "#", github: "#" },
+    { name: "Saniya Khan", role: "UI/UX Developer", bio: "Designs intuitive, accessible interfaces with implementation ownership.", image: getAvatarUrl("Saniya Khan", 'female'), linkedin: "#", twitter: "#", github: "#" },
+    { name: "Khushi Chaturvedi", role: "UI/UX Expert", bio: "Crafts delightful, user-first experiences grounded in research.", image: getAvatarUrl("Khushi Chaturvedi", 'female'), linkedin: "#", twitter: "#", github: "#" },
   ];
 
   const extendedTeam = [
@@ -673,66 +689,93 @@ export default function AboutPage() {
             </div>
 
             <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 variants={staggerParent}
                 initial="hidden"
                 {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.22, margin: "-10% 0px" } } : { animate: "show" })}
             >
               {teamMembers.map((m) => (
                   <motion.div key={m.name} variants={revealOnce}>
-                    <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-primary/40 via-fuchsia-400/30 to-sky-400/30 gsap-team-card">
-                      <Card className="overflow-hidden rounded-[15px] border border-white/60 bg-white/80 backdrop-blur shadow-[0_18px_50px_-20px_rgba(2,6,23,0.22)]">
-                        <div className="aspect-square overflow-hidden bg-gray-100">
-                          <Image
+                    <div className="group relative rounded-3xl p-[2px] bg-gradient-to-br from-primary/50 via-fuchsia-400/40 to-sky-400/50 gsap-team-card hover:from-primary/70 hover:via-fuchsia-400/60 hover:to-sky-400/70 transition-all duration-500">
+                      <Card className="relative overflow-hidden rounded-[22px] border-0 bg-white shadow-[0_20px_60px_-15px_rgba(2,6,23,0.25)] hover:shadow-[0_30px_80px_-15px_rgba(2,6,23,0.35)] transition-all duration-500 h-full">
+                        {/* Hover glow effect */}
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 via-fuchsia-400/5 to-sky-400/5 pointer-events-none" />
+
+                        {/* Avatar */}
+                        <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
+                          <img
                               src={m.image || "/placeholder.svg"}
                               alt={m.name}
-                              width={640}
-                              height={640}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                           />
+                          {/* Subtle overlay on hover */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         </div>
-                        <div className="p-6">
-                          <h3 className="text-xl font-heading font-semibold text-gray-900">
+
+                        {/* Content */}
+                        <div className="relative p-6 bg-white">
+                          <h3 className="text-xl font-heading font-bold text-gray-900 mb-1.5 group-hover:text-primary transition-colors duration-300">
                             {m.portfolio && m.portfolio !== "#" ? (
                                 <a
                                     href={m.portfolio}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="hover:text-primary transition-colors"
+                                    className="hover:text-primary transition-colors inline-flex items-center gap-1.5"
                                 >
                                   {m.name}
+                                  <Globe className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </a>
                             ) : (
                                 m.name
                             )}
                           </h3>
-                          <p className="text-primary font-medium mb-2">{m.role}</p>
-                          <p className="text-gray-600 text-sm leading-relaxed mb-4">{m.bio}</p>
-                          <div className="flex space-x-3">
+                          <p className="text-primary font-semibold text-sm mb-3">{m.role}</p>
+                          <p className="text-gray-600 text-sm leading-relaxed mb-5">{m.bio}</p>
+
+                          {/* Social links with better styling */}
+                          <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
                             {m.portfolio && m.portfolio !== "#" && (
                                 <a
                                     href={m.portfolio}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-gray-400 hover:text-primary transition-colors"
+                                    className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110"
                                     aria-label={`${m.name} personal portfolio`}
                                 >
-                                  <Globe className="h-5 w-5" />
+                                  <Globe className="h-4 w-4" />
                                 </a>
                             )}
-                            {m.linkedin && (
-                                <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on LinkedIn`}>
-                                  <Linkedin className="h-5 w-5" />
+                            {m.linkedin && m.linkedin !== "#" && (
+                                <a
+                                    href={m.linkedin}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110"
+                                    aria-label={`${m.name} on LinkedIn`}
+                                >
+                                  <Linkedin className="h-4 w-4" />
                                 </a>
                             )}
-                            {m.twitter && (
-                                <a href={m.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on Twitter/X`}>
-                                  <Twitter className="h-5 w-5" />
+                            {m.twitter && m.twitter !== "#" && (
+                                <a
+                                    href={m.twitter}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110"
+                                    aria-label={`${m.name} on Twitter/X`}
+                                >
+                                  <Twitter className="h-4 w-4" />
                                 </a>
                             )}
-                            {m.github && (
-                                <a href={m.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" aria-label={`${m.name} on GitHub`}>
-                                  <Github className="h-5 w-5" />
+                            {m.github && m.github !== "#" && (
+                                <a
+                                    href={m.github}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110"
+                                    aria-label={`${m.name} on GitHub`}
+                                >
+                                  <Github className="h-4 w-4" />
                                 </a>
                             )}
                           </div>
