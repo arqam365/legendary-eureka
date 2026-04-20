@@ -70,7 +70,7 @@ export default function AboutPage() {
       portfolio: "https://arqam365.com/",
     },
     { name: "Raj Dwivedi", role: "Backend Engineer & DevOps Specialist", bio: "APIs, CI/CD, and cloud-native reliability across Node/Ktor and modern infra.", image: "/team/raj.jpg", linkedin: "https://www.linkedin.com/in/badenforcer/", twitter: "#", github: "https://github.com/BadEnforcer", email: "rajdwivedipc@gmail.com", portfolio: "https://rajdwivedi.vercel.app/"},
-    { name: "Bilal Sheikh", role: "Full Stack Engineer", bio: "Bridging frontend and backend to ship robust, user-centric features.", image: "/team/bilal.jpg", linkedin: "#", twitter: "#", github: "#" },
+    { name: "Bilal Sheikh", role: "Full Stack Engineer", bio: "Bridging frontend and backend to ship robust, user-centric features.", image: "/team/bilal.jpg", linkedin: "#", twitter: "#", github: "#",email: "#", portfolio: "https://stunning-waffle-2001.vercel.app/"  },
     { name: "Sneha Sahu", role: "Head of Business Development", bio: "Building partnerships and growth pipelines aligned with product value.", image: "/team/sneha.jpg", linkedin: "#", twitter: "#", github: "#" },
     { name: "Aanya Agrawal", role: "Mobile Developer", bio: "Compose & KMP enthusiast focused on smooth UX and performance.", image: "/team/aanya.jpg", linkedin: "#", twitter: "#", github: "#" },
     { name: "Saniya Khan", role: "UI/UX Developer", bio: "Designs intuitive, accessible interfaces with implementation ownership.", image: "/team/saniya.jpg", linkedin: "#", twitter: "#", github: "#" },
