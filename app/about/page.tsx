@@ -40,22 +40,7 @@ const staggerParent: Variants = {
   show: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } },
 };
 
-/* md+ detector: animate immediately on small screens (iOS Safari fixes) */
-const useIsMdUp = () => {
-  const [mdUp, setMdUp] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(min-width: 768px)");
-    const onChange = () => setMdUp(mql.matches);
-    onChange();
-    mql.addEventListener?.("change", onChange);
-    return () => mql.removeEventListener?.("change", onChange);
-  }, []);
-  return mdUp;
-};
-
 export default function AboutPage() {
-  const mdUp = useIsMdUp();
-
   /* ---------------- Helper: Generate avatar URL with gender matching ---------------- */
   const getAvatarUrl = (name: string, gender: 'male' | 'female') => {
     // Use Lorelei for all with beard options for males
@@ -226,43 +211,8 @@ export default function AboutPage() {
     };
   }, []);
 
-  useEffect(() => {
-    // Values grid reveal
-    if (!valuesRef.current) return;
-    const ctx = gsap.context(() => {
-      gsap.from(".gsap-value-card", {
-        y: 20,
-        opacity: 0,
-        duration: 0.5,
-        stagger: 0.08,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: valuesRef.current,
-          start: "top 80%",
-        },
-      });
-    }, valuesRef);
-    return () => ctx.revert();
-  }, []);
-
-  useEffect(() => {
-    // Team grid reveal
-    if (!teamRef.current) return;
-    const ctx = gsap.context(() => {
-      gsap.from(".gsap-team-card", {
-        y: 24,
-        opacity: 0,
-        duration: 0.55,
-        stagger: 0.06,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: teamRef.current,
-          start: "top 80%",
-        },
-      });
-    }, teamRef);
-    return () => ctx.revert();
-  }, []);
+  // Values grid reveal was handled by GSAP, removed to avoid conflict with Framer Motion.
+  // Team grid reveal was handled by GSAP, removed to avoid conflict with Framer Motion.
 
   // Spotlight hover for value cards (updates --mx/--my used by your radial bg)
   useEffect(() => {
@@ -513,7 +463,7 @@ export default function AboutPage() {
                   <div className="rounded-[14px] overflow-hidden bg-white/90 backdrop-blur border border-white/70 shadow-[0_22px_60px_-24px_rgba(2,6,23,0.22)]">
                     <div className="aspect-[4/3] bg-gray-100 relative">
                       <img
-                          src="/about/collage.jpg"
+                          src="/modern-team-workspace.png"
                           alt="Revzion product snapshots & moments"
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                           loading="lazy"
@@ -640,7 +590,8 @@ export default function AboutPage() {
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
               initial="hidden"
-              {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.25 } } : { animate: "show" })}
+              whileInView="show"
+              viewport={{ once: true, amount: 0.1 }}
           >
             <div className="text-center mb-14">
               <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">Our Values</h2>
@@ -653,7 +604,8 @@ export default function AboutPage() {
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7"
                 variants={staggerParent}
                 initial="hidden"
-                {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.22, margin: "-10% 0px" } } : { animate: "show" })}
+                whileInView="show"
+                viewport={{ once: true, amount: 0.1 }}
             >
               {values.map((v) => (
                   <motion.div key={v.title} variants={revealOnce}>
@@ -679,7 +631,8 @@ export default function AboutPage() {
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
               initial="hidden"
-              {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.25 } } : { animate: "show" })}
+              whileInView="show"
+              viewport={{ once: true, amount: 0.1 }}
           >
             <div className="text-center mb-14">
               <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">Meet Our Team</h2>
@@ -692,7 +645,8 @@ export default function AboutPage() {
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 variants={staggerParent}
                 initial="hidden"
-                {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.22, margin: "-10% 0px" } } : { animate: "show" })}
+                whileInView="show"
+                viewport={{ once: true, amount: 0.1 }}
             >
               {teamMembers.map((m) => (
                   <motion.div key={m.name} variants={revealOnce}>
@@ -828,7 +782,8 @@ export default function AboutPage() {
               className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
               variants={revealOnce}
               initial="hidden"
-              {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.25 } } : { animate: "show" })}
+              whileInView="show"
+              viewport={{ once: true, amount: 0.1 }}
           >
             <div className="text-center mb-10">
               <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-3">Awards & Recognition</h2>
@@ -861,7 +816,8 @@ export default function AboutPage() {
               className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
               variants={revealOnce}
               initial="hidden"
-              {...(mdUp ? { whileInView: "show", viewport: { once: true, amount: 0.25 } } : { animate: "show" })}
+              whileInView="show"
+              viewport={{ once: true, amount: 0.1 }}
           >
             <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-6">
               Ready to Work Together?
