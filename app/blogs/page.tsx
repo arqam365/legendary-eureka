@@ -1,16 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { Search, Loader2 } from "lucide-react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://legendary-eureka-backend.vercel.app";
+
 /* ---------------- TYPES ---------------- */
 type Post = {
-    id: number;
+    id: string;
+    slug: string;
     title: string;
     date: string;
     category: "daily" | "weekly" | "monthly";
@@ -20,42 +22,32 @@ type Post = {
     author: { name: string; avatar?: string };
 };
 
-/* ---------------- SAMPLE POSTS ---------------- */
-const posts: Post[] = [
-    {
-        id: 1,
-        title: "How AI is Transforming SaaS",
-        date: "2025-08-29",
-        category: "weekly",
-        excerpt:
-            "From copilots to automation: what AI means for product velocity, margins, and customer value.",
-        cover: "/blogs/ai-saas.jpg",
-        tags: ["AI", "SaaS"],
-        author: { name: "Revzion Team", avatar: "/avatars/revzion.png" },
-    },
-    {
-        id: 2,
-        title: "5 Design Tips for Cross-Platform Apps",
-        date: "2025-08-28",
-        category: "daily",
-        excerpt:
-            "Keep iOS, Android, and Web cohesive without cookie-cutter UI. Five patterns that scale beautifully.",
-        cover: "/blogs/cross-platform-design.jpg",
-        tags: ["Design", "Mobile"],
-        author: { name: "Revzion Design", avatar: "/avatars/design.png" },
-    },
-    {
-        id: 3,
-        title: "Monthly Recap: Revzion Projects",
-        date: "2025-08-01",
-        category: "monthly",
-        excerpt:
-            "Launches, learnings, and a peek behind the scenes from the Revzion team.",
-        cover: "/blogs/monthly-recap.jpg",
-        tags: ["Changelog"],
-        author: { name: "Revzion Team", avatar: "/avatars/revzion.png" },
-    },
-];
+type ApiPost = {
+    id: string;
+    slug: string;
+    title: string;
+    description: string;
+    coverImage?: string | null;
+    category: "DAILY" | "WEEKLY" | "MONTHLY";
+    tags: string[];
+    publishedAt: string | null;
+    createdAt: string;
+    author: { name: string };
+};
+
+function mapApiPost(p: ApiPost): Post {
+    return {
+        id: p.id,
+        slug: p.slug,
+        title: p.title,
+        date: p.publishedAt ?? p.createdAt,
+        category: p.category.toLowerCase() as Post["category"],
+        excerpt: p.description,
+        cover: p.coverImage ?? undefined,
+        tags: p.tags,
+        author: { name: p.author.name },
+    };
+}
 
 const CATS = ["all", "daily", "weekly", "monthly"] as const;
 type Cat = (typeof CATS)[number];
@@ -96,20 +88,30 @@ function debounce<T extends (...args: any[]) => void>(fn: T, ms = 250) {
 }
 
 /* ---------------- SKELETON ---------------- */
-function PostSkeleton({ compact = false }: { compact?: boolean }) {
+function PostSkeleton() {
     return (
         <div
             aria-hidden
-            className={`animate-pulse rounded-3xl bg-white/80 shadow-sm overflow-hidden`}
-            style={{ minHeight: compact ? 64 : 220 }}
+            className="animate-pulse rounded-3xl bg-white/80 shadow-sm overflow-hidden"
+            style={{ minHeight: 240 }}
         >
-            <div className={`${compact ? "h-14" : "h-40"} w-full bg-gray-100`} />
+            <div className="grid grid-cols-1 md:grid-cols-2">
+                <div className="h-56 w-full bg-gray-100" />
+                <div className="p-6 flex flex-col gap-3">
+                    <div className="h-3 w-24 rounded bg-gray-100" />
+                    <div className="h-5 w-3/4 rounded bg-gray-200" />
+                    <div className="h-3 w-full rounded bg-gray-100" />
+                    <div className="h-3 w-2/3 rounded bg-gray-100" />
+                </div>
+            </div>
         </div>
     );
 }
 
 /* ---------------- MAIN PAGE ---------------- */
 export default function BlogsPage() {
+    const [posts, setPosts] = useState<Post[]>([]);
+    const [fetching, setFetching] = useState(true);
     const [filter, setFilter] = useState<Cat>("all");
     const [query, setQuery] = useState("");
     const [visible, setVisible] = useState(6);
@@ -118,9 +120,20 @@ export default function BlogsPage() {
     const [isCompact, setIsCompact] = useState(false);
     const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
+    useEffect(() => {
+        fetch(`${API_URL}/api/public/posts`)
+            .then((r) => {
+                if (!r.ok) throw new Error("Failed to fetch");
+                return r.json();
+            })
+            .then((data: ApiPost[]) => setPosts(data.map(mapApiPost)))
+            .catch(() => {})
+            .finally(() => setFetching(false));
+    }, []);
+
     const sorted = useMemo(
         () => [...posts].sort((a, b) => +new Date(b.date) - +new Date(a.date)),
-        []
+        [posts]
     );
 
     const counts = useMemo(() => {
@@ -145,7 +158,6 @@ export default function BlogsPage() {
 
     const toShow = filtered.slice(0, visible);
 
-    // debounced query setter to improve UX (but keep immediate visible reset)
     const debouncedQueryRef = useRef(
         debounce((text: string) => {
             setQuery(text);
@@ -153,12 +165,10 @@ export default function BlogsPage() {
     );
 
     const handleSearchChange = useCallback((value: string) => {
-        // immediate show reset for discoverability
         setVisible(6);
         debouncedQueryRef.current(value);
     }, []);
 
-    // Load more (manual)
     const handleLoadMore = async () => {
         setLoading(true);
         await new Promise((r) => setTimeout(r, 500));
@@ -166,7 +176,6 @@ export default function BlogsPage() {
         setLoading(false);
     };
 
-    // Auto-load more when sentinel becomes visible (progressive reveal)
     useEffect(() => {
         if (!loadMoreRef.current) return;
         const el = loadMoreRef.current;
@@ -185,7 +194,6 @@ export default function BlogsPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filtered.length, toShow.length, loading]);
 
-    // keyboard: clear search with Esc
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
             if (e.key === "Escape") {
@@ -197,12 +205,10 @@ export default function BlogsPage() {
         return () => window.removeEventListener("keydown", onKey);
     }, []);
 
-    // image fallback helper
     const handleImgError: React.ComponentProps<"img">["onError"] = (e) => {
         (e.target as HTMLImageElement).src = "/blogs/placeholder.jpg";
     };
 
-    // shape clip for image (slanted right edge)
     const imageClip = "polygon(0 0, 100% 0, 86% 100%, 0% 100%)";
 
     return (
@@ -223,14 +229,12 @@ export default function BlogsPage() {
                         <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-gray-600">
               <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1">
                 <strong className="font-medium text-gray-800">Updated</strong>
-                <span>{formatDates(sorted[0]?.date ?? new Date().toISOString())}</span>
+                <span>{sorted[0] ? formatDates(sorted[0].date) : "—"}</span>
               </span>
 
                             <button
                                 type="button"
-                                onClick={() => {
-                                    setIsCompact((c) => !c);
-                                }}
+                                onClick={() => setIsCompact((c) => !c)}
                                 className="inline-flex items-center gap-2 rounded-full bg-white border px-3 py-1 shadow-sm text-gray-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-primary/30"
                                 aria-pressed={isCompact}
                             >
@@ -256,7 +260,7 @@ export default function BlogsPage() {
                         </div>
                     </div>
 
-                    {/* Search + controls */}
+                    {/* Search */}
                     <div className="w-full md:w-[360px] flex gap-3">
                         <label className="relative flex-1" aria-label="Search posts">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -319,135 +323,136 @@ export default function BlogsPage() {
                     </div>
                 </div>
 
-                {/* Unique-shaped Grid */}
-                <div className={viewMode === "grid" ? "grid gap-8 grid-cols-1 sm:grid-cols-2" : "flex flex-col gap-6"}>
-                    <AnimatePresence mode="popLayout">
-                        {toShow.map((post, idx) => (
-                            <motion.article
-                                key={post.id}
-                                variants={card}
-                                initial="hidden"
-                                animate="show"
-                                exit={{ opacity: 0, scale: 0.98 }}
-                                whileHover={{ y: -6, rotate: -0.5, boxShadow: "0 18px 45px rgba(12, 15, 20, 0.12)" }}
-                                className={`relative group overflow-visible transition-transform ${viewMode === "list" ? "flex" : ""}`}
-                            >
-                                {/* Card shell — we use layered pieces to create a unique silhouette */}
-                                <div
-                                    className="relative rounded-3xl bg-white border border-transparent shadow-md"
-                                    style={{ minHeight: viewMode === "list" ? 160 : 240 }}
+                {/* Loading skeletons */}
+                {fetching && (
+                    <div className="grid gap-8 grid-cols-1 sm:grid-cols-2">
+                        {[0, 1, 2, 3].map((i) => <PostSkeleton key={i} />)}
+                    </div>
+                )}
+
+                {/* Grid */}
+                {!fetching && (
+                    <div className={viewMode === "grid" ? "grid gap-8 grid-cols-1 sm:grid-cols-2" : "flex flex-col gap-6"}>
+                        <AnimatePresence mode="popLayout">
+                            {toShow.map((post, idx) => (
+                                <motion.article
+                                    key={post.id}
+                                    variants={card}
+                                    initial="hidden"
+                                    animate="show"
+                                    exit={{ opacity: 0, scale: 0.98 }}
+                                    whileHover={{ y: -6, rotate: -0.5, boxShadow: "0 18px 45px rgba(12, 15, 20, 0.12)" }}
+                                    className={`relative group overflow-visible transition-transform ${viewMode === "list" ? "flex" : ""}`}
                                 >
-                                    {/* Background accent shape (soft blob) */}
                                     <div
-                                        aria-hidden
-                                        className="absolute -left-8 -top-6 w-40 h-40 rounded-full opacity-10 pointer-events-none"
-                                        style={{
-                                            background:
-                                                "radial-gradient(closest-side, rgba(240,138,39,0.28), rgba(240,138,39,0.06))",
-                                            filter: "blur(18px)",
-                                            transform: idx % 2 === 0 ? "rotate(10deg)" : "rotate(-8deg)",
-                                        }}
-                                    />
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2">
-                                        {/* left: slanted image block (on desktop grid) */}
+                                        className="relative rounded-3xl bg-white border border-transparent shadow-md"
+                                        style={{ minHeight: viewMode === "list" ? 160 : 240 }}
+                                    >
                                         <div
-                                            className={`relative overflow-hidden ${viewMode === "list" ? "md:w-40 md:flex-shrink-0" : ""}`}
+                                            aria-hidden
+                                            className="absolute -left-8 -top-6 w-40 h-40 rounded-full opacity-10 pointer-events-none"
                                             style={{
-                                                clipPath: imageClip,
-                                                minHeight: viewMode === "list" ? 140 : 220,
+                                                background: "radial-gradient(closest-side, rgba(240,138,39,0.28), rgba(240,138,39,0.06))",
+                                                filter: "blur(18px)",
+                                                transform: idx % 2 === 0 ? "rotate(10deg)" : "rotate(-8deg)",
                                             }}
-                                        >
-                                            {post.cover ? (
-                                                // eslint-disable-next-line @next/next/no-img-element
-                                                <img
-                                                    src={post.cover}
-                                                    alt={post.title}
-                                                    onError={handleImgError}
-                                                    className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
-                                                    loading="lazy"
-                                                />
-                                            ) : (
-                                                <div className="bg-gray-100 w-full h-full flex items-center justify-center text-gray-400">
-                                                    No image
-                                                </div>
-                                            )}
+                                        />
 
-                                            {/* image overlay gradient for legibility */}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
-
-                                            {/* floating circular author badge that overlaps edge */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2">
                                             <div
-                                                className="absolute -right-6 bottom-4 w-16 h-16 rounded-full flex items-center justify-center border-4 border-white shadow-lg"
-                                                style={{ background: "linear-gradient(135deg,#fff,#fff0)" }}
+                                                className={`relative overflow-hidden ${viewMode === "list" ? "md:w-40 md:flex-shrink-0" : ""}`}
+                                                style={{
+                                                    clipPath: imageClip,
+                                                    minHeight: viewMode === "list" ? 140 : 220,
+                                                }}
                                             >
-                                                {post.author.avatar ? (
+                                                {post.cover ? (
+                                                    // eslint-disable-next-line @next/next/no-img-element
                                                     <img
-                                                        src={post.author.avatar}
-                                                        alt={post.author.name}
-                                                        className="w-12 h-12 rounded-full object-cover"
+                                                        src={post.cover}
+                                                        alt={post.title}
+                                                        onError={handleImgError}
+                                                        className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+                                                        loading="lazy"
                                                     />
                                                 ) : (
-                                                    <span className="text-xs text-gray-600">{post.author.name.split(" ")[0]}</span>
+                                                    <div className="bg-gray-100 w-full h-full flex items-center justify-center text-gray-400">
+                                                        No image
+                                                    </div>
                                                 )}
-                                            </div>
-                                        </div>
 
-                                        {/* right: content panel overlapping image */}
-                                        <div className="p-6 md:p-8 flex flex-col justify-between">
-                                            <div>
-                                                <div className="mb-3 flex items-center gap-3 text-xs text-gray-600">
-                                                    <span className="font-medium text-gray-800">{post.author.name}</span>
-                                                    <span aria-hidden>•</span>
-                                                    <time dateTime={post.date} className="text-gray-500">{formatDates(post.date)}</time>
-                                                    <span aria-hidden>•</span>
-                                                    <span className="text-gray-500">{readingTime(`${post.title} ${post.excerpt}`)}</span>
-                                                    <span className="ml-auto inline-flex items-center gap-2 rounded-full bg-gray-100 px-2 py-0.5 capitalize text-gray-700 text-[12px]">
-                            {post.category}
-                          </span>
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
+
+                                                <div
+                                                    className="absolute -right-6 bottom-4 w-16 h-16 rounded-full flex items-center justify-center border-4 border-white shadow-lg"
+                                                    style={{ background: "linear-gradient(135deg,#fff,#fff0)" }}
+                                                >
+                                                    {post.author.avatar ? (
+                                                        <img
+                                                            src={post.author.avatar}
+                                                            alt={post.author.name}
+                                                            className="w-12 h-12 rounded-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <span className="text-xs text-gray-600">{post.author.name.split(" ")[0]}</span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="p-6 md:p-8 flex flex-col justify-between">
+                                                <div>
+                                                    <div className="mb-3 flex items-center gap-3 text-xs text-gray-600">
+                                                        <span className="font-medium text-gray-800">{post.author.name}</span>
+                                                        <span aria-hidden>•</span>
+                                                        <time dateTime={post.date} className="text-gray-500">{formatDates(post.date)}</time>
+                                                        <span aria-hidden>•</span>
+                                                        <span className="text-gray-500">{readingTime(`${post.title} ${post.excerpt}`)}</span>
+                                                        <span className="ml-auto inline-flex items-center gap-2 rounded-full bg-gray-100 px-2 py-0.5 capitalize text-gray-700 text-[12px]">
+                                    {post.category}
+                                  </span>
+                                                    </div>
+
+                                                    <h2 className="text-lg sm:text-xl font-heading font-semibold text-gray-900 group-hover:text-primary transition">
+                                                        <Link href={`/blogs/${post.slug}`} className="focus:outline-none focus:ring-2 focus:ring-primary/40">
+                                                            {post.title}
+                                                        </Link>
+                                                    </h2>
+
+                                                    <p className="mt-2 line-clamp-3 text-gray-600">{post.excerpt}</p>
+
+                                                    {post.tags?.length ? (
+                                                        <ul className="mt-3 flex flex-wrap gap-2" aria-hidden>
+                                                            {post.tags.map((t) => (
+                                                                <li
+                                                                    key={t}
+                                                                    className="text-[12px] rounded-md bg-gray-100 px-2 py-0.5 text-gray-700"
+                                                                >
+                                                                    {t}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    ) : null}
                                                 </div>
 
-                                                <h2 className="text-lg sm:text-xl font-heading font-semibold text-gray-900 group-hover:text-primary transition">
-                                                    <Link href={`/blogs/${post.id}`} className="focus:outline-none focus:ring-2 focus:ring-primary/40">
-                                                        {post.title}
+                                                <div className="mt-5 flex items-center gap-4">
+                                                    <Link
+                                                        href={`/blogs/${post.slug}`}
+                                                        className="inline-flex items-center gap-2 text-primary text-sm font-medium hover:underline"
+                                                    >
+                                                        Read more →
                                                     </Link>
-                                                </h2>
-
-                                                <p className="mt-2 line-clamp-3 text-gray-600">{post.excerpt}</p>
-
-                                                {post.tags?.length ? (
-                                                    <ul className="mt-3 flex flex-wrap gap-2" aria-hidden>
-                                                        {post.tags.map((t) => (
-                                                            <li
-                                                                key={t}
-                                                                className="text-[12px] rounded-md bg-gray-100 px-2 py-0.5 text-gray-700"
-                                                            >
-                                                                {t}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                ) : null}
-                                            </div>
-
-                                            <div className="mt-5 flex items-center gap-4">
-                                                <Link
-                                                    href={`/blogs/${post.id}`}
-                                                    className="inline-flex items-center gap-2 text-primary text-sm font-medium hover:underline"
-                                                >
-                                                    Read more →
-                                                </Link>
-                                                <span className="text-xs text-gray-500"></span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </motion.article>
-                        ))}
-                    </AnimatePresence>
-                </div>
+                                </motion.article>
+                            ))}
+                        </AnimatePresence>
+                    </div>
+                )}
 
                 {/* Empty state */}
-                {filtered.length === 0 && (
+                {!fetching && filtered.length === 0 && (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -475,7 +480,7 @@ export default function BlogsPage() {
                 )}
 
                 {/* Load more */}
-                {filtered.length > toShow.length && (
+                {!fetching && filtered.length > toShow.length && (
                     <>
                         <div className="mt-10 flex justify-center">
                             <button
@@ -489,7 +494,6 @@ export default function BlogsPage() {
                             </button>
                         </div>
 
-                        {/* invisible sentinel for auto-loading */}
                         <div ref={loadMoreRef} className="h-8" />
                     </>
                 )}
