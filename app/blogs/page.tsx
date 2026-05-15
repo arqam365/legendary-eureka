@@ -206,10 +206,8 @@ export default function BlogsPage() {
     }, []);
 
     const handleImgError: React.ComponentProps<"img">["onError"] = (e) => {
-        (e.target as HTMLImageElement).src = "/blogs/placeholder.jpg";
+        (e.currentTarget as HTMLImageElement).style.display = "none";
     };
-
-    const imageClip = "polygon(0 0, 100% 0, 86% 100%, 0% 100%)";
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -334,116 +332,81 @@ export default function BlogsPage() {
                 {!fetching && (
                     <div className={viewMode === "grid" ? "grid gap-8 grid-cols-1 sm:grid-cols-2" : "flex flex-col gap-6"}>
                         <AnimatePresence mode="popLayout">
-                            {toShow.map((post, idx) => (
+                            {toShow.map((post) => (
                                 <motion.article
                                     key={post.id}
                                     variants={card}
                                     initial="hidden"
                                     animate="show"
                                     exit={{ opacity: 0, scale: 0.98 }}
-                                    whileHover={{ y: -6, rotate: -0.5, boxShadow: "0 18px 45px rgba(12, 15, 20, 0.12)" }}
-                                    className={`relative group overflow-visible transition-transform ${viewMode === "list" ? "flex" : ""}`}
+                                    whileHover={{ y: -4, boxShadow: "0 16px 40px rgba(0,0,0,0.09)" }}
+                                    className="group rounded-3xl bg-white shadow-md border border-gray-100 overflow-hidden flex transition-all"
+                                    style={{ minHeight: 180 }}
                                 >
-                                    <div
-                                        className="relative rounded-3xl bg-white border border-transparent shadow-md"
-                                        style={{ minHeight: viewMode === "list" ? 160 : 240 }}
-                                    >
-                                        <div
-                                            aria-hidden
-                                            className="absolute -left-8 -top-6 w-40 h-40 rounded-full opacity-10 pointer-events-none"
-                                            style={{
-                                                background: "radial-gradient(closest-side, rgba(240,138,39,0.28), rgba(240,138,39,0.06))",
-                                                filter: "blur(18px)",
-                                                transform: idx % 2 === 0 ? "rotate(10deg)" : "rotate(-8deg)",
-                                            }}
-                                        />
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2">
-                                            <div
-                                                className={`relative overflow-hidden ${viewMode === "list" ? "md:w-40 md:flex-shrink-0" : ""}`}
-                                                style={{
-                                                    clipPath: imageClip,
-                                                    minHeight: viewMode === "list" ? 140 : 220,
-                                                }}
-                                            >
-                                                {post.cover ? (
-                                                    // eslint-disable-next-line @next/next/no-img-element
-                                                    <img
-                                                        src={post.cover}
-                                                        alt={post.title}
-                                                        onError={handleImgError}
-                                                        className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
-                                                        loading="lazy"
-                                                    />
-                                                ) : (
-                                                    <div className="bg-gray-100 w-full h-full flex items-center justify-center text-gray-400">
-                                                        No image
-                                                    </div>
-                                                )}
-
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
-
-                                                <div
-                                                    className="absolute -right-6 bottom-4 w-16 h-16 rounded-full flex items-center justify-center border-4 border-white shadow-lg"
-                                                    style={{ background: "linear-gradient(135deg,#fff,#fff0)" }}
-                                                >
-                                                    {post.author.avatar ? (
-                                                        <img
-                                                            src={post.author.avatar}
-                                                            alt={post.author.name}
-                                                            className="w-12 h-12 rounded-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <span className="text-xs text-gray-600">{post.author.name.split(" ")[0]}</span>
-                                                    )}
+                                    {/* Cover image panel */}
+                                    <div className="w-40 sm:w-48 md:w-52 flex-shrink-0 relative bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                                        {post.cover ? (
+                                            // eslint-disable-next-line @next/next/no-img-element
+                                            <img
+                                                src={post.cover}
+                                                alt={post.title}
+                                                onError={handleImgError}
+                                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                loading="lazy"
+                                            />
+                                        ) : (
+                                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 select-none">
+                                                <div className="w-10 h-10 rounded-full bg-white/60 flex items-center justify-center text-xl">
+                                                    📝
                                                 </div>
+                                                <span className="text-xs text-gray-400 font-medium">No cover</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Content panel */}
+                                    <div className="flex-1 min-w-0 p-5 sm:p-6 flex flex-col justify-between">
+                                        <div>
+                                            {/* Meta row — single line */}
+                                            <div className="flex items-center gap-x-2 text-xs text-gray-500 mb-2.5 flex-wrap gap-y-1">
+                                                <span className="font-semibold text-gray-700 shrink-0">{post.author.name}</span>
+                                                <span aria-hidden className="shrink-0">·</span>
+                                                <time dateTime={post.date} className="shrink-0">{formatDates(post.date)}</time>
+                                                <span aria-hidden className="shrink-0">·</span>
+                                                <span className="shrink-0">{readingTime(`${post.title} ${post.excerpt}`)}</span>
+                                                <span className="ml-auto capitalize rounded-full bg-gray-100 px-2.5 py-0.5 text-gray-600 font-medium text-[11px] shrink-0">
+                                                    {post.category}
+                                                </span>
                                             </div>
 
-                                            <div className="p-6 md:p-8 flex flex-col justify-between">
-                                                <div>
-                                                    <div className="mb-3 flex items-center gap-3 text-xs text-gray-600">
-                                                        <span className="font-medium text-gray-800">{post.author.name}</span>
-                                                        <span aria-hidden>•</span>
-                                                        <time dateTime={post.date} className="text-gray-500">{formatDates(post.date)}</time>
-                                                        <span aria-hidden>•</span>
-                                                        <span className="text-gray-500">{readingTime(`${post.title} ${post.excerpt}`)}</span>
-                                                        <span className="ml-auto inline-flex items-center gap-2 rounded-full bg-gray-100 px-2 py-0.5 capitalize text-gray-700 text-[12px]">
-                                    {post.category}
-                                  </span>
-                                                    </div>
+                                            {/* Title */}
+                                            <h2 className="text-base sm:text-lg font-heading font-semibold text-gray-900 group-hover:text-primary transition line-clamp-2 leading-snug">
+                                                <Link href={`/blogs/${post.slug}`} className="focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40">
+                                                    {post.title}
+                                                </Link>
+                                            </h2>
 
-                                                    <h2 className="text-lg sm:text-xl font-heading font-semibold text-gray-900 group-hover:text-primary transition">
-                                                        <Link href={`/blogs/${post.slug}`} className="focus:outline-none focus:ring-2 focus:ring-primary/40">
-                                                            {post.title}
-                                                        </Link>
-                                                    </h2>
+                                            {/* Excerpt */}
+                                            <p className="mt-1.5 text-sm text-gray-500 line-clamp-2 leading-relaxed">{post.excerpt}</p>
 
-                                                    <p className="mt-2 line-clamp-3 text-gray-600">{post.excerpt}</p>
-
-                                                    {post.tags?.length ? (
-                                                        <ul className="mt-3 flex flex-wrap gap-2" aria-hidden>
-                                                            {post.tags.map((t) => (
-                                                                <li
-                                                                    key={t}
-                                                                    className="text-[12px] rounded-md bg-gray-100 px-2 py-0.5 text-gray-700"
-                                                                >
-                                                                    {t}
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    ) : null}
-                                                </div>
-
-                                                <div className="mt-5 flex items-center gap-4">
-                                                    <Link
-                                                        href={`/blogs/${post.slug}`}
-                                                        className="inline-flex items-center gap-2 text-primary text-sm font-medium hover:underline"
-                                                    >
-                                                        Read more →
-                                                    </Link>
-                                                </div>
-                                            </div>
+                                            {/* Tags */}
+                                            {post.tags?.length ? (
+                                                <ul className="mt-2.5 flex flex-wrap gap-1.5">
+                                                    {post.tags.slice(0, 4).map((t) => (
+                                                        <li key={t} className="text-[11px] rounded-md bg-gray-100 px-2 py-0.5 text-gray-600">
+                                                            {t}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            ) : null}
                                         </div>
+
+                                        <Link
+                                            href={`/blogs/${post.slug}`}
+                                            className="mt-3 text-sm text-primary font-medium hover:underline self-start"
+                                        >
+                                            Read more →
+                                        </Link>
                                     </div>
                                 </motion.article>
                             ))}
