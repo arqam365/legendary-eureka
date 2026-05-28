@@ -143,74 +143,59 @@ type Study = {
 function CaseStudiesCarousel() {
     const studies: Study[] = [
         {
-            id: "beesocial",
-            title: "BeeSocial – Social Media App",
+            id: "evolwe-ring",
+            title: "Evolwe Ring — Smart Ring + Companion App",
             kind: "mobile",
-            problem: "Low engagement and high churn.",
-            solution: "Rebuilt feed ranking, real-time chat, and creator tools.",
-            results: "+42% DAU, 29% session length, 18% retention.",
+            problem: "Indian health-tech consumers had no premium smart ring with local language support and a one-time pricing model — the market was dominated by Western subscription platforms.",
+            solution: "Built a Next.js product site, a React Native BLE companion app, and an on-device ML pipeline (EVO AI) converting raw biometric data into personalised daily health scores.",
+            results: "4.7/5 Play Store rating, 15+ biometrics tracked continuously, press coverage in Forbes, WIRED, and TechCrunch. Zero subscription cost vs. competitors charging ₹12K/yr.",
             images: {
-                mobile: "/case-studies/beesocial.png"
+                mobile: "/case-studies/evolwe.jpeg"
             },
-            link: "/portfolio/beesocial",
-            tags: ["Discovery → MVP → Scale", "Design Systems", "Observability"],
+            link: "/portfolio/evolwe-ring",
+            tags: ["Smart Ring + App", "BLE + On-device ML", "No Subscription"],
             kpis: [
-                { label: "DAU", value: "+42%" },
-                { label: "Session", value: "+29%" },
-                { label: "Retention", value: "+18%" },
-            ],
-            clients: [
-                { name: "GreenLeaf", logo: "/logos/clients/greenleaf.svg" },
-                { name: "Northwave", logo: "/logos/clients/northwave.svg" },
-                { name: "Aster", logo: "/logos/clients/aster.svg" },
+                { label: "Play Store", value: "4.7/5" },
+                { label: "Biometrics", value: "15+" },
+                { label: "Subscription", value: "₹0" },
             ],
         },
         {
             id: "rynox",
-            title: "Rynox – Enterprise Billing Platform",
+            title: "Rynox — Franchise Billing & Command Platform",
             kind: "web",
-            problem: "Disconnected billing systems and limited visibility across franchise locations.",
-            solution: "Centralized billing, pricing controls, and real-time analytics for multi-location businesses.",
-            results: "3× faster reporting, 40% fewer billing errors, 25% operational cost reduction.",
+            problem: "Franchise operators managing hundreds of locations had no unified billing, pricing visibility, or profit-auditing tool — relying on spreadsheets and generic POS software.",
+            solution: "Built a multi-tenant SaaS with a centralised pricing engine, real-time P&L analytics across all locations, and automated commission calculations eliminating month-end disputes.",
+            results: "500+ locations served, 3-tool stack replaced with one platform. Integrated Stripe, PayPal, Square, QuickBooks, and Xero in a single command centre.",
             images: {
                 desktop: "/case-studies/rynox.jpeg"
             },
             link: "/portfolio/rynox",
-            tags: ["Enterprise SaaS", "Franchise Ops", "Billing & Analytics"],
+            tags: ["Franchise SaaS", "Multi-tenant", "Billing & Analytics"],
             kpis: [
-                { label: "Reporting Speed", value: "3× faster" },
-                { label: "Billing Errors", value: "−40%" },
-                { label: "Operational Cost", value: "−25%" },
-            ],
-            clients: [
-                { name: "Franchise Networks", logo: "/logos/clients/franchise.svg" },
-                { name: "Service Brands", logo: "/logos/clients/service.svg" },
-                { name: "Retail Chains", logo: "/logos/clients/retail.svg" },
+                { label: "Locations", value: "500+" },
+                { label: "Tools Replaced", value: "3 → 1" },
+                { label: "Gateways", value: "3" },
             ],
         },
         {
-            id: "evolve-ring",
-            title: "Evolve – Smart Ring Companion App",
-            kind: "mobile",
-            problem: "Health data from wearable devices was fragmented, delayed, and hard for users to understand.",
-            solution: "Built a cross-platform companion app with real-time BLE sync, health insights, and device management.",
-            results: "2× faster data sync, 35% higher daily engagement, 99.9% device sync reliability.",
+            id: "cognivia",
+            title: "Cognivia — AI-First LMS for Educators",
+            kind: "web",
+            problem: "Coaching institutes juggled 4–6 disconnected tools for admissions, course delivery, and fee collection — leaking revenue through missed follow-ups and zero dropout analytics.",
+            solution: "Engineered a vertically integrated EdTech platform with AI question generation, ML dropout prediction 14 days in advance, automated fee collection, and white-label mobile apps.",
+            results: "SOC 2, GDPR & ISO 27001 certified, 99.7% uptime, dropout risk flagged 14 days early, 80%+ admin hours saved vs. manual workflows.",
             images: {
-                mobile: "/case-studies/evolwe.jpeg"
+                desktop: "/screenshots/cognivia.jpg"
             },
-            link: "/portfolio/evolve-ring",
-            tags: ["Wearable Tech", "BLE", "Health Analytics", "Kotlin Multiplatform"],
+            link: "/portfolio/cognivia",
+            tags: ["EdTech SaaS", "AI + ML", "SOC 2 Certified"],
             kpis: [
-                { label: "Sync Speed", value: "2× faster" },
-                { label: "Daily Engagement", value: "+35%" },
-                { label: "Sync Reliability", value: "99.9%" },
+                { label: "Uptime", value: "99.7%" },
+                { label: "Dropout Warn", value: "14 days" },
+                { label: "Admin Saved", value: "80%+" },
             ],
-            clients: [
-                { name: "Wearable OEMs", logo: "/logos/clients/oem.svg" },
-                { name: "Health Tech Brands", logo: "/logos/clients/health.svg" },
-                { name: "Consumer Fitness", logo: "/logos/clients/fitness.svg" },
-            ],
-        }
+        },
     ]
 
     const [active, setActive] = React.useState(0)
