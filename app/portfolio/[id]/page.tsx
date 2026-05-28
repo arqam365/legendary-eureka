@@ -152,7 +152,7 @@ export default function CaseStudyPage({ params }: PageProps) {
                             <div className="grid grid-cols-2 gap-3">
                                 {study.results.metrics.map((m) => (
                                     <div key={m.label} className="text-center rounded-lg bg-gray-50 p-3">
-                                        <div className="mb-1 flex justify-center text-green-600">{m.icon ?? <Users className="h-5 w-5" />}</div>
+                                        <div className="mb-1 flex justify-center text-green-600"><Users className="h-5 w-5" /></div>
                                         <div className="text-base font-heading font-bold text-gray-900">{m.value}</div>
                                         <div className="text-[11px] text-gray-600">{m.label}</div>
                                     </div>
