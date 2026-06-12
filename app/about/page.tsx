@@ -16,23 +16,19 @@ import {
   Heart,
   Zap,
   Globe,
-  Award,
   Linkedin,
   Twitter,
   Github,
 } from "lucide-react";
-
-/* ---------------- GSAP ---------------- */
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
-/* ---------------- Motion (kept lightweight) ---------------- */
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const revealOnce: Variants = {
-  hidden: { opacity: 0, y: 14, scale: 0.98 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: EASE } },
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
 };
 
 const staggerParent: Variants = {
@@ -41,74 +37,139 @@ const staggerParent: Variants = {
 };
 
 export default function AboutPage() {
-  /* ---------------- Helper: Generate avatar URL with gender matching ---------------- */
-  const getAvatarUrl = (name: string, gender: 'male' | 'female') => {
-    // Use Lorelei for all with beard options for males
+  const getAvatarUrl = (name: string, gender: "male" | "female") => {
     const seed = encodeURIComponent(name);
-
-    // Theme-matching background colors (blue/purple/pink palette from your site)
-    const backgrounds = 'b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf';
-
-    // Add beard for males, explicitly disable for females
-    const beardParams = gender === 'male'
-        ? '&beard=variant01,variant02&beardProbability=100'
-        : '&beardProbability=0';
-
+    const backgrounds = "b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf";
+    const beardParams =
+      gender === "male"
+        ? "&beard=variant01,variant02&beardProbability=100"
+        : "&beardProbability=0";
     return `https://api.dicebear.com/9.x/lorelei/svg?seed=${seed}&backgroundColor=${backgrounds}${beardParams}`;
   };
 
-  /* ---------------- Data ---------------- */
   const teamMembers = [
     {
       name: "Arqam Ahmad Siddiqui",
       role: "Founder & CEO",
       bio: "Driving Revzion's vision with hands-on KMP, scalable cloud, and product leadership.",
-      image: getAvatarUrl("Arqam Ahmad Siddiqui", 'male'),
+      image: getAvatarUrl("Arqam Ahmad Siddiqui", "male"),
       linkedin: "https://www.linkedin.com/in/arqam365/",
       twitter: "https://x.com/arqam365",
       github: "https://github.com/arqam365",
-      email: "arqamahmad365.au@gmail.com",
       portfolio: "https://arqam365.com/",
     },
-    { name: "Raj Dwivedi", role: "Backend Engineer & DevOps Specialist", bio: "APIs, CI/CD, and cloud-native reliability across Node/Ktor and modern infra.", image: getAvatarUrl("Raj Dwivedi", 'male'), linkedin: "https://www.linkedin.com/in/badenforcer/", twitter: "#", github: "https://github.com/BadEnforcer", email: "rajdwivedipc@gmail.com", portfolio: "https://rajdwivedi.vercel.app/"},
-    { name: "Bilal Sheikh", role: "Full Stack Engineer", bio: "Bridging frontend and backend to ship robust, user-centric features.", image: getAvatarUrl("Bilal Sheikh", 'male'), linkedin: "#", twitter: "#", github: "#",email: "#", portfolio: "https://stunning-waffle-2001.vercel.app/"  },
-    { name: "Sneha Sahu", role: "Head of Business Development", bio: "Building partnerships and growth pipelines aligned with product value.", image: getAvatarUrl("Sneha Sahu", 'female'), linkedin: "#", twitter: "#", github: "#" },
-    { name: "Aanya Agrawal", role: "Mobile Developer", bio: "Compose & KMP enthusiast focused on smooth UX and performance.", image: getAvatarUrl("Aanya Agrawal", 'female'), linkedin: "#", twitter: "#", github: "#" },
-    { name: "Saniya Khan", role: "UI/UX Developer", bio: "Designs intuitive, accessible interfaces with implementation ownership.", image: getAvatarUrl("Saniya Khan", 'female'), linkedin: "#", twitter: "#", github: "#" },
-    { name: "Khushi Chaturvedi", role: "UI/UX Expert", bio: "Crafts delightful, user-first experiences grounded in research.", image: getAvatarUrl("Khushi Chaturvedi", 'female'), linkedin: "#", twitter: "#", github: "#" },
+    {
+      name: "Raj Dwivedi",
+      role: "Backend Engineer & DevOps",
+      bio: "APIs, CI/CD, and cloud-native reliability across Node/Ktor and modern infra.",
+      image: getAvatarUrl("Raj Dwivedi", "male"),
+      linkedin: "https://www.linkedin.com/in/badenforcer/",
+      twitter: "",
+      github: "https://github.com/BadEnforcer",
+      portfolio: "https://rajdwivedi.vercel.app/",
+    },
+    {
+      name: "Bilal Sheikh",
+      role: "Full Stack Engineer",
+      bio: "Bridging frontend and backend to ship robust, user-centric features.",
+      image: getAvatarUrl("Bilal Sheikh", "male"),
+      linkedin: "",
+      twitter: "",
+      github: "",
+      portfolio: "https://stunning-waffle-2001.vercel.app/",
+    },
+    {
+      name: "Sneha Sahu",
+      role: "Head of Business Development",
+      bio: "Building partnerships and growth pipelines aligned with product value.",
+      image: getAvatarUrl("Sneha Sahu", "female"),
+      linkedin: "",
+      twitter: "",
+      github: "",
+      portfolio: "",
+    },
+    {
+      name: "Aanya Agrawal",
+      role: "Mobile Developer",
+      bio: "Compose & KMP enthusiast focused on smooth UX and performance.",
+      image: getAvatarUrl("Aanya Agrawal", "female"),
+      linkedin: "",
+      twitter: "",
+      github: "",
+      portfolio: "",
+    },
+    {
+      name: "Saniya Khan",
+      role: "UI/UX Developer",
+      bio: "Designs intuitive, accessible interfaces with full implementation ownership.",
+      image: getAvatarUrl("Saniya Khan", "female"),
+      linkedin: "",
+      twitter: "",
+      github: "",
+      portfolio: "",
+    },
+    {
+      name: "Khushi Chaturvedi",
+      role: "UI/UX Expert",
+      bio: "Crafts delightful, user-first experiences grounded in research.",
+      image: getAvatarUrl("Khushi Chaturvedi", "female"),
+      linkedin: "",
+      twitter: "",
+      github: "",
+      portfolio: "",
+    },
   ];
 
   const extendedTeam = [
     { name: "Gagandeep Singh", role: "Engineer", bio: "Full-stack & integrations." },
     { name: "Pulkit Shukla", role: "Engineer", bio: "Cloud & backend solutions." },
     { name: "Ankit Bose", role: "Engineer", bio: "APIs & reliability." },
-    { name: "Prateek Singh", role: "Engineer", bio: "Frontend/Backend agility." },
+    { name: "Prateek Singh", role: "Engineer", bio: "Frontend / backend agility." },
     { name: "Jay Bhavsar", role: "Engineer", bio: "Mobile & frontend." },
     { name: "Yash Soni", role: "Engineer", bio: "Performance-minded full-stack." },
     { name: "Bharat Agarwal", role: "Engineer", bio: "Architecture & data." },
-    { name: "Harshit Savita", role: "Engineer", bio: "Frontend/UI clean builds." },
+    { name: "Harshit Savita", role: "Engineer", bio: "Frontend / UI clean builds." },
     { name: "Prabar Gupta", role: "Designer", bio: "UI/UX clean designs." },
   ];
 
   const values = [
-    { icon: <Lightbulb className="h-6 w-6 sm:h-7 sm:w-7" />, title: "Innovation First", description: "We ship ahead of the curve—R&D → prototypes → outcomes." },
-    { icon: <Users className="h-6 w-6 sm:h-7 sm:w-7" />, title: "Client Partnership", description: "We co-own the mission. Cadence, clarity, candor." },
-    { icon: <Target className="h-6 w-6 sm:h-7 sm:w-7" />, title: "Quality Excellence", description: "Reliability, perf, and security by default." },
-    { icon: <Heart className="h-6 w-6 sm:h-7 sm:w-7" />, title: "People-Centric", description: "Empathy in design. Accessibility as a rule." },
-    { icon: <Zap className="h-6 w-6 sm:h-7 sm:w-7" />, title: "Agile Delivery", description: "Weekly demos, visible burn-up, zero surprises." },
-    { icon: <Globe className="h-6 w-6 sm:h-7 sm:w-7" />, title: "Global Impact", description: "Built to scale and localize—any market, any region." },
+    {
+      icon: <Lightbulb className="h-5 w-5" />,
+      title: "Innovation First",
+      description: "We ship ahead of the curve — R&D → prototypes → outcomes.",
+    },
+    {
+      icon: <Users className="h-5 w-5" />,
+      title: "Client Partnership",
+      description: "We co-own the mission. Cadence, clarity, candor.",
+    },
+    {
+      icon: <Target className="h-5 w-5" />,
+      title: "Quality by Default",
+      description: "Reliability, performance, and security are non-negotiable.",
+    },
+    {
+      icon: <Heart className="h-5 w-5" />,
+      title: "People-Centric",
+      description: "Empathy in design. Accessibility as a rule, not an afterthought.",
+    },
+    {
+      icon: <Zap className="h-5 w-5" />,
+      title: "Agile Delivery",
+      description: "Weekly demos, visible burn-up, and zero surprises at invoice time.",
+    },
+    {
+      icon: <Globe className="h-5 w-5" />,
+      title: "Global Reach",
+      description: "Built to scale and localize — any market, any region.",
+    },
   ];
 
   const stats = [
     { value: "2019", label: "Founded" },
-    { value: "15+ ", label: "Core & Extended Team" },
+    { value: "15+", label: "Core & Extended Team" },
     { value: "50+", label: "Projects Delivered" },
     { value: "5+", label: "Countries Served" },
-  ];
-
-  const awards = [
-    { title: "Innovation Excellence", organization: "Global Tech Summit" },
-    { title: "Best Workplace Culture", organization: "Great Place to Work" },
   ];
 
   const logos = [
@@ -120,108 +181,73 @@ export default function AboutPage() {
     "/logos/kubernetes.svg",
     "/logos/razorpay.svg",
     "/logos/mongodb.svg",
-    "/logos/google.svg"
+    "/logos/google.svg",
   ];
 
   const [showMore, setShowMore] = useState(false);
 
-  /* ---------------- GSAP hooks & refs ---------------- */
   const heroRef = useRef<HTMLElement | null>(null);
   const logosRowRef = useRef<HTMLDivElement | null>(null);
   const valuesRef = useRef<HTMLElement | null>(null);
-  const teamRef = useRef<HTMLElement | null>(null);
 
+  /* GSAP — hero entrance + parallax */
   useEffect(() => {
     if (!heroRef.current) return;
-
-    // Hero headline & paragraph intro
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
       tl.from(".gsap-hero-title", { y: 24, opacity: 0, duration: 0.6 })
-          .from(".gsap-hero-copy", { y: 16, opacity: 0, duration: 0.5 }, "-=0.35")
-          .from(".gsap-hero-stats > div", { y: 16, opacity: 0, stagger: 0.08, duration: 0.45 }, "-=0.25");
+        .from(".gsap-hero-copy", { y: 16, opacity: 0, duration: 0.5 }, "-=0.35")
+        .from(".gsap-hero-stats > div", { y: 16, opacity: 0, stagger: 0.08, duration: 0.45 }, "-=0.25");
 
-      // Parallax aurora blobs
       gsap.to(".gsap-aurora-1", {
-        yPercent: 8,
-        xPercent: -6,
-        ease: "none",
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
+        yPercent: 8, xPercent: -6, ease: "none",
+        scrollTrigger: { trigger: heroRef.current, start: "top top", end: "bottom top", scrub: true },
       });
       gsap.to(".gsap-aurora-2", {
-        yPercent: -6,
-        xPercent: 8,
-        ease: "none",
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
+        yPercent: -6, xPercent: 8, ease: "none",
+        scrollTrigger: { trigger: heroRef.current, start: "top top", end: "bottom top", scrub: true },
       });
     }, heroRef);
     return () => ctx.revert();
   }, []);
 
+  /* Logo marquee */
   useEffect(() => {
     if (!logosRowRef.current) return;
-
     const row = logosRowRef.current;
-
-    // Simple, bulletproof approach
     let animationId: number;
     let position = 0;
     const singleSetWidth = row.scrollWidth / 3;
-    let speed = 0.5; // pixels per frame
+    let speed = 0.5;
 
     const animate = () => {
       position -= speed;
-
-      // Reset when we've scrolled one full set
-      if (Math.abs(position) >= singleSetWidth) {
-        position = 0;
-      }
-
+      if (Math.abs(position) >= singleSetWidth) position = 0;
       row.style.transform = `translateX(${position}px)`;
       animationId = requestAnimationFrame(animate);
     };
 
-    // Start after DOM is ready
-    const startTimeout = setTimeout(() => {
-      animate();
-    }, 100);
-
-    // Hover interactions
+    const t = setTimeout(() => animate(), 100);
     const onEnter = () => { speed = 0.15; };
     const onLeave = () => { speed = 0.5; };
-
     row.addEventListener("mouseenter", onEnter);
     row.addEventListener("mouseleave", onLeave);
 
     return () => {
-      clearTimeout(startTimeout);
+      clearTimeout(t);
       cancelAnimationFrame(animationId);
       row.removeEventListener("mouseenter", onEnter);
       row.removeEventListener("mouseleave", onLeave);
     };
   }, []);
 
-  // Values grid reveal was handled by GSAP, removed to avoid conflict with Framer Motion.
-  // Team grid reveal was handled by GSAP, removed to avoid conflict with Framer Motion.
-
-  // Spotlight hover for value cards (updates --mx/--my used by your radial bg)
+  /* Values spotlight */
   useEffect(() => {
     const container = valuesRef.current;
     if (!container) return;
     const onMove = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest(".rvz-spotlight")) return;
-      const card = (target.closest(".rvz-spotlight") as HTMLElement)!;
+      const card = (e.target as HTMLElement).closest(".rvz-spotlight") as HTMLElement | null;
+      if (!card) return;
       const rect = card.getBoundingClientRect();
       card.style.setProperty("--mx", `${e.clientX - rect.left}px`);
       card.style.setProperty("--my", `${e.clientY - rect.top}px`);
@@ -231,622 +257,519 @@ export default function AboutPage() {
   }, []);
 
   return (
-      <div className="min-h-screen bg-white">
-        <Navigation />
+    <div className="min-h-screen bg-white">
+      <Navigation />
 
-        {/* ============== HERO (Aurora + Mesh + Grid) ============== */}
-        <section ref={heroRef} className="relative overflow-hidden">
-          {/* soft grid */}
-          <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(2,6,23,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(2,6,23,0.04)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(80%_60%_at_50%_40%,#000_60%,transparent)]"
-          />
-          {/* brand aurora */}
-          <div
-              aria-hidden
-              className="gsap-aurora-1 absolute -top-24 -left-24 h-[40rem] w-[40rem] rounded-full blur-3xl opacity-40 bg-gradient-to-tr from-primary/60 via-fuchsia-400/40 to-sky-400/40"
-          />
-          <div
-              aria-hidden
-              className="gsap-aurora-2 absolute -bottom-24 -right-24 h-[36rem] w-[36rem] rounded-full blur-3xl opacity-40 bg-gradient-to-tl from-sky-400/40 via-violet-400/40 to-primary/60"
-          />
-          {/* mesh shimmer */}
-          <div
-              aria-hidden
-              className="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(60%_60%_at_50%_0%,rgba(59,130,246,0.12)_0%,transparent_70%)]"
-          />
+      {/* ── Hero ── */}
+      <section ref={heroRef} className="relative overflow-hidden bg-gray-50 border-b border-gray-100">
+        {/* Subtle dot grid */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: "radial-gradient(circle, #cbd5e1 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        {/* Toned-down aurora blobs */}
+        <div
+          aria-hidden
+          className="gsap-aurora-1 absolute -top-16 -left-16 h-[28rem] w-[28rem] rounded-full blur-3xl opacity-20 bg-gradient-to-tr from-primary/60 via-fuchsia-400/40 to-sky-400/40"
+        />
+        <div
+          aria-hidden
+          className="gsap-aurora-2 absolute -bottom-16 -right-16 h-[24rem] w-[24rem] rounded-full blur-3xl opacity-20 bg-gradient-to-tl from-sky-400/40 via-violet-400/40 to-primary/60"
+        />
 
-          <motion.div
-              className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28"
-              variants={revealOnce}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.25 }}
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              {/* LEFT */}
-              <div className="space-y-8">
-                <div className="space-y-4">
-                  <h1 className="gsap-hero-title text-4xl sm:text-5xl lg:text-6xl font-heading font-bold leading-tight text-gray-900">
-                    About <span className="text-gradient-revzion">Revzion</span>
-                  </h1>
-                  <p className="gsap-hero-copy text-xl text-gray-600 leading-relaxed max-w-2xl">
-                    A senior product & engineering studio building AI, SaaS, and cross-platform experiences that feel one step into the future.
-                  </p>
-                </div>
-
-                {/* Stats pills */}
-                <div className="gsap-hero-stats grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-2xl">
-                  {stats.map((s) => (
-                      <div
-                          key={s.label}
-                          className="rounded-2xl border border-white/60 bg-white/80 backdrop-blur-sm px-4 py-3 shadow-[0_8px_30px_-12px_rgba(2,6,23,0.12)]"
-                      >
-                        <div className="text-2xl font-heading font-bold text-gray-900">{s.value}</div>
-                        <div className="text-xs text-gray-600">{s.label}</div>
-                      </div>
-                  ))}
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                  <Button
-                      asChild
-                      size="lg"
-                      className="bg-gradient-revzion hover:opacity-90 transition-opacity w-full sm:w-auto justify-center"
-                  >
-                    <Link href="/contact" className="flex items-center">
-                      Join Our Journey
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                  </Button>
-
-                  <Button
-                      asChild
-                      size="lg"
-                      variant="outline"
-                      className="w-full sm:w-auto justify-center border-2 border-primary text-primary hover:bg-primary hover:text-white"
-                  >
-                    <Link href="/portfolio">See Our Work</Link>
-                  </Button>
-                </div>
+        <motion.div
+          className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28"
+          variants={revealOnce}
+          initial="hidden"
+          animate="show"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left */}
+            <div className="space-y-8">
+              <div className="space-y-5">
+                <p className="text-xs font-semibold text-primary uppercase tracking-widest">About Us</p>
+                <h1 className="gsap-hero-title text-4xl sm:text-5xl lg:text-6xl font-heading font-bold leading-tight text-gray-900">
+                  The team behind{" "}
+                  <span className="text-gradient-revzion">Revzion</span>
+                </h1>
+                <p className="gsap-hero-copy text-lg text-gray-600 leading-relaxed max-w-xl">
+                  A senior product & engineering studio building AI, SaaS, and cross-platform
+                  experiences. We keep cycles tight, decisions clear, and outcomes visible.
+                </p>
               </div>
 
-              {/* RIGHT */}
-              <div className="relative">
-                <img
-                    src="/modern-tech-team.png"
-                    alt="Revzion team working together"
-                    className="rounded-2xl shadow-2xl w-full h-auto"
-                    loading="lazy"
-                />
-                {/* Glassy award badge */}
-                <div className="absolute -bottom-6 -left-6 rounded-xl border bg-white/70 backdrop-blur p-6 shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <Award className="h-8 w-8 text-primary" />
-                    <div>
-                      <div className="font-semibold text-gray-900">Award Winning</div>
-                      <div className="text-sm text-gray-600">Tech Innovation 2023</div>
-                    </div>
+              {/* Stats */}
+              <div className="gsap-hero-stats grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl">
+                {stats.map((s) => (
+                  <div
+                    key={s.label}
+                    className="rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm"
+                  >
+                    <div className="text-2xl font-heading font-bold text-gray-900">{s.value}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">{s.label}</div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* ============== PREMIUM TRUST STRIP / CREDIBILITY MARQUEE ============== */}
-          <div className="relative z-10 border-t border-gray-100/70 bg-white/60 backdrop-blur overflow-hidden">
-            {/* Soft edge fade masks */}
-            <div
-                aria-hidden
-                className="absolute left-0 top-0 bottom-0 w-24 sm:w-32 bg-gradient-to-r from-white/60 to-transparent z-10 pointer-events-none"
-            />
-            <div
-                aria-hidden
-                className="absolute right-0 top-0 bottom-0 w-24 sm:w-32 bg-gradient-to-l from-white/60 to-transparent z-10 pointer-events-none"
-            />
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-              <div
-                  ref={logosRowRef}
-                  className="flex items-center gap-8 sm:gap-12 no-scrollbar"
-                  style={{ willChange: "transform" }}
-              >
-                {/* Render logos 3 times for seamless infinite loop */}
-                {[...logos, ...logos, ...logos].map((src, i) => (
-                    <div
-                        key={i}
-                        className="shrink-0 h-7 sm:h-8 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
-                    >
-                      <Image
-                          src={src}
-                          alt="Technology partner logo"
-                          width={110}
-                          height={32}
-                          className="h-7 sm:h-8 w-auto object-contain"
-                      />
-                    </div>
                 ))}
               </div>
-            </div>
-          </div>
-        </section>
 
-        {/* ============== STORY (brand-backed, milestones, quote) ============== */}
-        <section className="relative overflow-hidden py-18 sm:py-20">
-          {/* soft brand grid + aurora wash */}
-          <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(2,6,23,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(2,6,23,0.035)_1px,transparent_1px)] bg-[size:28px_28px] [mask-image:radial-gradient(70%_60%_at_50%_40%,#000_70%,transparent)]"
-          />
-          <div
-              aria-hidden
-              className="absolute -top-24 left-1/2 -translate-x-1/2 h-[34rem] w-[34rem] rounded-full blur-3xl opacity-30 bg-gradient-to-tr from-primary/40 via-fuchsia-400/30 to-sky-400/30"
-          />
-
-          <motion.div
-              className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
-              variants={revealOnce}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.25 }}
-          >
-            <div className="text-center mb-10 sm:mb-12">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">
-                Our Story
-              </h2>
-              <p className="mt-3 text-lg text-gray-600">
-                From a small studio to a global delivery partner—still obsessed with outcomes.
-              </p>
-              <div className="mt-5 h-[3px] w-28 mx-auto rounded-full bg-gradient-revzion/90" />
-            </div>
-
-            {/* Content: text + visual card */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-              {/* Copy */}
-              <div className="lg:col-span-7">
-                <div className="prose prose-lg max-w-none">
-                  <p className="text-gray-700 leading-relaxed">
-                    Revzion (previously <em>Next Level Programmers</em>) began in 2019 with a simple idea:
-                    combine modern engineering with business clarity. No fluff, just measurable impact.
-                  </p>
-                  <p className="text-gray-700 leading-relaxed mt-5">
-                    What started as hands-on consulting has grown into end-to-end product delivery across
-                    AI, SaaS, and cross-platform experiences. We move fast, but never break trust:
-                    weekly demos, transparent burn-up, and security by default.
-                  </p>
-                  <p className="text-gray-700 leading-relaxed mt-5">
-                    Today we've shipped <span className="font-semibold text-gray-900">100+ projects</span> across
-                    <span className="font-semibold text-gray-900"> 5+ countries</span>—and we're just getting started.
-                  </p>
-                </div>
-
-                {/* Milestone chips */}
-                <div className="mt-6 flex flex-wrap gap-2.5">
-                  {[
-                    "2019 — Founded",
-                    "First AI Pilot (2020)",
-                    "KMP Expansion (2021)",
-                    "Global Pods (2022)",
-                    "100+ Launches (2023)",
-                    "AI Copilots @ Scale (2024→)",
-                  ].map((m) => (
-                      <span
-                          key={m}
-                          className="inline-flex items-center rounded-full border border-white/70 bg-white/80 backdrop-blur px-3 py-1.5 text-[13px] text-gray-700 shadow-[0_8px_24px_-12px_rgba(2,6,23,0.14)]"
-                      >
-              {m}
-            </span>
-                  ))}
-                </div>
-
-                {/* Quote card */}
-                <div className="mt-8">
-                  <div className="rounded-2xl p-[1px] bg-gradient-to-br from-primary/40 via-fuchsia-400/30 to-sky-400/30">
-                    <div className="rounded-[14px] bg-white/90 backdrop-blur p-5 sm:p-6 border border-white/70 shadow-[0_16px_48px_-20px_rgba(2,6,23,0.18)]">
-                      <figure>
-                        <blockquote className="text-gray-800 leading-relaxed">
-                          "Our best work happens when product, design, and engineering sit at the same table.
-                          We keep cycles tight, decisions clear, and outcomes visible."
-                        </blockquote>
-                        <figcaption className="mt-3 text-sm text-gray-500">
-                          — Revzion Delivery Playbook
-                        </figcaption>
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Visual / proof card */}
-              <div className="lg:col-span-5">
-                <div className="relative group rounded-2xl p-[1px] bg-gradient-to-br from-primary/40 via-fuchsia-400/30 to-sky-400/30">
-                  <div className="rounded-[14px] overflow-hidden bg-white/90 backdrop-blur border border-white/70 shadow-[0_22px_60px_-24px_rgba(2,6,23,0.22)]">
-                    <div className="aspect-[4/3] bg-gray-100 relative">
-                      <img
-                          src="/modern-team-workspace.png"
-                          alt="Revzion product snapshots & moments"
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                          loading="lazy"
-                      />
-                      {/* subtle corner badge */}
-                      <div className="absolute bottom-3 right-3 rounded-full border border-white/70 bg-white/90 backdrop-blur px-3 py-1.5 text-xs text-gray-700 shadow">
-                        Trusted by teams in 5+ countries
-                      </div>
-                    </div>
-
-                    {/* Credibility bar */}
-                    <div className="p-5">
-                      <div className="flex items-center justify-between gap-3">
-                        {[
-                          { k: "NPS", v: "72" },
-                          { k: "On-Time", v: "96%" },
-                          { k: "Launches", v: "100+" },
-                        ].map((it) => (
-                            <div key={it.k} className="text-center flex-1">
-                              <div className="font-heading text-xl text-gray-900">{it.v}</div>
-                              <div className="text-xs text-gray-500">{it.k}</div>
-                            </div>
-                        ))}
-                      </div>
-                      <div className="mt-4 h-1.5 w-full rounded-full bg-gray-200/70 overflow-hidden">
-                        <div className="h-full w-2/3 bg-gradient-revzion rounded-full" />
-                      </div>
-                      <p className="mt-3 text-xs text-gray-500">
-                        Delivery confidence grows with every weekly demo and decision log.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* ============== RECOGNITION & PARTNERSHIPS ============== */}
-        <section className="py-18 sm:py-20 bg-white">
-          <motion.div
-              className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.45, ease: "easeOut" }}
-          >
-            <div className="text-center mb-10">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">
-                Recognition & Global Partnerships
-              </h2>
-              <p className="mt-3 text-lg text-gray-600 max-w-3xl mx-auto">
-                External validation and regional collaboration that strengthen delivery.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              {/* Copy */}
-              <div className="text-gray-700 leading-relaxed space-y-4">
-                <p>
-                  Revzion is recognized on <strong>GoodFirms</strong> as a verified
-                  software development and consulting company, acknowledged for
-                  delivering reliable, scalable, and high-quality digital solutions.
-                </p>
-
-                <p>
-                  To support clients across the Middle East with local alignment and
-                  faster execution, we collaborate with <strong>TechXellent</strong>, a
-                  Saudi Arabia–based technology company. This partnership enables
-                  region-specific delivery while Revzion retains full ownership of
-                  engineering standards, architecture, and accountability.
-                </p>
-              </div>
-
-              {/* Logos */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12">
-
-                {/* GoodFirms Partner Badge (PRIMARY) */}
-                <div className="flex justify-center">
-                  <Image
-                      src="/logos/goodfirms_partner.svg"
-                      alt="GoodFirms Partner Badge"
-                      width={260}
-                      height={260}
-                      priority
-                      className="
-        w-[200px]
-        sm:w-[240px]
-        md:w-[280px]
-        lg:w-[300px]
-        h-auto
-        object-contain
-        drop-shadow-md
-      "
-                  />
-                </div>
-
-                {/* TechXellent Logo (SECONDARY) */}
-                <div className="flex justify-center">
-                  <Image
-                      src="/logos/techxellent.svg"
-                      alt="TechXellent Saudi Arabia"
-                      width={260}
-                      height={80}
-                      className="
-        w-[160px]
-        sm:w-[200px]
-        md:w-[240px]
-        h-auto
-        object-contain
-        opacity-90
-      "
-                  />
-                </div>
-
-              </div>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* ============== VALUES (bento glass) ============== */}
-        <section ref={valuesRef} className="py-18 sm:py-20 bg-gray-50">
-          <motion.div
-              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-              variants={revealOnce}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.1 }}
-          >
-            <div className="text-center mb-14">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">Our Values</h2>
-              <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-                Principles that keep us fast, thoughtful, and reliable.
-              </p>
-            </div>
-
-            <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7"
-                variants={staggerParent}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.1 }}
-            >
-              {values.map((v) => (
-                  <motion.div key={v.title} variants={revealOnce}>
-                    <Card className="rvz-spotlight group border-0 shadow-md hover:shadow-xl transition-shadow rounded-2xl bg-white/70 backdrop-blur h-full relative overflow-hidden">
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(120px_120px_at_var(--mx,50%)_var(--my,50%),rgba(59,130,246,0.08),transparent_70%)]" />
-                      <div className="p-6 sm:p-7 gsap-value-card">
-                        <div className="inline-flex items-center justify-center rounded-xl bg-gradient-revzion text-white h-11 w-11 sm:h-12 sm:w-12 mb-4">
-                          {v.icon}
-                        </div>
-                        <h3 className="text-lg sm:text-xl font-heading font-semibold text-gray-900 mb-2">{v.title}</h3>
-                        <p className="text-gray-600">{v.description}</p>
-                      </div>
-                    </Card>
-                  </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
-        </section>
-
-        {/* ============== TEAM ============== */}
-        <section ref={teamRef} className="py-18 sm:py-20 bg-white">
-          <motion.div
-              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-              variants={revealOnce}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.1 }}
-          >
-            <div className="text-center mb-14">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">Meet Our Team</h2>
-              <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-                A compact senior team shipping at startup speed with enterprise discipline.
-              </p>
-            </div>
-
-            <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                variants={staggerParent}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.1 }}
-            >
-              {teamMembers.map((m) => (
-                  <motion.div key={m.name} variants={revealOnce}>
-                    <div className="group relative rounded-3xl p-[2px] bg-gradient-to-br from-primary/50 via-fuchsia-400/40 to-sky-400/50 gsap-team-card hover:from-primary/70 hover:via-fuchsia-400/60 hover:to-sky-400/70 transition-all duration-500">
-                      <Card className="relative overflow-hidden rounded-[22px] border-0 bg-white shadow-[0_20px_60px_-15px_rgba(2,6,23,0.25)] hover:shadow-[0_30px_80px_-15px_rgba(2,6,23,0.35)] transition-all duration-500 h-full">
-                        {/* Hover glow effect */}
-                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 via-fuchsia-400/5 to-sky-400/5 pointer-events-none" />
-
-                        {/* Avatar */}
-                        <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
-                          <img
-                              src={m.image || "/placeholder.svg"}
-                              alt={m.name}
-                              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
-                          />
-                          {/* Subtle overlay on hover */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        </div>
-
-                        {/* Content */}
-                        <div className="relative p-6 bg-white">
-                          <h3 className="text-xl font-heading font-bold text-gray-900 mb-1.5 group-hover:text-primary transition-colors duration-300">
-                            {m.portfolio && m.portfolio !== "#" ? (
-                                <a
-                                    href={m.portfolio}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:text-primary transition-colors inline-flex items-center gap-1.5"
-                                >
-                                  {m.name}
-                                  <Globe className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                </a>
-                            ) : (
-                                m.name
-                            )}
-                          </h3>
-                          <p className="text-primary font-semibold text-sm mb-3">{m.role}</p>
-                          <p className="text-gray-600 text-sm leading-relaxed mb-5">{m.bio}</p>
-
-                          {/* Social links with better styling */}
-                          <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
-                            {m.portfolio && m.portfolio !== "#" && (
-                                <a
-                                    href={m.portfolio}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110"
-                                    aria-label={`${m.name} personal portfolio`}
-                                >
-                                  <Globe className="h-4 w-4" />
-                                </a>
-                            )}
-                            {m.linkedin && m.linkedin !== "#" && (
-                                <a
-                                    href={m.linkedin}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110"
-                                    aria-label={`${m.name} on LinkedIn`}
-                                >
-                                  <Linkedin className="h-4 w-4" />
-                                </a>
-                            )}
-                            {m.twitter && m.twitter !== "#" && (
-                                <a
-                                    href={m.twitter}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110"
-                                    aria-label={`${m.name} on Twitter/X`}
-                                >
-                                  <Twitter className="h-4 w-4" />
-                                </a>
-                            )}
-                            {m.github && m.github !== "#" && (
-                                <a
-                                    href={m.github}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110"
-                                    aria-label={`${m.name} on GitHub`}
-                                >
-                                  <Github className="h-4 w-4" />
-                                </a>
-                            )}
-                          </div>
-                        </div>
-                      </Card>
-                    </div>
-                  </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Extended Team */}
-            <div className="text-center mt-10">
-              <div className="inline-flex rounded-full p-[1.5px] bg-gradient-to-r from-primary via-fuchsia-400 to-sky-400 shadow-[0_10px_40px_-12px_rgba(2,6,23,0.35)]">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button
-                    onClick={() => setShowMore(v => !v)}
-                    className="px-6 h-11 rounded-full bg-white/90 backdrop-blur text-gray-900"
-                    variant="ghost"
+                  asChild
+                  size="lg"
+                  className="bg-gradient-revzion hover:opacity-90 transition-opacity"
                 >
-                  {showMore ? "Hide Extended Team" : `See More Team (${extendedTeam.length})`}
+                  <Link href="/contact">
+                    Work With Us
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="border-gray-300 text-gray-700 hover:bg-white"
+                >
+                  <Link href="/portfolio">See Our Work</Link>
                 </Button>
               </div>
             </div>
 
-            {showMore && (
-                <motion.div
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mt-10"
-                    variants={staggerParent}
-                    initial="hidden"
-                    animate="show"
-                >
-                  {extendedTeam.map((m) => (
-                      <motion.div key={m.name} variants={revealOnce}>
-                        <Card className="overflow-hidden border-0 bg-white/80 backdrop-blur shadow-[0_14px_42px_-20px_rgba(2,6,23,0.2)]">
-                          <div className="p-5">
-                            <h3 className="text-lg font-heading font-semibold text-gray-900">{m.name}</h3>
-                            <p className="text-primary text-sm mb-1">{m.role}</p>
-                            <p className="text-gray-600 text-xs">{m.bio}</p>
-                          </div>
-                        </Card>
-                      </motion.div>
-                  ))}
-                </motion.div>
-            )}
-          </motion.div>
-        </section>
-
-        {/* ============== AWARDS (snap carousel) ============== */}
-        <section className="py-18 sm:py-20 bg-gray-50">
-          <motion.div
-              className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
-              variants={revealOnce}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.1 }}
-          >
-            <div className="text-center mb-10">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-3">Awards & Recognition</h2>
-              <p className="text-lg sm:text-xl text-gray-600">Honored by industry leaders for innovation and excellence.</p>
-            </div>
-
-            <div className="-mx-4 px-4">
-              <div className="flex snap-x snap-mandatory overflow-x-auto gap-4 pb-2 no-scrollbar [scrollbar-width:none] [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-                {awards.map((a) => (
-                    <div key={a.title} className="snap-center shrink-0 w-[86%] sm:w-[46%] lg:w-[32%]">
-                      <Card className="p-6 text-left border border-white/70 bg-white/85 backdrop-blur hover:shadow-xl transition-shadow">
-                        <div className="flex items-start space-x-4">
-                          <Award className="h-7 w-7 text-primary flex-shrink-0 mt-1" />
-                          <div>
-                            <h3 className="font-heading font-semibold text-gray-900 mb-1">{a.title}</h3>
-                            <p className="text-gray-600">{a.organization}</p>
-                          </div>
-                        </div>
-                      </Card>
-                    </div>
-                ))}
+            {/* Right */}
+            <div className="relative">
+              <img
+                src="/modern-tech-team.png"
+                alt="Revzion team"
+                className="rounded-2xl shadow-lg w-full h-auto"
+                loading="lazy"
+              />
+              {/* Credibility badge — GoodFirms verified */}
+              <div className="absolute -bottom-5 -left-5 rounded-xl border border-gray-200 bg-white px-5 py-4 shadow-md">
+                <div className="flex items-center gap-3">
+                  <div className="h-2 w-2 rounded-full bg-emerald-500" />
+                  <div>
+                    <div className="text-sm font-semibold text-gray-900">GoodFirms Verified</div>
+                    <div className="text-xs text-gray-500">Certified Software Studio</div>
+                  </div>
+                </div>
               </div>
             </div>
-          </motion.div>
-        </section>
+          </div>
+        </motion.div>
 
-        {/* CTA */}
-        <section className="py-20 bg-gradient-revzion">
-          <motion.div
-              className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
-              variants={revealOnce}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.1 }}
-          >
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-6">
-              Ready to Work Together?
-            </h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Let's bring your vision to life with thoughtful design and solid engineering.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-3">
-                <Link href="/contact">Get In Touch</Link>
-              </Button>
-              <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-2 border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-3 bg-transparent"
-              >
-                <Link href="/portfolio">View Our Work</Link>
-              </Button>
+        {/* Logo marquee */}
+        <div className="relative z-10 border-t border-gray-200/70 bg-white/80 overflow-hidden">
+          <div aria-hidden className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+          <div aria-hidden className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+            <div
+              ref={logosRowRef}
+              className="flex items-center gap-10 no-scrollbar"
+              style={{ willChange: "transform" }}
+            >
+              {[...logos, ...logos, ...logos].map((src, i) => (
+                <div key={i} className="shrink-0 h-7 grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300">
+                  <Image src={src} alt="Technology partner" width={110} height={28} className="h-7 w-auto object-contain" />
+                </div>
+              ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Story ── */}
+      <section className="py-20 bg-white">
+        <motion.div
+          className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
+          variants={revealOnce}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          <div className="max-w-xl mb-12">
+            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">Our Story</p>
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">
+              From a small studio to a global delivery partner.
+            </h2>
+            <p className="text-lg text-gray-600">Still obsessed with outcomes.</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+            {/* Copy */}
+            <div className="lg:col-span-7 space-y-5">
+              <p className="text-gray-600 leading-relaxed">
+                Revzion (previously <em>Next Level Programmers</em>) began in 2019 with a simple
+                idea: combine modern engineering with business clarity. No fluff — just measurable
+                impact.
+              </p>
+              <p className="text-gray-600 leading-relaxed">
+                What started as hands-on consulting has grown into end-to-end product delivery
+                across AI, SaaS, and cross-platform experiences. We move fast but never break
+                trust — weekly demos, transparent burn-up, and security by default.
+              </p>
+              <p className="text-gray-600 leading-relaxed">
+                Today we've shipped{" "}
+                <span className="font-semibold text-gray-900">50+ projects</span> across{" "}
+                <span className="font-semibold text-gray-900">5+ countries</span> — and we're
+                just getting started.
+              </p>
+
+              {/* Milestone timeline */}
+              <div className="pt-4 space-y-3">
+                {[
+                  { year: "2019", event: "Founded as Next Level Programmers" },
+                  { year: "2020", event: "First AI pilot shipped" },
+                  { year: "2021", event: "KMP & cross-platform expansion" },
+                  { year: "2022", event: "Global delivery pods established" },
+                  { year: "2023", event: "50+ launches milestone" },
+                  { year: "2024→", event: "AI copilots at scale" },
+                ].map((m) => (
+                  <div key={m.year} className="flex items-start gap-4">
+                    <span className="text-xs font-semibold text-primary w-14 shrink-0 mt-0.5">
+                      {m.year}
+                    </span>
+                    <span className="text-sm text-gray-600">{m.event}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Quote */}
+              <blockquote className="mt-2 pl-4 border-l-2 border-primary/40">
+                <p className="text-gray-700 leading-relaxed italic">
+                  "Our best work happens when product, design, and engineering sit at the same
+                  table. We keep cycles tight, decisions clear, and outcomes visible."
+                </p>
+                <footer className="mt-2 text-xs text-gray-400">— Revzion Delivery Playbook</footer>
+              </blockquote>
+            </div>
+
+            {/* Proof card */}
+            <div className="lg:col-span-5">
+              <div className="rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+                <div className="aspect-[4/3] bg-gray-100 relative">
+                  <img
+                    src="/modern-team-workspace.png"
+                    alt="Revzion team workspace"
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute bottom-3 right-3 rounded-lg border border-white/80 bg-white/90 px-3 py-1.5 text-xs text-gray-700 shadow-sm">
+                    Trusted by teams in 5+ countries
+                  </div>
+                </div>
+                <div className="p-5 bg-white">
+                  <div className="grid grid-cols-3 divide-x divide-gray-100">
+                    {[
+                      { k: "NPS", v: "72" },
+                      { k: "On-Time", v: "96%" },
+                      { k: "Launches", v: "50+" },
+                    ].map((it) => (
+                      <div key={it.k} className="text-center px-3">
+                        <div className="text-lg font-heading font-bold text-gray-900">{it.v}</div>
+                        <div className="text-xs text-gray-500 mt-0.5">{it.k}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* ── Recognition & Partnerships ── */}
+      <section className="py-20 bg-gray-50 border-y border-gray-100">
+        <motion.div
+          className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.45, ease: "easeOut" }}
+        >
+          <div className="max-w-xl mb-12">
+            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">
+              Recognition & Partnerships
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">
+              External validation and regional reach.
+            </h2>
+            <p className="text-lg text-gray-600">
+              Independent recognition and strategic partnerships that strengthen our delivery.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div className="space-y-5 text-gray-600 leading-relaxed">
+              <p>
+                Revzion is recognized on{" "}
+                <strong className="text-gray-900">GoodFirms</strong> as a verified software
+                development and consulting company — acknowledged for delivering reliable,
+                scalable, and high-quality digital solutions.
+              </p>
+              <p>
+                To support clients across the Middle East with local alignment and faster
+                execution, we collaborate with{" "}
+                <strong className="text-gray-900">TechXellent</strong>, a Saudi Arabia–based
+                technology company. This partnership enables region-specific delivery while
+                Revzion retains full ownership of engineering standards, architecture, and
+                accountability.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-10">
+              <Image
+                src="/logos/goodfirms_partner.svg"
+                alt="GoodFirms Partner Badge"
+                width={240}
+                height={240}
+                priority
+                className="w-[180px] sm:w-[220px] h-auto object-contain drop-shadow-sm"
+              />
+              <Image
+                src="/logos/techxellent.svg"
+                alt="TechXellent Saudi Arabia"
+                width={240}
+                height={80}
+                className="w-[140px] sm:w-[180px] h-auto object-contain opacity-90"
+              />
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* ── Values ── */}
+      <section ref={valuesRef} className="py-20 bg-white">
+        <motion.div
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          variants={revealOnce}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          <div className="max-w-xl mb-12">
+            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">
+              Values
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">
+              How we think and work.
+            </h2>
+            <p className="text-lg text-gray-600">
+              Principles that keep us fast, thoughtful, and reliable — on every engagement.
+            </p>
+          </div>
+
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+            variants={staggerParent}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.1 }}
+          >
+            {values.map((v) => (
+              <motion.div key={v.title} variants={revealOnce}>
+                <Card className="rvz-spotlight group border border-gray-200 shadow-sm hover:shadow-md transition-all rounded-xl bg-white h-full relative overflow-hidden">
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(120px_120px_at_var(--mx,50%)_var(--my,50%),rgba(59,130,246,0.07),transparent_70%)]" />
+                  <div className="p-6">
+                    <div className="p-2.5 rounded-lg bg-primary/10 text-primary w-fit mb-4 group-hover:bg-primary/15 transition-colors">
+                      {v.icon}
+                    </div>
+                    <h3 className="text-base font-heading font-semibold text-gray-900 mb-2">
+                      {v.title}
+                    </h3>
+                    <p className="text-sm text-gray-500 leading-relaxed">{v.description}</p>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
           </motion.div>
-        </section>
+        </motion.div>
+      </section>
 
-        <Footer />
+      {/* ── Team ── */}
+      <section className="py-20 bg-gray-50 border-t border-gray-100">
+        <motion.div
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          variants={revealOnce}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          <div className="max-w-xl mb-12">
+            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">
+              The Team
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">
+              Meet the people behind the work.
+            </h2>
+            <p className="text-lg text-gray-600">
+              A compact senior team shipping at startup speed with enterprise discipline.
+            </p>
+          </div>
 
-        {/* small helper: hide scrollbars on snap rows */}
-        <style jsx global>{`
-          .no-scrollbar::-webkit-scrollbar { display: none; }
-          .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        `}</style>
-      </div>
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+            variants={staggerParent}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.1 }}
+          >
+            {teamMembers.map((m) => (
+              <motion.div key={m.name} variants={revealOnce}>
+                <Card className="group border border-gray-200 shadow-sm hover:shadow-md transition-all rounded-xl bg-white overflow-hidden h-full">
+                  {/* Avatar */}
+                  <div className="h-48 bg-gray-50 overflow-hidden">
+                    <img
+                      src={m.image || "/placeholder.svg"}
+                      alt={m.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-5">
+                    <h3 className="text-sm font-heading font-bold text-gray-900 mb-0.5">
+                      {m.portfolio ? (
+                        <a
+                          href={m.portfolio}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-primary transition-colors"
+                        >
+                          {m.name}
+                        </a>
+                      ) : (
+                        m.name
+                      )}
+                    </h3>
+                    <p className="text-xs font-medium text-primary mb-3">{m.role}</p>
+                    <p className="text-xs text-gray-500 leading-relaxed mb-4">{m.bio}</p>
+
+                    {/* Social links — only render if actual URL */}
+                    {(m.linkedin || m.twitter || m.github || m.portfolio) && (
+                      <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
+                        {m.portfolio && (
+                          <a
+                            href={m.portfolio}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center w-7 h-7 rounded-lg bg-gray-100 text-gray-500 hover:bg-primary hover:text-white transition-colors"
+                            aria-label={`${m.name} portfolio`}
+                          >
+                            <Globe className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                        {m.linkedin && (
+                          <a
+                            href={m.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center w-7 h-7 rounded-lg bg-gray-100 text-gray-500 hover:bg-primary hover:text-white transition-colors"
+                            aria-label={`${m.name} on LinkedIn`}
+                          >
+                            <Linkedin className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                        {m.twitter && (
+                          <a
+                            href={m.twitter}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center w-7 h-7 rounded-lg bg-gray-100 text-gray-500 hover:bg-primary hover:text-white transition-colors"
+                            aria-label={`${m.name} on X`}
+                          >
+                            <Twitter className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                        {m.github && (
+                          <a
+                            href={m.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center w-7 h-7 rounded-lg bg-gray-100 text-gray-500 hover:bg-primary hover:text-white transition-colors"
+                            aria-label={`${m.name} on GitHub`}
+                          >
+                            <Github className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Extended Team toggle */}
+          <div className="mt-10 text-center">
+            <Button
+              onClick={() => setShowMore((v) => !v)}
+              variant="outline"
+              className="border-gray-300 text-gray-700 hover:bg-white"
+            >
+              {showMore
+                ? "Hide extended team"
+                : `Show ${extendedTeam.length} more contributors`}
+            </Button>
+          </div>
+
+          {showMore && (
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-8"
+              variants={staggerParent}
+              initial="hidden"
+              animate="show"
+            >
+              {extendedTeam.map((m) => (
+                <motion.div key={m.name} variants={revealOnce}>
+                  <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                    <p className="text-sm font-semibold text-gray-900">{m.name}</p>
+                    <p className="text-xs text-primary font-medium mt-0.5">{m.role}</p>
+                    <p className="text-xs text-gray-500 mt-1">{m.bio}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </motion.div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="py-20 bg-white border-t border-gray-100">
+        <motion.div
+          className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+          variants={revealOnce}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">
+            Ready to work together?
+          </h2>
+          <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto">
+            We take on a small number of new engagements each quarter. Tell us what you're
+            building and we'll be straight about whether we're the right fit.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button size="lg" className="bg-gradient-revzion hover:opacity-90 text-white" asChild>
+              <Link href="/contact">
+                Get in Touch <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50" asChild>
+              <Link href="/portfolio">View Our Work</Link>
+            </Button>
+          </div>
+        </motion.div>
+      </section>
+
+      <Footer />
+
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+    </div>
   );
 }

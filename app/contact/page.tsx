@@ -2,16 +2,14 @@
 
 import React, { useMemo, useState } from "react"
 import axios from "axios"
-import {motion, Variants} from "framer-motion"
+import { motion, Variants } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import {
-  Mail, Phone, MapPin, Clock, Send, CheckCircle, MessageSquare,
-  Users, Briefcase, Globe, Loader2
+  Mail, Phone, MapPin, Clock, Send, CheckCircle, Globe, Loader2, ArrowRight,
 } from "lucide-react"
 import {
   Select,
@@ -20,18 +18,13 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
 
-/* ---- minimal motion ---- */
 const revealOnce: Variants = {
   hidden: { opacity: 0, y: 12 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] }
-  },
+  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] } },
 }
 const staggerParent = {
   hidden: {},
@@ -49,93 +42,47 @@ export default function ContactPage() {
     service: "",
     budget: "",
     message: "",
-    // honeypot
-    website: "",
+    website: "", // honeypot
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
 
   const services = useMemo(
-      () => [
-        "Mobile & Web Apps",
-        "Cloud & DevOps",
-        "AI & Automation",
-        "Wearables & IoT",
-        "SaaS Solutions",
-        "Custom Integrations",
-        "Consulting",
-        "Other",
-      ],
-      []
+    () => [
+      "Mobile & Web Apps",
+      "Cloud & DevOps",
+      "AI & Automation",
+      "Wearables & IoT",
+      "SaaS Solutions",
+      "Custom Integrations",
+      "Consulting",
+      "Other",
+    ],
+    []
   )
 
   const budgetRanges = useMemo(
-      () => [
-        "Under $10K",
-        "$10K - $25K",
-        "$25K - $50K",
-        "$50K - $100K",
-        "$100K - $250K",
-        "$250K+",
-        "Let's discuss",
-      ],
-      []
+    () => [
+      "Under $10K",
+      "$10K – $25K",
+      "$25K – $50K",
+      "$50K – $100K",
+      "$100K – $250K",
+      "$250K+",
+      "Let's discuss",
+    ],
+    []
   )
-
-  const faqs = [
-    {
-      question: "How long does a typical project take?",
-      answer: "Most projects range from 3–12 months depending on scope. We’ll share a milestone plan during discovery.",
-    },
-    {
-      question: "Do you work with startups?",
-      answer: "Yes—our engagement models fit early-stage startups to enterprises. We prioritize value and speed.",
-    },
-    {
-      question: "What’s your development process?",
-      answer:
-          "Lean discovery → iterative sprints → demos & feedback → production hardening → launch → post-launch support.",
-    },
-    {
-      question: "Do you provide ongoing support?",
-      answer: "We offer SLAs and maintenance plans for upgrades, monitoring, and feature iterations.",
-    },
-  ]
-
-  const contactInfo = [
-    {
-      icon: <Mail className="h-6 w-6" />,
-      title: "Email Us",
-      details: ["connect@revzion.in"],
-      description: "Best for proposals, SOWs, and formal queries.",
-    },
-    {
-      icon: <Phone className="h-6 w-6" />,
-      title: "Call Us",
-      details: ["+91 (638) 716-1020"],
-      description: "Talk to our solutions team (Mon–Fri).",
-    },
-    {
-      icon: <MapPin className="h-6 w-6" />,
-      title: "Visit Us",
-      details: ["Revzion Studio", "India • Remote-first"],
-      description: "We operate globally with remote collaboration.",
-    },
-    {
-      icon: <Clock className="h-6 w-6" />,
-      title: "Business Hours",
-      details: ["Mon–Fri: 09:00–19:00 IST", "Sat: 10:00–14:00 IST"],
-      description: "We adapt for overlapping time zones.",
-    },
-  ]
 
   const validate = () => {
     const next: Record<string, string> = {}
     if (!formData.name.trim()) next.name = "Please enter your full name."
     if (!formData.email.trim()) next.email = "Email is required."
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) next.email = "Enter a valid email."
-    if (formData.phone && !/^[+()\-\d\s]{7,}$/.test(formData.phone)) next.phone = "Enter a valid phone number."
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      next.email = "Enter a valid email."
+    if (formData.phone && !/^[+()\-\d\s]{7,}$/.test(formData.phone))
+      next.phone = "Enter a valid phone number."
     if (!formData.message.trim() || formData.message.trim().length < 20)
       next.message = "Please provide at least 20 characters."
     if (!formData.service) next.service = "Select a service."
@@ -151,7 +98,6 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     if (formData.website) return // honeypot
 
     const nextErrors = validate()
@@ -175,18 +121,12 @@ export default function ContactPage() {
 
       if (res.data?.success) {
         setIsSubmitted(true)
-        toast({ title: "Message sent 👌", description: "We’ll reply within 24 hours." })
+        toast({ title: "Message sent", description: "We'll reply within 24 hours." })
         setTimeout(() => {
           setIsSubmitted(false)
           setFormData({
-            name: "",
-            email: "",
-            company: "",
-            phone: "",
-            service: "",
-            budget: "",
-            message: "",
-            website: "",
+            name: "", email: "", company: "", phone: "",
+            service: "", budget: "", message: "", website: "",
           })
         }, 2500)
       } else {
@@ -204,376 +144,467 @@ export default function ContactPage() {
   }
 
   const messageLen = formData.message.trim().length
-  const messageHelp = `${messageLen}/20`
 
   return (
-      <div className="min-h-screen bg-white">
-        <Navigation />
+    <div className="min-h-screen bg-white">
+      <Navigation />
 
-        {/* Hero */}
-        <section className="bg-gradient-to-br from-blue-50 via-white to-blue-50 py-20">
-          <motion.div
-              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
-              variants={revealOnce}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.25 }}
-          >
-            <h1 className="text-4xl sm:text-5xl font-heading font-bold text-gray-900 mb-6">
-              Get In <span className="text-gradient-revzion">Touch</span>
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
-              Ready to transform your business with innovative technology? Tell us about your goals—we’ll propose a clear, practical plan.
+      {/* Hero */}
+      <section className="bg-gray-50 border-b border-gray-100 py-16 sm:py-20">
+        <motion.div
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          variants={revealOnce}
+          initial="hidden"
+          animate="show"
+        >
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-4">
+              Contact
             </p>
+            <h1 className="text-4xl sm:text-5xl font-heading font-bold text-gray-900 leading-tight mb-5">
+              Let's talk about{" "}
+              <span className="text-gradient-revzion">your project.</span>
+            </h1>
+            <p className="text-lg text-gray-600 leading-relaxed">
+              Tell us what you're building — scope, goals, timeline. We'll come back within
+              24 hours with a clear, practical proposal.
+            </p>
+          </div>
+        </motion.div>
+      </section>
 
-            <motion.div
-                className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
-                variants={staggerParent}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.2 }}
-            >
-              {[
-                { icon: <MessageSquare className="h-12 w-12 text-primary mx-auto mb-4" />, title: "Free Consultation", desc: "30-minute strategy session" },
-                { icon: <Users className="h-12 w-12 text-primary mx-auto mb-4" />, title: "Expert Team", desc: "Work with senior engineers/designers" },
-                { icon: <Briefcase className="h-12 w-12 text-primary mx-auto mb-4" />, title: "Custom Solutions", desc: "Fit to your stack and timelines" },
-              ].map((b) => (
-                  <motion.div key={b.title} variants={revealOnce}>
-                    <div className="text-center">
-                      {b.icon}
-                      <h3 className="font-heading font-semibold text-gray-900 mb-2">{b.title}</h3>
-                      <p className="text-gray-600 text-sm">{b.desc}</p>
+      {/* Form + Info */}
+      <section className="py-16 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16"
+            variants={staggerParent}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.1 }}
+          >
+            {/* ── Form ── */}
+            <motion.div variants={revealOnce} className="lg:col-span-7">
+              <div className="mb-7">
+                <h2 className="text-2xl font-heading font-bold text-gray-900 mb-2">
+                  Send us a message
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Fields marked * are required. We read every submission ourselves.
+                </p>
+              </div>
+
+              {isSubmitted ? (
+                <div
+                  className="rounded-xl border border-emerald-200 bg-emerald-50 p-10 text-center"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <CheckCircle className="h-12 w-12 text-emerald-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-heading font-semibold text-gray-900 mb-2">
+                    Message received
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    We'll get back to you within 24 hours.
+                  </p>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-5"
+                  noValidate
+                >
+                  {/* Honeypot */}
+                  <Input
+                    aria-hidden="true"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    name="website"
+                    value={formData.website}
+                    onChange={handleInputChange}
+                    className="hidden"
+                  />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label htmlFor="name" className="text-sm font-medium text-gray-700">
+                        Full Name *
+                      </label>
+                      <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        aria-invalid={!!errors.name}
+                        aria-describedby={errors.name ? "name-error" : undefined}
+                        placeholder="Jane Smith"
+                        className={errors.name ? "border-red-300 focus-visible:ring-red-200" : ""}
+                        required
+                      />
+                      {errors.name && (
+                        <p id="name-error" className="text-xs text-red-600">{errors.name}</p>
+                      )}
                     </div>
-                  </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
-        </section>
 
-        {/* Form & Info */}
-        <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-                className="grid grid-cols-1 lg:grid-cols-2 gap-12"
-                variants={staggerParent}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.15 }}
-            >
-              {/* FORM */}
-              <motion.div variants={revealOnce}>
-                <h2 className="text-3xl font-heading font-bold text-gray-900 mb-6">Start Your Project</h2>
-                <p className="text-gray-600 mb-8">Fill the form and we’ll respond within 24 hours with next steps.</p>
-
-                {isSubmitted ? (
-                    <Card className="p-8 text-center border-green-200 bg-green-50" role="status" aria-live="polite">
-                      <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                      <h3 className="text-xl font-heading font-semibold text-gray-900 mb-2">Message Sent!</h3>
-                      <p className="text-gray-600">Thanks—we’ll get back to you shortly.</p>
-                    </Card>
-                ) : (
-                    <Card className="p-8 border-0 shadow-lg">
-                      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-                        {/* honeypot field (hidden) */}
-                        <Input
-                            aria-hidden="true"
-                            tabIndex={-1}
-                            autoComplete="off"
-                            name="website"
-                            value={formData.website}
-                            onChange={handleInputChange}
-                            className="hidden"
-                        />
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                              Full Name *
-                            </label>
-                            <Input
-                                id="name"
-                                name="name"
-                                type="text"
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                aria-invalid={!!errors.name}
-                                aria-describedby={errors.name ? "name-error" : undefined}
-                                placeholder="John Doe"
-                                required
-                            />
-                            {errors.name && (
-                                <p id="name-error" className="mt-1 text-sm text-red-600">
-                                  {errors.name}
-                                </p>
-                            )}
-                          </div>
-
-                          <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                              Email Address *
-                            </label>
-                            <Input
-                                id="email"
-                                name="email"
-                                type="email"
-                                value={formData.email}
-                                onChange={handleInputChange}
-                                aria-invalid={!!errors.email}
-                                aria-describedby={errors.email ? "email-error" : undefined}
-                                placeholder="john@company.com"
-                                required
-                            />
-                            {errors.email && (
-                                <p id="email-error" className="mt-1 text-sm text-red-600">
-                                  {errors.email}
-                                </p>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div>
-                            <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-                              Company
-                            </label>
-                            <Input
-                                id="company"
-                                name="company"
-                                type="text"
-                                value={formData.company}
-                                onChange={handleInputChange}
-                                placeholder="Your Company"
-                            />
-                          </div>
-
-                          <div>
-                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                              Phone Number
-                            </label>
-                            <Input
-                                id="phone"
-                                name="phone"
-                                type="tel"
-                                value={formData.phone}
-                                onChange={handleInputChange}
-                                aria-invalid={!!errors.phone}
-                                aria-describedby={errors.phone ? "phone-error" : undefined}
-                                placeholder="+91 98765 43210"
-                            />
-                            {errors.phone && (
-                                <p id="phone-error" className="mt-1 text-sm text-red-600">
-                                  {errors.phone}
-                                </p>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Service Needed *</label>
-                            <Select
-                                value={formData.service}
-                                onValueChange={(v) => {
-                                  setFormData((p) => ({ ...p, service: v }))
-                                  if (errors.service) setErrors((p) => ({ ...p, service: "" }))
-                                }}
-                            >
-                              <SelectTrigger
-                                  aria-invalid={!!errors.service}
-                                  aria-describedby={errors.service ? "service-error" : undefined}
-                              >
-                                <SelectValue placeholder="Select a service" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Services</SelectLabel>
-                                  {services.map((s) => (
-                                      <SelectItem key={s} value={s}>
-                                        {s}
-                                      </SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            {errors.service && (
-                                <p id="service-error" className="mt-1 text-sm text-red-600">
-                                  {errors.service}
-                                </p>
-                            )}
-                          </div>
-
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Project Budget *</label>
-                            <Select
-                                value={formData.budget}
-                                onValueChange={(v) => {
-                                  setFormData((p) => ({ ...p, budget: v }))
-                                  if (errors.budget) setErrors((p) => ({ ...p, budget: "" }))
-                                }}
-                            >
-                              <SelectTrigger
-                                  aria-invalid={!!errors.budget}
-                                  aria-describedby={errors.budget ? "budget-error" : undefined}
-                              >
-                                <SelectValue placeholder="Select budget range" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Budget</SelectLabel>
-                                  {budgetRanges.map((b) => (
-                                      <SelectItem key={b} value={b}>
-                                        {b}
-                                      </SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            {errors.budget && (
-                                <p id="budget-error" className="mt-1 text-sm text-red-600">
-                                  {errors.budget}
-                                </p>
-                            )}
-                          </div>
-                        </div>
-
-                        <div>
-                          <div className="flex items-end justify-between mb-2">
-                            <label htmlFor="message" className="block text-sm font-medium text-gray-700">
-                              Project Details * <span className="text-gray-400">(min 20 chars)</span>
-                            </label>
-                            <span className={`text-xs ${messageLen < 20 ? "text-gray-400" : "text-green-600"}`}>
-                          {messageHelp}
-                        </span>
-                          </div>
-                          <Textarea
-                              id="message"
-                              name="message"
-                              value={formData.message}
-                              onChange={handleInputChange}
-                              rows={6}
-                              required
-                              aria-invalid={!!errors.message}
-                              aria-describedby={errors.message ? "message-error" : undefined}
-                              placeholder="Tell us about scope, goals, rough timeline, success criteria, and integrations…"
-                          />
-                          {errors.message && (
-                              <p id="message-error" className="mt-1 text-sm text-red-600">
-                                {errors.message}
-                              </p>
-                          )}
-                        </div>
-
-                        <Button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="w-full bg-gradient-revzion hover:opacity-90 transition-opacity text-lg py-3"
-                            aria-disabled={isSubmitting}
-                        >
-                          {isSubmitting ? (
-                              <span className="inline-flex items-center">
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Sending…
-                        </span>
-                          ) : (
-                              <>
-                                Send Message
-                                <Send className="ml-2 h-4 w-4" />
-                              </>
-                          )}
-                        </Button>
-
-                        <p className="text-xs text-gray-500 text-center">
-                          By submitting, you agree to our{" "}
-                          <a href="/privacy-policy" className="underline hover:text-primary">
-                            Privacy Policy
-                          </a>
-                          .
-                        </p>
-                      </form>
-                    </Card>
-                )}
-              </motion.div>
-
-              {/* INFO */}
-              <motion.div variants={revealOnce}>
-                <h2 className="text-3xl font-heading font-bold text-gray-900 mb-6">Contact Information</h2>
-                <p className="text-gray-600 mb-8">Prefer a direct line? Here are all the ways to reach us.</p>
-
-                <motion.div className="space-y-6" variants={staggerParent} initial="hidden" whileInView="show" viewport={{ once: true }}>
-                  {contactInfo.map((info) => (
-                      <motion.div key={info.title} variants={revealOnce}>
-                        <Card className="p-6 border-0 shadow-md hover:shadow-lg transition-shadow">
-                          <div className="flex items-start space-x-4">
-                            <div className="text-primary flex-shrink-0">{info.icon}</div>
-                            <div>
-                              <h3 className="font-heading font-semibold text-gray-900 mb-2">{info.title}</h3>
-                              {info.details.map((detail, i) => {
-                                const isEmail = detail.includes("@")
-                                const isPhone = /^\+?[\d\s()\-]+$/.test(detail)
-                                const href = isEmail ? `mailto:${detail}` : isPhone ? `tel:${detail.replace(/\s/g, "")}` : undefined
-                                return href ? (
-                                    <a key={i} href={href} className="text-gray-900 font-medium hover:underline block">
-                                      {detail}
-                                    </a>
-                                ) : (
-                                    <p key={i} className="text-gray-900 font-medium">
-                                      {detail}
-                                    </p>
-                                )
-                              })}
-                              <p className="text-gray-600 text-sm mt-1">{info.description}</p>
-                            </div>
-                          </div>
-                        </Card>
-                      </motion.div>
-                  ))}
-                </motion.div>
-
-                {/* Presence */}
-                <Card className="p-6 mt-8 border-0 shadow-md bg-gradient-to-r from-blue-50 to-indigo-50">
-                  <div className="flex items-start space-x-4">
-                    <Globe className="h-6 w-6 text-primary flex-shrink-0" />
-                    <div>
-                      <h3 className="font-heading font-semibold text-gray-900 mb-2">Global Presence</h3>
-                      <p className="text-gray-600 text-sm">
-                        Remote-first across India, Middle East, and APAC; we collaborate worldwide with timezone overlap.
-                      </p>
+                    <div className="space-y-1.5">
+                      <label htmlFor="email" className="text-sm font-medium text-gray-700">
+                        Work Email *
+                      </label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        aria-invalid={!!errors.email}
+                        aria-describedby={errors.email ? "email-error" : undefined}
+                        placeholder="jane@company.com"
+                        className={errors.email ? "border-red-300 focus-visible:ring-red-200" : ""}
+                        required
+                      />
+                      {errors.email && (
+                        <p id="email-error" className="text-xs text-red-600">{errors.email}</p>
+                      )}
                     </div>
                   </div>
-                </Card>
-              </motion.div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label htmlFor="company" className="text-sm font-medium text-gray-700">
+                        Company
+                      </label>
+                      <Input
+                        id="company"
+                        name="company"
+                        type="text"
+                        value={formData.company}
+                        onChange={handleInputChange}
+                        placeholder="Your company"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label htmlFor="phone" className="text-sm font-medium text-gray-700">
+                        Phone
+                      </label>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        aria-invalid={!!errors.phone}
+                        aria-describedby={errors.phone ? "phone-error" : undefined}
+                        placeholder="+91 98765 43210"
+                        className={errors.phone ? "border-red-300 focus-visible:ring-red-200" : ""}
+                      />
+                      {errors.phone && (
+                        <p id="phone-error" className="text-xs text-red-600">{errors.phone}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-gray-700">Service *</label>
+                      <Select
+                        value={formData.service}
+                        onValueChange={(v) => {
+                          setFormData((p) => ({ ...p, service: v }))
+                          if (errors.service) setErrors((p) => ({ ...p, service: "" }))
+                        }}
+                      >
+                        <SelectTrigger
+                          aria-invalid={!!errors.service}
+                          className={errors.service ? "border-red-300 focus:ring-red-200" : ""}
+                        >
+                          <SelectValue placeholder="Select a service" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Services</SelectLabel>
+                            {services.map((s) => (
+                              <SelectItem key={s} value={s}>{s}</SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      {errors.service && (
+                        <p id="service-error" className="text-xs text-red-600">{errors.service}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-gray-700">Budget *</label>
+                      <Select
+                        value={formData.budget}
+                        onValueChange={(v) => {
+                          setFormData((p) => ({ ...p, budget: v }))
+                          if (errors.budget) setErrors((p) => ({ ...p, budget: "" }))
+                        }}
+                      >
+                        <SelectTrigger
+                          aria-invalid={!!errors.budget}
+                          className={errors.budget ? "border-red-300 focus:ring-red-200" : ""}
+                        >
+                          <SelectValue placeholder="Select budget range" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Budget</SelectLabel>
+                            {budgetRanges.map((b) => (
+                              <SelectItem key={b} value={b}>{b}</SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      {errors.budget && (
+                        <p id="budget-error" className="text-xs text-red-600">{errors.budget}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label htmlFor="message" className="text-sm font-medium text-gray-700">
+                        Project Details *
+                      </label>
+                      <span className={`text-xs tabular-nums ${messageLen >= 20 ? "text-emerald-600" : "text-gray-400"}`}>
+                        {messageLen}/20
+                      </span>
+                    </div>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      rows={6}
+                      required
+                      aria-invalid={!!errors.message}
+                      aria-describedby={errors.message ? "message-error" : undefined}
+                      placeholder="Describe your scope, goals, rough timeline, and any key integrations or constraints…"
+                      className={errors.message ? "border-red-300 focus-visible:ring-red-200" : ""}
+                    />
+                    {errors.message && (
+                      <p id="message-error" className="text-xs text-red-600">{errors.message}</p>
+                    )}
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    size="lg"
+                    className="w-full bg-gradient-revzion hover:opacity-90 transition-opacity"
+                    aria-disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <span className="inline-flex items-center">
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Sending…
+                      </span>
+                    ) : (
+                      <>
+                        Send Message
+                        <Send className="ml-2 h-4 w-4" />
+                      </>
+                    )}
+                  </Button>
+
+                  <p className="text-xs text-gray-400 text-center">
+                    By submitting you agree to our{" "}
+                    <a href="/privacy-policy" className="underline hover:text-gray-600">
+                      Privacy Policy
+                    </a>
+                    .
+                  </p>
+                </form>
+              )}
             </motion.div>
-          </div>
-        </section>
 
-        {/* FAQ */}
-        <section className="py-20 bg-gray-50">
-          <motion.div
-              className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
-              variants={revealOnce}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.25 }}
-          >
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
-              <p className="text-xl text-gray-600">Quick answers about our services and process.</p>
-            </div>
+            {/* ── Info + What happens next ── */}
+            <motion.div variants={revealOnce} className="lg:col-span-5 space-y-8">
+              {/* Contact details */}
+              <div>
+                <h2 className="text-lg font-heading font-semibold text-gray-900 mb-5">
+                  Contact details
+                </h2>
+                <div className="space-y-4">
+                  {[
+                    {
+                      icon: <Mail className="h-4 w-4" />,
+                      label: "Email",
+                      value: "connect@revzion.in",
+                      href: "mailto:connect@revzion.in",
+                      note: "Best for proposals and formal queries",
+                    },
+                    {
+                      icon: <Phone className="h-4 w-4" />,
+                      label: "Phone",
+                      value: "+91 (638) 716-1020",
+                      href: "tel:+916387161020",
+                      note: "Mon–Fri, 09:00–19:00 IST",
+                    },
+                    {
+                      icon: <MapPin className="h-4 w-4" />,
+                      label: "Location",
+                      value: "India — remote-first",
+                      href: undefined,
+                      note: "Serving India, Middle East & APAC",
+                    },
+                    {
+                      icon: <Clock className="h-4 w-4" />,
+                      label: "Hours",
+                      value: "Mon–Fri 09:00–19:00 IST",
+                      href: undefined,
+                      note: "Sat 10:00–14:00 · We adapt for overlaps",
+                    },
+                  ].map((item) => (
+                    <div key={item.label} className="flex items-start gap-3">
+                      <div className="mt-0.5 p-2 rounded-lg bg-gray-50 text-gray-500 flex-shrink-0">
+                        {item.icon}
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-0.5">
+                          {item.label}
+                        </p>
+                        {item.href ? (
+                          <a
+                            href={item.href}
+                            className="text-sm font-medium text-gray-900 hover:text-primary transition-colors"
+                          >
+                            {item.value}
+                          </a>
+                        ) : (
+                          <p className="text-sm font-medium text-gray-900">{item.value}</p>
+                        )}
+                        <p className="text-xs text-gray-400 mt-0.5">{item.note}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-            <motion.div className="space-y-6" variants={staggerParent} initial="hidden" whileInView="show" viewport={{ once: true }}>
-              {faqs.map((faq) => (
-                  <motion.div key={faq.question} variants={revealOnce}>
-                    <Card className="p-6 border-0 bg-white">
-                      <h3 className="font-heading font-semibold text-gray-900 mb-3">{faq.question}</h3>
-                      <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
-                    </Card>
-                  </motion.div>
-              ))}
+              {/* Divider */}
+              <div className="border-t border-gray-100" />
+
+              {/* What happens next */}
+              <div>
+                <h2 className="text-lg font-heading font-semibold text-gray-900 mb-5">
+                  What happens next
+                </h2>
+                <div className="space-y-5">
+                  {[
+                    {
+                      step: "1",
+                      title: "We review your submission",
+                      desc: "A senior member of the team reads every message — usually within a few hours.",
+                    },
+                    {
+                      step: "2",
+                      title: "Discovery call (30 min)",
+                      desc: "We align on goals, scope, constraints, and ideal timeline.",
+                    },
+                    {
+                      step: "3",
+                      title: "Proposal within 48 hours",
+                      desc: "You receive a clear scope, team structure, milestone plan, and pricing.",
+                    },
+                    {
+                      step: "4",
+                      title: "Kick off",
+                      desc: "Once aligned, we start with a structured discovery sprint — no wasted time.",
+                    },
+                  ].map((item) => (
+                    <div key={item.step} className="flex items-start gap-4">
+                      <div className="flex-shrink-0 h-6 w-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
+                        {item.step}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">{item.title}</p>
+                        <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-gray-100" />
+
+              {/* Global presence */}
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 p-2 rounded-lg bg-gray-50 text-gray-500 flex-shrink-0">
+                  <Globe className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900 mb-1">Global reach</p>
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    Remote-first across India, Middle East, and APAC. We cover overlapping
+                    time zones and have regional partners for local delivery when needed.
+                  </p>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
-        </section>
+        </div>
+      </section>
 
-        <Footer />
-      </div>
+      {/* FAQ */}
+      <section className="py-16 sm:py-20 bg-gray-50 border-t border-gray-100">
+        <motion.div
+          className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8"
+          variants={revealOnce}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          <div className="mb-10">
+            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">FAQ</p>
+            <h2 className="text-3xl font-heading font-bold text-gray-900">Common questions</h2>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              {
+                q: "How long does a typical project take?",
+                a: "Most projects run 3–12 months depending on scope. We share a milestone plan during discovery so you know exactly what to expect and when.",
+              },
+              {
+                q: "Do you work with early-stage startups?",
+                a: "Yes — our engagement models scale from early-stage to enterprise. We prioritise moving fast and proving value in the first sprint.",
+              },
+              {
+                q: "What does your development process look like?",
+                a: "Discovery → iterative sprints with weekly demos → QA & security hardening → launch → post-launch support. Transparent burn-up throughout.",
+              },
+              {
+                q: "Do you offer ongoing support after launch?",
+                a: "We offer SLAs covering monitoring, incident response, dependency upgrades, and feature iterations — on a retainer or milestone basis.",
+              },
+            ].map((faq) => (
+              <div
+                key={faq.q}
+                className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+              >
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">{faq.q}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{faq.a}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-sm text-gray-500">
+              Still have questions?{" "}
+              <a href="mailto:connect@revzion.in" className="text-primary font-medium hover:underline">
+                Email us directly.
+              </a>
+            </p>
+          </div>
+        </motion.div>
+      </section>
+
+      <Footer />
+    </div>
   )
 }
