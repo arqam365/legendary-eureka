@@ -3,7 +3,6 @@
 import React, { useEffect, useMemo, useRef, useState, useLayoutEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import Script from "next/script" // ⬅️ ADDED
 import {
     AnimatePresence,
     motion,
@@ -960,20 +959,19 @@ export default function HomePage() {
                             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 justify-center sm:justify-start items-stretch sm:items-center w-full max-w-2xl mx-auto">
                                 <ConsultationCTA label="Free Consultation" />
                                 <Button
+                                    asChild
                                     size="lg"
                                     variant="outline"
                                     className="text-base sm:text-lg px-6 sm:px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white bg-transparent flex items-center justify-center w-full sm:w-auto"
                                 >
-                                    <Link href="/services" className="flex items-center">
-                                        Explore Services
-                                    </Link>
+                                    <Link href="/services">Explore Services</Link>
                                 </Button>
                             </div>
 
                             <div className="flex items-center space-x-8 pt-4">
                                 {[
                                     { value: "50+", label: "Projects Delivered" },
-                                    { value: "100%", label: "Client Satisfaction" },
+                                    { value: "5★", label: "Client Rating" },
                                     { value: "24/7", label: "Support" },
                                 ].map((m) => (
                                     <motion.div key={m.label} whileHover={prefersReduced ? undefined : hoverCard} className="text-center">
@@ -997,59 +995,6 @@ export default function HomePage() {
 
             {/* Client Impact / Trust bar */}
             <TrustSection />
-            {/*<section id="trust" className="bg-white">*/}
-            {/*    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">*/}
-            {/*        <div className="rounded-2xl border border-gray-100 bg-gray-50/60 backdrop-blur-sm px-6 py-5">*/}
-            {/*            <div className="flex flex-col md:flex-row items-center justify-between gap-6">*/}
-            {/*                <p className="text-sm text-gray-600">*/}
-            {/*                    Trusted by teams shipping <span className="font-semibold text-gray-900">50+ projects</span> across{" "}*/}
-            {/*                    <span className="font-semibold text-gray-900">5+ countries</span>*/}
-            {/*                </p>*/}
-
-            {/*                /!* Client names with links *!/*/}
-            {/*                <div className="flex items-center gap-6 transition">*/}
-            {/*                    <a*/}
-            {/*                        href="https://evolwering.com"*/}
-            {/*                        target="_blank"*/}
-            {/*                        rel="noopener noreferrer"*/}
-            {/*                        className="text-lg font-medium text-gray-400 hover:text-gray-600 transition-colors"*/}
-            {/*                    >*/}
-            {/*                        EvolWe*/}
-            {/*                    </a>*/}
-            {/*                    <a*/}
-            {/*                        href="https://hellocloud.co.in"*/}
-            {/*                        target="_blank"*/}
-            {/*                        rel="noopener noreferrer"*/}
-            {/*                        className="text-lg font-medium text-gray-400 hover:text-gray-600 transition-colors"*/}
-            {/*                    >*/}
-            {/*                        HelloCloud*/}
-            {/*                    </a>*/}
-            {/*                    <a*/}
-            {/*                        href="https://rynox.io"*/}
-            {/*                        target="_blank"*/}
-            {/*                        rel="noopener noreferrer"*/}
-            {/*                        className="text-lg font-medium text-gray-400 hover:text-gray-600 transition-colors"*/}
-            {/*                    >*/}
-            {/*                        Rynox*/}
-            {/*                    </a>*/}
-            {/*                    <a*/}
-            {/*                        href="#"*/}
-            {/*                        className="text-lg font-medium text-gray-400 hover:text-gray-600 transition-colors cursor-default pointer-events-none"*/}
-            {/*                    >*/}
-            {/*                        Packagefy*/}
-            {/*                    </a>*/}
-            {/*                    <a*/}
-            {/*                        href="#"*/}
-            {/*                        className="text-lg font-medium text-gray-400 hover:text-gray-600 transition-colors cursor-default pointer-events-none"*/}
-            {/*                    >*/}
-            {/*                        BeeSocial*/}
-            {/*                    </a>*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</section>*/}
-
             {/* Services */}
             <section id="services" className="py-12 sm:py-20 bg-gray-50" data-st-section>
                 <motion.div
@@ -1637,10 +1582,11 @@ export default function HomePage() {
                         Let's discuss how we can help you build innovative solutions that drive growth and success.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-3">
+                        <Button asChild size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-3">
                             <Link href="/contact">Start Your Project</Link>
                         </Button>
                         <Button
+                            asChild
                             size="lg"
                             variant="outline"
                             className="border-2 border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-3 bg-transparent"
