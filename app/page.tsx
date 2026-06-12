@@ -1350,7 +1350,7 @@ export default function HomePage() {
                                 <AccordionTrigger className="px-6 text-left">
                                     <div className="flex items-center gap-3">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">
-            ⚡
+            <Zap className="h-4 w-4" />
           </span>
                                         <span className="font-semibold">Mobile, PWA & Performance</span>
                                     </div>
@@ -1405,7 +1405,7 @@ export default function HomePage() {
                                 <AccordionTrigger className="px-6 text-left">
                                     <div className="flex items-center gap-3">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">
-            🎨
+            <Layers className="h-4 w-4" />
           </span>
                                         <span className="font-semibold">Design Systems & Accessibility</span>
                                     </div>
@@ -1465,7 +1465,7 @@ export default function HomePage() {
                             <AccordionItem value="backend">
                                 <AccordionTrigger className="px-6 text-left">
                                     <div className="flex items-center gap-3">
-                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">🛠️</span>
+                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary"><Code className="h-4 w-4" /></span>
                                         <span className="font-semibold">Backend & APIs</span>
                                     </div>
                                 </AccordionTrigger>
@@ -1511,7 +1511,7 @@ export default function HomePage() {
                             <AccordionItem value="data-cloud">
                                 <AccordionTrigger className="px-6 text-left">
                                     <div className="flex items-center gap-3">
-                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">☁️</span>
+                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary"><Cloud className="h-4 w-4" /></span>
                                         <span className="font-semibold">Data, Cloud & DevOps</span>
                                     </div>
                                 </AccordionTrigger>
@@ -1557,7 +1557,7 @@ export default function HomePage() {
                             <AccordionItem value="ai">
                                 <AccordionTrigger className="px-6 text-left">
                                     <div className="flex items-center gap-3">
-                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">🧠</span>
+                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary"><Brain className="h-4 w-4" /></span>
                                         <span className="font-semibold">AI & Automation</span>
                                     </div>
                                 </AccordionTrigger>
