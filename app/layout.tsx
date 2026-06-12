@@ -322,7 +322,7 @@ export default function RootLayout({
             style={{ overscrollBehaviorX: "contain" }}
             suppressHydrationWarning
         >
-        <UpgradeModal />
+        {/*<UpgradeModal />*/}
 
         <Script id="rvz-splash-init" strategy="beforeInteractive">
             {`document.documentElement.classList.add('rvz-splashing');`}

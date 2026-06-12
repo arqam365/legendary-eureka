@@ -1051,22 +1051,22 @@ export default function HomePage() {
             {/*</section>*/}
 
             {/* Services */}
-            <section id="services" className="py-20 bg-gray-50" data-st-section>
+            <section id="services" className="py-12 sm:py-20 bg-gray-50" data-st-section>
                 <motion.div
                     className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
                     variants={revealOnce}
                     initial="hidden"
                     whileInView="show"
-                    viewport={{ once: true, amount: 0.25 }}
+                    viewport={{ once: true, amount: 0 }}
                 >
-                    <div className="text-center mb-16">
+                    <div className="text-center mb-10 sm:mb-16">
                         <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">What We Do Best</h2>
-                        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                        <p className="text-base sm:text-xl text-gray-600 max-w-3xl mx-auto">
                             From cutting-edge AI solutions to scalable SaaS platforms, we deliver technology that drives your business forward.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-st-stagger>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8" data-st-stagger>
                         {[
                             {
                                 icon: <Code className="h-8 w-8" />,
@@ -1129,7 +1129,7 @@ export default function HomePage() {
                                 transition={{ type: "spring", stiffness: 200, damping: 24 }}
                             >
                                 <Card className="group border-0 shadow-md hover:shadow-lg transition-shadow h-full">
-                                    <CardContent className="p-8 flex flex-col h-full">
+                                    <CardContent className="p-5 sm:p-8 flex flex-col h-full">
                                         {/* Icon */}
                                         <motion.div
                                             className="text-primary mb-4"
