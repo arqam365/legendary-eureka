@@ -7,7 +7,7 @@ import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { Search, Loader2 } from "lucide-react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://legendary-eureka-backend.vercel.app";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://app.revzion.in";
 
 /* ---------------- TYPES ---------------- */
 type Post = {
@@ -121,7 +121,7 @@ export default function BlogsPage() {
     const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        fetch(`${API_URL}/api/public/posts`)
+        fetch(`${API_URL}/api/cms/public/posts`)
             .then((r) => {
                 if (!r.ok) throw new Error("Failed to fetch");
                 return r.json();
