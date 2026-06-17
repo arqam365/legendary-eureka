@@ -5,7 +5,7 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { ShareActions } from "../ShareActions"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://legendary-eureka-backend.vercel.app";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://app.revzion.in";
 
 // ---- Types ------------------------------------------------------------------
 type ApiPost = {
@@ -26,7 +26,7 @@ type ApiPost = {
 // ---- Data fetching ----------------------------------------------------------
 async function fetchPost(slug: string): Promise<ApiPost | null> {
     try {
-        const res = await fetch(`${API_URL}/api/posts/slug/${slug}`, {
+        const res = await fetch(`${API_URL}/api/cms/public/posts/${slug}`, {
             next: { revalidate: 60 },
         })
         if (!res.ok) return null
