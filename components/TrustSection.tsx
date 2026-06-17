@@ -97,7 +97,7 @@ export default function TrustSection() {
 
                                 {/* TechXellent */}
                                 <Link
-                                    href="https://techxellent.vercel.app/"
+                                    href="https://techxellent.net/"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="opacity-80 hover:opacity-100 transition"
