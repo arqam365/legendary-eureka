@@ -27,7 +27,7 @@ type ApiPost = {
 async function fetchPost(slug: string): Promise<ApiPost | null> {
     try {
         const res = await fetch(`${API_URL}/api/cms/public/posts/${slug}`, {
-            next: { revalidate: 60 },
+            next: { revalidate: 30 },
         })
         if (!res.ok) return null
         return res.json()
