@@ -89,30 +89,10 @@ export default function AboutPage() {
       portfolio: "",
     },
     {
-      name: "Aanya Agrawal",
-      role: "Mobile Developer",
-      bio: "Compose & KMP enthusiast focused on smooth UX and performance.",
-      image: getAvatarUrl("Aanya Agrawal", "female"),
-      linkedin: "",
-      twitter: "",
-      github: "",
-      portfolio: "",
-    },
-    {
       name: "Saniya Khan",
       role: "UI/UX Developer",
       bio: "Designs intuitive, accessible interfaces with full implementation ownership.",
       image: getAvatarUrl("Saniya Khan", "female"),
-      linkedin: "",
-      twitter: "",
-      github: "",
-      portfolio: "",
-    },
-    {
-      name: "Khushi Chaturvedi",
-      role: "UI/UX Expert",
-      bio: "Crafts delightful, user-first experiences grounded in research.",
-      image: getAvatarUrl("Khushi Chaturvedi", "female"),
       linkedin: "",
       twitter: "",
       github: "",
@@ -123,13 +103,7 @@ export default function AboutPage() {
   const extendedTeam = [
     { name: "Gagandeep Singh", role: "Engineer", bio: "Full-stack & integrations." },
     { name: "Pulkit Shukla", role: "Engineer", bio: "Cloud & backend solutions." },
-    { name: "Ankit Bose", role: "Engineer", bio: "APIs & reliability." },
-    { name: "Prateek Singh", role: "Engineer", bio: "Frontend / backend agility." },
-    { name: "Jay Bhavsar", role: "Engineer", bio: "Mobile & frontend." },
-    { name: "Yash Soni", role: "Engineer", bio: "Performance-minded full-stack." },
     { name: "Bharat Agarwal", role: "Engineer", bio: "Architecture & data." },
-    { name: "Harshit Savita", role: "Engineer", bio: "Frontend / UI clean builds." },
-    { name: "Prabar Gupta", role: "Designer", bio: "UI/UX clean designs." },
   ];
 
   const values = [

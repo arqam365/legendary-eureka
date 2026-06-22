@@ -160,6 +160,7 @@ export default async function BlogPost({ params }: { params: Promise<{ id: strin
                             src={post.coverImage}
                             alt={post.title}
                             className="w-full h-auto object-cover"
+                            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none" }}
                         />
                     </div>
                 )}
