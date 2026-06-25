@@ -201,7 +201,7 @@ export const metadata: Metadata = {
             "Trusted global partner for SaaS platforms, AI-powered products, and cross-platform mobile applications.",
         images: [
             {
-                url: "/og-global.png",
+                url: "/api/og",
                 width: 1200,
                 height: 630,
                 alt: "Revzion - Global Software Engineering Company",
@@ -220,7 +220,7 @@ export const metadata: Metadata = {
         title: "Revzion | Global Software Engineering",
         description:
             "SaaS platforms, AI systems, and cross-platform mobile apps built for global scale.",
-        images: ["/og-global.png"]
+        images: ["/api/og"]
     },
 
     // =========================================================
