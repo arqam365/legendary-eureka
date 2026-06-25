@@ -160,7 +160,7 @@ export const metadata: Metadata = {
     // AUTHORSHIP & BRAND AUTHORITY
     // =========================================================
     authors: [
-        { name: "Revzion Tea,", url: "https://www.revzion.com" },
+        { name: "Revzion Team", url: "https://www.revzion.in" },
         { name: "Arqam Ahmad Siddiqui", url: "https://arqam365.com" }
     ],
     creator: "Arqam Ahmad Siddiqui (@arqam365)",
@@ -169,7 +169,13 @@ export const metadata: Metadata = {
     // =========================================================
     // CANONICAL BASE
     // =========================================================
-    metadataBase: new URL("https://www.revzion.com"),
+    metadataBase: new URL(
+        process.env.VERCEL_PROJECT_PRODUCTION_URL
+            ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+            : process.env.VERCEL_URL
+                ? `https://${process.env.VERCEL_URL}`
+                : "https://www.revzion.in"
+    ),
 
     alternates: {
         canonical: "/",
@@ -194,7 +200,7 @@ export const metadata: Metadata = {
     openGraph: {
         type: "website",
         locale: "en_US",
-        url: "https://www.revzion.com",
+        url: "https://www.revzion.in",
         siteName: "Revzion",
         title: "Revzion | Global SaaS, AI & Cross-Platform Engineering",
         description:
