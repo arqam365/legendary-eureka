@@ -15,7 +15,7 @@ export default function Spotlight() {
     }, [mx, my])
 
     const bg = useTransform([x, y], ([xv, yv]) =>
-        `radial-gradient(200px 200px at ${xv}px ${yv}px, rgba(99,102,241,0.18), transparent 60%)`
+        `radial-gradient(220px 220px at ${xv}px ${yv}px, rgba(37,99,235,0.1), transparent 65%)`
     )
 
     return (

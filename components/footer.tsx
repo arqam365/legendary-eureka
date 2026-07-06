@@ -309,7 +309,7 @@ export function Footer() {
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
                   <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-500 dark:text-gray-400">
       <span className="whitespace-nowrap">
-        We've helped over <strong className="text-gray-800 dark:text-gray-200">200+</strong> companies including
+        We've helped over <strong className="text-gray-800 dark:text-gray-200">30+</strong> companies including
       </span>
                       <div className="relative min-w-0 flex-1 overflow-hidden">
                           <div className="marquee flex gap-8">
@@ -320,7 +320,11 @@ export function Footer() {
                                   "Techxellent",
                                   "Hello Cloud",
                                   "Bee Social",
-                                  "BuildArc"
+                                  "BuildArc",
+                                  "Mawasim",
+                                  "Mazencito",
+                                  "Beit Al Laymoun",
+                                  "Cashmere World"
                               ].map((name, i) => (
                                   <span
                                       key={`${name}-${i}`}
