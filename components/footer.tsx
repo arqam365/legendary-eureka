@@ -320,11 +320,12 @@ export function Footer() {
                                   "Techxellent",
                                   "Hello Cloud",
                                   "Bee Social",
-                                  "BuildArc",
+                                  "Everyday Fitness",
                                   "Mawasim",
                                   "Mazencito",
                                   "Beit Al Laymoun",
-                                  "Cashmere World"
+                                  "Cashmere World",
+                                  "EHP Academy"
                               ].map((name, i) => (
                                   <span
                                       key={`${name}-${i}`}
