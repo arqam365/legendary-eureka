@@ -59,6 +59,8 @@ export function Navigation() {
         }
     })
 
+    const isOnDarkHero = false // hero is now white — nav always uses dark text
+
     const navItems: NavItem[] = useMemo(
         () => [
             { href: "/", label: "Home" },
@@ -104,7 +106,7 @@ export function Navigation() {
                             : "0 8px 30px -12px rgba(0,0,0,.12)",
                 }}
                 transition={{ type: "spring", stiffness: 500, damping: 42 }}
-                className="fixed inset-x-0 top-0 z-[90] border-b border-black/5 md:pointer-events-auto"
+                className={`fixed inset-x-0 top-0 z-[90] md:pointer-events-auto ${isOnDarkHero ? "border-b border-white/10" : "border-b border-black/5"}`}
                 style={{
                     pointerEvents: isMenuOpen ? "none" : "auto",
                 }}
@@ -113,16 +115,15 @@ export function Navigation() {
                     <div className="h-[72px] flex items-center justify-between">
 
                         {/* Logo */}
-                        <Link href="/" className="flex items-center gap-3">
+                        <Link href="/" className="flex items-center">
                             <Image
-                                src="/logo.svg"
-                                alt="Revzion logo"
-                                width={34}
-                                height={34}
+                                src="/revzion-logo.png"
+                                alt="Revzion"
+                                width={140}
+                                height={29}
+                                className="h-7 w-auto object-contain"
+                                priority
                             />
-                            <span className="text-xl font-semibold text-gray-900 tracking-tight">
-                Revzion
-              </span>
                         </Link>
 
                         {/* Desktop Nav */}
@@ -133,14 +134,14 @@ export function Navigation() {
                                     href={item.href}
                                     onMouseEnter={() => setHoveredTab(item.href)}
                                     onMouseLeave={() => setHoveredTab(null)}
-                                    className="relative text-[15px] font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                                    className={`relative text-[15px] font-medium transition-colors ${isOnDarkHero ? "text-white/80 hover:text-white" : "text-gray-600 hover:text-gray-900"}`}
                                 >
                                     {item.label}
 
                                     {currentUnderline === item.href && (
                                         <motion.div
                                             layoutId="nav-underline"
-                                            className="absolute -bottom-2 left-0 right-0 h-[2px] bg-blue-600 rounded-full"
+                                            className={`absolute -bottom-2 left-0 right-0 h-[2px] rounded-full ${isOnDarkHero ? "bg-[#C9A227]" : "bg-blue-600"}`}
                                             transition={{
                                                 type: "spring",
                                                 stiffness: 500,
@@ -173,9 +174,9 @@ export function Navigation() {
                                 onClick={() => setIsMenuOpen((v) => !v)}
                             >
                                 {isMenuOpen ? (
-                                    <X className="h-5 w-5 text-gray-900" />
+                                    <X className={`h-5 w-5 ${isOnDarkHero ? "text-white" : "text-gray-900"}`} />
                                 ) : (
-                                    <Menu className="h-5 w-5 text-gray-900" />
+                                    <Menu className={`h-5 w-5 ${isOnDarkHero ? "text-white" : "text-gray-900"}`} />
                                 )}
                             </Button>
                         </div>
@@ -203,16 +204,14 @@ export function Navigation() {
                         >
                             {/* Mobile Header FIXED */}
                             <div className="flex items-center justify-between px-6 py-5 border-b">
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center">
                                     <Image
-                                        src="/logo.svg"
-                                        alt="Revzion logo"
-                                        width={26}
-                                        height={26}
+                                        src="/revzion-logo.png"
+                                        alt="Revzion"
+                                        width={110}
+                                        height={23}
+                                        className="h-6 w-auto object-contain"
                                     />
-                                    <span className="font-semibold text-gray-900">
-                    Revzion
-                  </span>
                                 </div>
 
                                 <X

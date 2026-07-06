@@ -13,6 +13,7 @@ import {
     type MotionValue,
     type Variants, useSpring,
 } from "framer-motion"
+
 import { gsap } from "gsap"
 import { SplitText } from "gsap/SplitText"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -213,7 +214,7 @@ function CaseStudiesCarousel() {
     const s = studies[active]
 
     return (
-        <section id="case-studies" className="py-16 sm:py-20 bg-gray-50" data-st-section>
+        <section id="case-studies" className="py-16 sm:py-20 bg-[#EEF1F6]" data-st-section>
             <motion.div
                 className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8"
                 variants={revealOnce}
@@ -224,8 +225,9 @@ function CaseStudiesCarousel() {
                 {/* Header row */}
                 <div className="mb-6 sm:mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                     <div className="text-center sm:text-left">
-                        <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">Case Studies</h2>
-                        <p className="text-gray-600 text-base sm:text-lg">Proof over promises.</p>
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C9A227] mb-2">Work</p>
+                        <h2 className="text-3xl sm:text-4xl font-display font-semibold text-[#0B1220]">Case Studies</h2>
+                        <p className="text-[#64748B] text-base sm:text-lg">Proof over promises.</p>
                     </div>
                     <div className="hidden md:flex gap-3">
                         <Button variant="outline" onClick={prev} aria-label="Previous case study" title="Previous">←</Button>
@@ -566,7 +568,7 @@ export function ProductShowcase({ blobShift }: ShowcaseProps) {
             <motion.div
                 aria-hidden
                 style={{ y: blobShift }}
-                className="absolute -top-6 -right-6 w-56 h-56 sm:w-72 sm:h-72 bg-gradient-revzion rounded-full opacity-10 blur-3xl pointer-events-none z-0"
+                className="absolute -top-6 -right-6 w-56 h-56 sm:w-72 sm:h-72 bg-[#2563EB] rounded-full opacity-10 blur-3xl pointer-events-none z-0"
             />
             <motion.div
                 aria-hidden
@@ -813,7 +815,7 @@ function BrandCursorGlow({
     return (
         <motion.div
             aria-hidden
-            className="pointer-events-none absolute top-0 left-0 z-0 rounded-full bg-gradient-revzion blur-3xl md:blur-[48px] mix-blend-multiply"
+            className="pointer-events-none absolute top-0 left-0 z-0 rounded-full bg-[#2563EB] blur-3xl md:blur-[48px] mix-blend-multiply"
             style={{
                 width: size,
                 height: size,
@@ -831,80 +833,151 @@ export default function HomePage() {
     const prefersReduced = useReducedMotion()
     const heroRef = useRef<HTMLDivElement | null>(null)
     const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] })
-    const blobShift = useTransform(scrollYProgress, [0, 1], [0, prefersReduced ? 0 : -30])
+    const heroParallax = useTransform(scrollYProgress, [0, 1], [0, prefersReduced ? 0 : 60])
 
-    const splitRef = useRef<HTMLSpanElement>(null)
+    // Hero animation refs — each element gets its own ref for sequenced GSAP timeline
+    const eyebrowRef   = useRef<HTMLParagraphElement>(null)
+    const headlineRef  = useRef<HTMLDivElement>(null)
+    const headlineBlueRef = useRef<HTMLDivElement>(null)
+    const goldRuleRef  = useRef<HTMLDivElement>(null)
+    const subtextRef   = useRef<HTMLParagraphElement>(null)
+    const ctaRowRef    = useRef<HTMLDivElement>(null)
+    const statsRef     = useRef<HTMLDivElement>(null)
+
     const [hydrated, setHydrated] = useState(false)
 
-    useEffect(() => {
-        setHydrated(true) // only run after hydration
-    }, [])
+    useEffect(() => { setHydrated(true) }, [])
 
     useLayoutEffect(() => {
         if (!hydrated) return
 
         const ctx = gsap.context(() => {
-            // 1) Hero headline (SplitText)
-            if (splitRef.current) {
-                const split = new SplitText(splitRef.current, { type: "words,chars" })
-                gsap.set(split.chars, { opacity: 0, y: 60, rotateX: -90 })
 
-                ScrollTrigger.create({
-                    trigger: splitRef.current,
-                    start: "top 65%",
-                    once: true,
-                    onEnter: () => {
-                        gsap.to(split.chars, {
-                            opacity: 1,
-                            y: 0,
-                            rotateX: 0,
-                            duration: 0.8,
-                            ease: "power3.out",
-                            stagger: 0.04,
-                        })
-                    },
+            // ── Hero entrance timeline ──────────────────────────────────────
+            // Runs once on mount — not scroll-triggered — so the hero lands immediately
+            if (headlineRef.current) {
+                // Hide everything first
+                gsap.set([eyebrowRef.current, headlineRef.current, headlineBlueRef.current, goldRuleRef.current, subtextRef.current, ctaRowRef.current, statsRef.current], {
+                    opacity: 0, y: 28,
                 })
+
+                const tl = gsap.timeline({ delay: prefersReduced ? 0 : 0.3 })
+
+                // 1) Eyebrow
+                tl.to(eyebrowRef.current, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out", clearProps: "all" })
+                // 2) Line 1
+                tl.to(headlineRef.current, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out", clearProps: "all" }, "-=0.2")
+                // 3) Line 2 (slight overlap)
+                tl.to(headlineBlueRef.current, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out", clearProps: "all" }, "-=0.35")
+
+                // 3) Aurum Gold rule draws in left→right
+                tl.fromTo(goldRuleRef.current,
+                    { scaleX: 0, transformOrigin: "left center" },
+                    { opacity: 1, scaleX: 1, duration: 0.5, ease: "power2.inOut", clearProps: "transform" },
+                    "-=0.35"
+                )
+
+                // 4) Subtext fades up
+                tl.to(subtextRef.current, {
+                    opacity: 1, y: 0,
+                    duration: 0.5, ease: "power2.out",
+                    clearProps: "all",
+                }, "-=0.25")
+
+                // 5) CTA row
+                tl.to(ctaRowRef.current, {
+                    opacity: 1, y: 0,
+                    duration: 0.45, ease: "power2.out",
+                    clearProps: "all",
+                }, "-=0.3")
+
+                // 6) Stats
+                tl.to(statsRef.current, {
+                    opacity: 1,
+                    duration: 0.4, ease: "power1.out",
+                    clearProps: "all",
+                }, "-=0.2")
             }
 
-            // 2) Fade/slide each section when it scrolls in
+            // ── Section reveals — bi-directional, pre-created tweens (no alloc on scroll) ──
             gsap.utils.toArray<HTMLElement>("[data-st-section]").forEach((section) => {
-                gsap.set(section, { opacity: 0, y: 24 })
-
+                // Create tween once — play() / reverse() are near-zero cost
+                const tl = gsap.fromTo(section,
+                    { opacity: 0, y: 22 },
+                    { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", paused: true }
+                )
                 ScrollTrigger.create({
                     trigger: section,
-                    start: "top 75%",
-                    once: true,
-                    onEnter: () => {
-                        gsap.to(section, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" })
-                    },
+                    start: "top 80%",
+                    end: "bottom 8%",
+                    onEnter:      () => tl.play(),
+                    onLeave:      () => tl.reverse(),
+                    onEnterBack:  () => tl.play(),
+                    onLeaveBack:  () => tl.reverse(),
                 })
 
-                // 3) Optional stagger for inner grid/cards
-                const container = section.querySelector<HTMLElement>("[data-st-stagger]")
-                const items = container ? Array.from(container.children) : []
-
-                if (items.length) {
-                    gsap.set(items, { opacity: 0, y: 18 })
+                // Stagger children once — play/reverse only
+                const staggerEl = section.querySelector<HTMLElement>("[data-st-stagger]")
+                if (staggerEl) {
+                    const items = Array.from(staggerEl.children) as HTMLElement[]
+                    const stl = gsap.fromTo(items,
+                        { opacity: 0, y: 18 },
+                        { opacity: 1, y: 0, duration: 0.45, ease: "power2.out",
+                          stagger: { amount: 0.35, from: "start" }, paused: true }
+                    )
                     ScrollTrigger.create({
-                        trigger: container!,
-                        start: "top 80%",
-                        once: true,
-                        onEnter: () => {
-                            gsap.to(items, {
-                                opacity: 1,
-                                y: 0,
-                                duration: 0.5,
-                                ease: "power2.out",
-                                stagger: 0.08,
-                            })
-                        },
+                        trigger: staggerEl,
+                        start: "top 84%",
+                        onEnter:     () => stl.play(),
+                        onLeaveBack: () => stl.reverse(),
+                        onEnterBack: () => stl.play(),
                     })
                 }
             })
+
+            // ── Gold bars — pre-created, play/reverse ─────────────────────────
+            gsap.utils.toArray<HTMLElement>("[data-gold-bar]").forEach((bar, i) => {
+                const btl = gsap.fromTo(bar,
+                    { scaleY: 0, transformOrigin: "top center" },
+                    { scaleY: 1, duration: 0.45, ease: "power2.out", delay: i * 0.05, paused: true }
+                )
+                ScrollTrigger.create({
+                    trigger: bar,
+                    start: "top 88%",
+                    onEnter:     () => btl.play(),
+                    onLeaveBack: () => btl.reverse(),
+                    onEnterBack: () => btl.play(),
+                })
+            })
+
+            // ── Case Studies card ─────────────────────────────────────────────
+            const caseCard = document.querySelector<HTMLElement>("#case-studies article")
+            if (caseCard) {
+                const ctl = gsap.fromTo(caseCard,
+                    { opacity: 0, scale: 0.97 },
+                    { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out", paused: true }
+                )
+                ScrollTrigger.create({
+                    trigger: caseCard,
+                    start: "top 82%",
+                    end: "bottom 8%",
+                    onEnter:     () => ctl.play(),
+                    onLeave:     () => ctl.reverse(),
+                    onEnterBack: () => ctl.play(),
+                    onLeaveBack: () => ctl.reverse(),
+                })
+            }
+
         })
 
-        return () => ctx.revert()
-    }, [hydrated])
+        // Re-measure after all DOM is settled (Lenis may not be ready on first run)
+        const tid = setTimeout(() => ScrollTrigger.refresh(), 400)
+
+        return () => {
+            clearTimeout(tid)
+            ctx.revert()
+        }
+    }, [hydrated, prefersReduced])
 
     // left tracker sections (IDs must exist below)
     const sectionsList: Milestone[] = [
@@ -930,192 +1003,257 @@ export default function HomePage() {
             {/* Left milestone tracker (lg+) */}
             <ScrollMilestones sections={sectionsList} hideWhenInView="#site-footer" disableBelow={1024} topOffsetPx={96} />
 
-            {/* Hero */}
+            {/* ── Hero ──────────────────────────────────────────────────────── */}
             <section
                 id="hero"
                 ref={heroRef}
-                className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50"
+                className="relative overflow-hidden bg-white min-h-screen flex items-center -mt-[72px] -mx-4 sm:-mx-6 lg:-mx-8"
             >
+                {/* CSS mesh background for light hero */}
+                <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
+                    {/* Subtle dot grid */}
+                    <div className="absolute inset-0" style={{
+                        backgroundImage: "radial-gradient(circle, rgba(11,18,32,0.055) 1px, transparent 1px)",
+                        backgroundSize: "40px 40px",
+                    }} />
+                    {/* Blue glow center */}
+                    <div className="absolute inset-0" style={{
+                        background: "radial-gradient(ellipse 70% 50% at 50% 60%, rgba(37,99,235,0.06) 0%, transparent 70%)",
+                    }} />
+                    {/* Gold accent orb top-right */}
+                    <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full"
+                        style={{ background: "radial-gradient(circle, rgba(201,162,39,0.05) 0%, transparent 70%)" }} />
+                </div>
+
+                {/* Hero content — parallax on scroll */}
                 <motion.div
-                    className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32"
-                    variants={revealOnce}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true, amount: 0.25 }}
+                    className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-44 text-center"
+                    style={{ y: heroParallax }}
                 >
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                        {/* LEFT */}
-                        <div className="space-y-8">
-                            <div className="space-y-4">
-                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 leading-tight">
-                                    <span ref={splitRef}>Innovating Products</span>{" "}
-                                    <span className="text-gradient-revzion">Empowering Businesses.</span>
-                                </h1>
-                                <p className="text-xl text-gray-600 leading-relaxed max-w-2xl">
-                                    Revzion builds scalable SaaS, AI, and cross-platform solutions for startups and enterprises.
-                                </p>
-                            </div>
+                    {/* Eyebrow */}
+                    <p
+                        ref={eyebrowRef}
+                        className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C9A227] mb-7"
+                    >
+                        Enterprise Technology Partner
+                    </p>
 
-                            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 justify-center sm:justify-start items-stretch sm:items-center w-full max-w-2xl mx-auto">
-                                <ConsultationCTA label="Free Consultation" />
-                                <Button
-                                    asChild
-                                    size="lg"
-                                    variant="outline"
-                                    className="text-base sm:text-lg px-6 sm:px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white bg-transparent flex items-center justify-center w-full sm:w-auto"
-                                >
-                                    <Link href="/services">Explore Services</Link>
-                                </Button>
-                            </div>
+                    {/* Headline — two separate refs so SplitText doesn't fight <br/> + <span> */}
+                    <h1 className="text-5xl sm:text-6xl lg:text-[4.5rem] font-display font-semibold leading-[1.08] mb-5">
+                        <div ref={headlineRef} className="block text-[#0B1220]">Enterprise platforms,</div>
+                        <div ref={headlineBlueRef} className="block text-[#0B1220]">engineered to last.</div>
+                    </h1>
 
-                            <div className="flex items-center space-x-8 pt-4">
-                                {[
-                                    { value: "50+", label: "Projects Delivered" },
-                                    { value: "5★", label: "Client Rating" },
-                                    { value: "24/7", label: "Support" },
-                                ].map((m) => (
-                                    <motion.div key={m.label} whileHover={prefersReduced ? undefined : hoverCard} className="text-center">
-                                        <div className="text-2xl font-heading font-bold text-gray-900">{m.value}</div>
-                                        <div className="text-sm text-gray-600">{m.label}</div>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </div>
+                    {/* Aurum Gold rule — GSAP draws this in */}
+                    <div
+                        ref={goldRuleRef}
+                        className="mx-auto mb-7 h-[2px] w-10 rounded-full bg-[#C9A227]"
+                        aria-hidden
+                    />
 
-                        {/* RIGHT: Interactive mockups */}
-                        <div className="relative isolate z-10">
-                            <ProductShowcase blobShift={blobShift} />
-                        </div>
+                    {/* Subtext */}
+                    <p
+                        ref={subtextRef}
+                        className="text-lg sm:text-xl text-[#64748B] leading-relaxed max-w-2xl mx-auto mb-10"
+                    >
+                        We design and build mission-critical software, AI systems, and cloud infrastructure
+                        for organizations that can't afford to compromise on reliability.
+                    </p>
+
+                    {/* CTAs */}
+                    <div ref={ctaRowRef} className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                        <ConsultationCTA label="Start a Conversation" />
+                        <Button
+                            asChild
+                            size="lg"
+                            variant="outline"
+                            className="text-base px-8 py-3 border border-[#0B1220]/30 text-[#0B1220] hover:bg-[#0B1220]/5 bg-transparent transition-colors"
+                        >
+                            <Link href="/portfolio">See Our Work</Link>
+                        </Button>
+                    </div>
+
+                    {/* Stats */}
+                    <div
+                        ref={statsRef}
+                        className="inline-flex items-center divide-x divide-[#0B1220]/10"
+                    >
+                        {[
+                            { value: "50+",   label: "Projects Delivered" },
+                            { value: "5.0",   label: "Client Rating" },
+                            { value: "99.9%", label: "Uptime SLA" },
+                        ].map((m) => (
+                            <div key={m.label} className="px-8 text-center">
+                                <div className="text-2xl font-sans font-bold text-[#0B1220]">{m.value}</div>
+                                <div className="text-xs text-[#64748B] mt-1 tracking-wide">{m.label}</div>
+                            </div>
+                        ))}
                     </div>
                 </motion.div>
 
-                {/* 👇 brand-themed mouse-follow glow (behind content) */}
-                <BrandCursorGlow containerRef={heroRef as React.RefObject<HTMLElement>} size={320} opacity={0.24} />
+                {/* Single-row scrolling client ticker */}
+                <div className="absolute bottom-8 inset-x-0" aria-hidden>
+                    <p className="text-center text-[10px] uppercase tracking-[0.3em] text-[#64748B]/70 mb-4 font-semibold">
+                        Trusted by teams at
+                    </p>
+                    <div className="ticker-wrap overflow-hidden">
+                        <div className="flex w-max animate-ticker-l items-center">
+                            {[0, 1].map((copy) => (
+                                <div key={copy} className="flex items-center">
+                                    {([
+                                        { name: "EvolWe Ring", logo: "/case-studies/evolwe.png" },
+                                        { name: "Rynox",       logo: "/case-studies/rynox.png" },
+                                        { name: "Packagefy",   logo: null },
+                                        { name: "BeeSocial",   logo: "/case-studies/beesocial.png" },
+                                        { name: "Cognivia",    logo: "/case-studies/cognivia.png" },
+                                        { name: "GrowthFuse",  logo: null },
+                                        { name: "TechXellent", logo: "/logos/techxellent.svg" },
+                                        { name: "HealthArc",   logo: null },
+                                        { name: "Buildarc",    logo: null },
+                                        { name: "Jetshift",    logo: null },
+                                    ] as { name: string; logo: string | null }[]).map(({ name, logo }) => (
+                                        <span key={name} className="flex items-center gap-8 px-2">
+                                            <span className="flex items-center gap-2.5 cursor-default select-none group">
+                                                {logo ? (
+                                                    <Image
+                                                        src={logo}
+                                                        alt={name}
+                                                        width={90}
+                                                        height={36}
+                                                        className="h-8 w-auto object-contain grayscale opacity-70 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
+                                                        unoptimized
+                                                    />
+                                                ) : (
+                                                    <span className="text-[16px] font-semibold text-[#0B1220]/60 whitespace-nowrap tracking-tight group-hover:text-[#2563EB] transition-colors duration-300">
+                                                        {name}
+                                                    </span>
+                                                )}
+                                            </span>
+                                            <span className="text-[#C9A227]/70 text-[8px] shrink-0">◆</span>
+                                        </span>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Fade to paper at bottom — seamless transition to next section */}
+                <div
+                    aria-hidden
+                    className="absolute bottom-0 inset-x-0 h-28 pointer-events-none"
+                    style={{ background: "linear-gradient(to bottom, transparent, rgba(255,255,255,1) 80%)" }}
+                />
             </section>
 
             {/* Client Impact / Trust bar */}
             <TrustSection />
             {/* Services */}
-            <section id="services" className="py-12 sm:py-20 bg-gray-50" data-st-section>
+            <section id="services" className="py-24 sm:py-32 bg-[#EEF1F6]" data-st-section>
                 <motion.div
-                    className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+                    className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
                     variants={revealOnce}
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true, amount: 0 }}
                 >
-                    <div className="text-center mb-10 sm:mb-16">
-                        <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">What We Do Best</h2>
-                        <p className="text-base sm:text-xl text-gray-600 max-w-3xl mx-auto">
-                            From cutting-edge AI solutions to scalable SaaS platforms, we deliver technology that drives your business forward.
-                        </p>
+                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-16 gap-6">
+                        <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#C9A227] mb-4">Capabilities</p>
+                            <h2 className="text-3xl sm:text-4xl font-display font-semibold text-[#0B1220] leading-tight">
+                                What We Build
+                            </h2>
+                            <p className="text-[#64748B] mt-3 text-lg max-w-md">
+                                Six core disciplines. Delivered end-to-end.
+                            </p>
+                        </div>
+                        <Button asChild variant="outline" className="shrink-0 border-[#0B1220]/20 text-[#0B1220] hover:bg-[#0B1220] hover:text-white bg-white self-start sm:self-auto">
+                            <Link href="/services">View all <ArrowRight className="h-4 w-4 ml-1" /></Link>
+                        </Button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8" data-st-stagger>
-                        {[
-                            {
-                                icon: <Code className="h-8 w-8" />,
-                                title: "Custom Development",
-                                description: "Tailored solutions built with modern technologies to meet your unique business requirements.",
-                                stack: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "Tailwind CSS", "React", "GraphQL"],
-                            },
-                            {
-                                icon: <Brain className="h-8 w-8" />,
-                                title: "AI & Automation",
-                                description: "Intelligent systems that streamline operations and unlock new possibilities for growth.",
-                                stack: ["AI SDK", "OpenAI", "Groq", "xAI", "Vector DB", "Embeddings", "Workers", "Queues", "LangChain"],
-                            },
-                            {
-                                icon: <Zap className="h-8 w-8" />,
-                                title: "No-Code Solutions",
-                                description: "Rapid application development across all global platforms—from Shopify to Salla and beyond. We work with every regional platform, not just a few.",
-                                stack: ["Shopify", "WooCommerce", "Salla", "Zid", "Webflow", "Bubble", "Wix", "Squarespace", "Framer", "Airtable", "Make", "Zapier", "n8n", "Glide", "Flutterflow", "All Regions"],
-                            },
-                            {
-                                icon: <TrendingUp className="h-8 w-8" />,
-                                title: "Consulting",
-                                description: "Strategic guidance to help you make informed technology decisions and accelerate your digital transformation.",
-                                stack: ["Architecture", "Tech Stack", "Migrations", "Performance", "Security", "Scalability", "Roadmapping", "Team Building"],
-                            },
-                            {
-                                icon: <Layers className="h-8 w-8" />,
-                                title: "SaaS Solutions",
-                                description: "Scalable software-as-a-service platforms designed for rapid deployment and growth.",
-                                stack: ["Multi-tenant", "RBAC", "Stripe Billing", "Webhooks", "Audit Logs", "Analytics", "API Design", "White-label"],
-                            },
-                            {
-                                icon: <Cloud className="h-8 w-8" />,
-                                title: "Cloud & DevOps",
-                                description: "Secure, reliable infrastructure that scales with your business needs.",
-                                stack: ["Vercel", "AWS", "Neon", "Supabase", "Docker", "CI/CD", "Monitoring", "Observability", "RLS"],
-                            },
-                            {
-                                icon: <Smartphone className="h-8 w-8" />,
-                                title: "Mobile & Web Apps",
-                                description: "Cross-platform applications that deliver exceptional user experiences on any device.",
-                                stack: ["React Native", "Expo", "Kotlin MP", "PWA", "Jetpack Compose", "Offline-first", "App Store", "Play Store"],
-                            },
-                            {
-                                icon: <Database className="h-8 w-8" />,
-                                title: "Data & Analytics",
-                                description: "Transform raw data into actionable insights with modern data pipelines and visualization tools.",
-                                stack: ["PostgreSQL", "MongoDB", "Redis", "Prisma", "Drizzle", "Data Pipelines", "Dashboards", "BigQuery"],
-                            },
-                            {
-                                icon: <Shield className="h-8 w-8" />,
-                                title: "Security & Compliance",
-                                description: "Protect your digital assets with enterprise-grade security implementations and compliance frameworks.",
-                                stack: ["Authentication", "OAuth", "JWT", "Encryption", "GDPR", "SOC 2", "Penetration Testing", "Audit Trails"],
-                            },
-                        ].map((service, index) => (
-                            <motion.div
-                                key={service.title}
-                                whileHover={prefersReduced ? undefined : hoverCard}
-                                transition={{ type: "spring", stiffness: 200, damping: 24 }}
-                            >
-                                <Card className="group border-0 shadow-md hover:shadow-lg transition-shadow h-full">
-                                    <CardContent className="p-5 sm:p-8 flex flex-col h-full">
-                                        {/* Icon */}
-                                        <motion.div
-                                            className="text-primary mb-4"
-                                            whileHover={prefersReduced ? undefined : hoverIcon}
-                                        >
-                                            {service.icon}
-                                        </motion.div>
+                    {/* Bento grid — varying card sizes for visual rhythm */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3" data-st-stagger>
+                        {/* Row 1: large (2-col) + small */}
+                        <Link href="/services" className="md:col-span-2 bg-[#0B1220] rounded-2xl p-8 flex flex-col justify-between min-h-[220px] no-underline">
+                            <div className="flex items-start justify-between">
+                                <div className="w-12 h-12 rounded-xl border border-white/10 flex items-center justify-center text-[#2563EB]">
+                                    <Code className="h-6 w-6" />
+                                </div>
+                                <span className="text-[11px] font-mono text-white/20 select-none">01</span>
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-semibold text-white mb-2">Enterprise Software</h3>
+                                <p className="text-sm text-white/50 leading-relaxed max-w-lg">Custom platforms built around your workflows — ERP, CRM, HRMS, procurement, and internal tooling built to run critical operations.</p>
+                            </div>
+                        </Link>
 
-                                        {/* Title + description */}
-                                        <h3 className="text-xl font-heading font-semibold text-gray-900 mb-3">
-                                            {service.title}
-                                        </h3>
-                                        <p className="text-gray-600 leading-relaxed mb-4 flex-grow">
-                                            {service.description}
-                                        </p>
+                        <Link href="/services" className="bg-white rounded-2xl p-8 flex flex-col justify-between min-h-[220px] no-underline border border-[#D4D9E1]">
+                            <div className="flex items-start justify-between">
+                                <div className="w-12 h-12 rounded-xl bg-[#EEF1F6] flex items-center justify-center text-[#2563EB]">
+                                    <Brain className="h-6 w-6" />
+                                </div>
+                                <span className="text-[11px] font-mono text-[#0B1220]/20 select-none">02</span>
+                            </div>
+                            <div>
+                                <h3 className="text-[16px] font-semibold text-[#0B1220] mb-2">AI & Automation</h3>
+                                <p className="text-sm text-[#64748B] leading-relaxed">Assistants, knowledge systems, predictive analytics, and intelligent workflow engines.</p>
+                            </div>
+                        </Link>
 
-                                        {/* Accordion stays pinned at bottom */}
-                                        <Accordion type="single" collapsible className="mt-auto">
-                                            <AccordionItem value={`stack-${index}`}>
-                                                <AccordionTrigger className="text-left text-primary font-medium hover:no-underline">
-                                                    View Tech Stack
-                                                </AccordionTrigger>
-                                                <AccordionContent>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {service.stack.map((tech) => (
-                                                            <span
-                                                                key={tech}
-                                                                className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-xs"
-                                                                aria-label={`Technology ${tech}`}
-                                                            >
-                {tech}
-              </span>
-                                                        ))}
-                                                    </div>
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                        </Accordion>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        ))}
+                        {/* Row 2: small + large (2-col) */}
+                        <Link href="/services" className="bg-[#2563EB] rounded-2xl p-8 flex flex-col justify-between min-h-[220px] no-underline">
+                            <div className="flex items-start justify-between">
+                                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white">
+                                    <Layers className="h-6 w-6" />
+                                </div>
+                                <span className="text-[11px] font-mono text-white/30 select-none">03</span>
+                            </div>
+                            <div>
+                                <h3 className="text-[16px] font-semibold text-white mb-2">SaaS Platforms</h3>
+                                <p className="text-sm text-white/70 leading-relaxed">Multi-tenant SaaS with RBAC, billing, audit logs, and white-labelling.</p>
+                            </div>
+                        </Link>
+
+                        <Link href="/services" className="md:col-span-2 bg-white rounded-2xl p-8 flex flex-col justify-between min-h-[220px] no-underline border border-[#D4D9E1]">
+                            <div className="flex items-start justify-between">
+                                <div className="w-12 h-12 rounded-xl bg-[#EEF1F6] flex items-center justify-center text-[#2563EB]">
+                                    <Cloud className="h-6 w-6" />
+                                </div>
+                                <span className="text-[11px] font-mono text-[#0B1220]/20 select-none">04</span>
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-semibold text-[#0B1220] mb-2">Cloud & Infrastructure</h3>
+                                <p className="text-sm text-[#64748B] leading-relaxed max-w-lg">Cloud-native architecture for reliability and scale — Kubernetes, CI/CD, IaC, platform modernization, and DevOps that your team can own.</p>
+                            </div>
+                        </Link>
+
+                        {/* Row 3: two equal cards */}
+                        <Link href="/services" className="bg-white rounded-2xl p-8 flex flex-col justify-between min-h-[200px] no-underline border border-[#D4D9E1]">
+                            <div className="flex items-start justify-between">
+                                <div className="w-12 h-12 rounded-xl bg-[#EEF1F6] flex items-center justify-center text-[#2563EB]">
+                                    <Smartphone className="h-6 w-6" />
+                                </div>
+                                <span className="text-[11px] font-mono text-[#0B1220]/20 select-none">05</span>
+                            </div>
+                            <div>
+                                <h3 className="text-[16px] font-semibold text-[#0B1220] mb-2">Mobile & Cross-Platform</h3>
+                                <p className="text-sm text-[#64748B] leading-relaxed">Native-quality iOS and Android — React Native, Expo, and Kotlin Multiplatform.</p>
+                            </div>
+                        </Link>
+
+                        <Link href="/services" className="md:col-span-2 bg-[#C9A227]/10 border border-[#C9A227]/20 rounded-2xl p-8 flex flex-col justify-between min-h-[200px] no-underline">
+                            <div className="flex items-start justify-between">
+                                <div className="w-12 h-12 rounded-xl bg-[#C9A227]/15 flex items-center justify-center text-[#C9A227]">
+                                    <Database className="h-6 w-6" />
+                                </div>
+                                <span className="text-[11px] font-mono text-[#C9A227]/40 select-none">06</span>
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-semibold text-[#0B1220] mb-2">Data & Intelligence</h3>
+                                <p className="text-sm text-[#64748B] leading-relaxed max-w-lg">Turn operational data into decisions — executive dashboards, data warehouses, KPI reporting, and forecasting platforms.</p>
+                            </div>
+                        </Link>
                     </div>
                 </motion.div>
             </section>
@@ -1123,30 +1261,43 @@ export default function HomePage() {
             <BuildarcSection/>
 
             {/* Why Choose Us */}
-            <section id="why" className="py-20 bg-white" data-st-section>
+            <section id="why" className="py-20 sm:py-28 bg-white" data-st-section>
                 <motion.div
-                    className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+                    className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
                     variants={revealOnce}
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true, amount: 0.25 }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-8">Why Choose Revzion?</h2>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" data-st-stagger>
+                    <div className="mb-14">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C9A227] mb-4">Our Approach</p>
+                        <h2 className="text-3xl sm:text-4xl font-display font-semibold text-[#0B1220] max-w-lg">Why organizations choose Revzion</h2>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-12" data-st-stagger>
                         {[
-                            { title: "Proven Expertise", description: "Years of experience delivering successful projects across various industries and technologies." },
-                            { title: "Agile Approach", description: "Fast, iterative development process that adapts to your changing needs and market demands." },
-                            { title: "End-to-End Solutions", description: "From concept to deployment and beyond, we handle every aspect of your project lifecycle." },
-                            { title: "Future-Ready Technology", description: "We use cutting-edge tools and frameworks to ensure your solutions remain competitive." },
+                            {
+                                title: "Engineering-led from day one",
+                                description: "Every engagement is run under senior engineering oversight. Your architecture isn't reviewed after the fact — it's built right the first time."
+                            },
+                            {
+                                title: "We architect for years, not quarters",
+                                description: "Our platforms are designed to grow with your operations. Security, scalability, and extensibility are built in — never bolted on later."
+                            },
+                            {
+                                title: "AI embedded in workflows, not added as a feature",
+                                description: "We integrate intelligence at the system level so your platform improves with every transaction, decision, and data point your organization generates."
+                            },
+                            {
+                                title: "Security and compliance by design",
+                                description: "SOC 2, GDPR, ZATCA, ISO 27001 — enterprise compliance requirements are part of our delivery process from the first commit, not a final audit."
+                            },
                         ].map((item) => (
                             <motion.div key={item.title} whileHover={prefersReduced ? undefined : hoverCard}>
                                 <div className="flex items-start space-x-4">
-                                    <div className="flex-shrink-0 w-6 h-6 bg-gradient-revzion rounded-full flex items-center justify-center mt-1">
-                                        <div className="w-2 h-2 bg-white rounded-full" />
-                                    </div>
+                                    <div data-gold-bar className="flex-shrink-0 w-1 h-12 bg-[#C9A227] rounded-full mt-1" />
                                     <div>
-                                        <h3 className="text-lg font-heading font-semibold text-gray-900 mb-2">{item.title}</h3>
-                                        <p className="text-gray-600">{item.description}</p>
+                                        <h3 className="text-lg font-sans font-semibold text-[#0B1220] mb-2">{item.title}</h3>
+                                        <p className="text-[#64748B]">{item.description}</p>
                                     </div>
                                 </div>
                             </motion.div>
@@ -1161,9 +1312,9 @@ export default function HomePage() {
             {/* Tech Stacks */}
             <section id="stacks" className="py-20 relative overflow-hidden">
                 {/* soft background */}
-                <div className="pointer-events-none absolute inset-0 opacity-[0.08]">
-                    <div className="absolute -top-24 -right-24 w-[38rem] h-[38rem] rounded-full bg-gradient-revzion blur-3xl" />
-                    <div className="absolute -bottom-24 -left-24 w-[32rem] h-[32rem] rounded-full bg-blue-200 blur-3xl" />
+                <div className="pointer-events-none absolute inset-0 opacity-[0.06]">
+                    <div className="absolute -top-24 -right-24 w-[38rem] h-[38rem] rounded-full bg-[#2563EB] blur-3xl" />
+                    <div className="absolute -bottom-24 -left-24 w-[32rem] h-[32rem] rounded-full bg-[#EEF1F6] blur-3xl" />
                 </div>
 
                 <motion.div
@@ -1175,12 +1326,12 @@ export default function HomePage() {
                 >
                     {/* header */}
                     <div className="text-center mb-12 sm:mb-16">
-                        <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-3">
-                            Our Tech Stacks
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C9A227] mb-3">Engineering Stack</p>
+                        <h2 className="text-3xl sm:text-4xl font-display font-semibold text-[#0B1220] mb-3">
+                            How We Build
                         </h2>
-                        <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-                            We pick tools that are fast, secure, and scalable—then combine them with the right
-                            patterns so your product ships reliably and grows safely.
+                        <p className="text-lg sm:text-xl text-[#64748B] max-w-3xl mx-auto">
+                            We select tools that are fast, secure, and proven at enterprise scale — combined with the patterns that make them reliable in production.
                         </p>
 
                         {/* category badges */}
@@ -1208,7 +1359,7 @@ export default function HomePage() {
                             <AccordionItem value="frontend">
                                 <AccordionTrigger className="px-6 text-left">
                                     <div className="flex items-center gap-3">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#EEF1F6] text-[#2563EB]">
             {"</>"}
           </span>
                                         <span className="font-semibold">Frontend Technologies</span>
@@ -1294,7 +1445,7 @@ export default function HomePage() {
                             <AccordionItem value="mobile-webperf">
                                 <AccordionTrigger className="px-6 text-left">
                                     <div className="flex items-center gap-3">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#EEF1F6] text-[#2563EB]">
             <Zap className="h-4 w-4" />
           </span>
                                         <span className="font-semibold">Mobile, PWA & Performance</span>
@@ -1349,7 +1500,7 @@ export default function HomePage() {
                             <AccordionItem value="design-accessibility">
                                 <AccordionTrigger className="px-6 text-left">
                                     <div className="flex items-center gap-3">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#EEF1F6] text-[#2563EB]">
             <Layers className="h-4 w-4" />
           </span>
                                         <span className="font-semibold">Design Systems & Accessibility</span>
@@ -1410,7 +1561,7 @@ export default function HomePage() {
                             <AccordionItem value="backend">
                                 <AccordionTrigger className="px-6 text-left">
                                     <div className="flex items-center gap-3">
-                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary"><Code className="h-4 w-4" /></span>
+                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#EEF1F6] text-[#2563EB]"><Code className="h-4 w-4" /></span>
                                         <span className="font-semibold">Backend & APIs</span>
                                     </div>
                                 </AccordionTrigger>
@@ -1456,7 +1607,7 @@ export default function HomePage() {
                             <AccordionItem value="data-cloud">
                                 <AccordionTrigger className="px-6 text-left">
                                     <div className="flex items-center gap-3">
-                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary"><Cloud className="h-4 w-4" /></span>
+                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#EEF1F6] text-[#2563EB]"><Cloud className="h-4 w-4" /></span>
                                         <span className="font-semibold">Data, Cloud & DevOps</span>
                                     </div>
                                 </AccordionTrigger>
@@ -1502,7 +1653,7 @@ export default function HomePage() {
                             <AccordionItem value="ai">
                                 <AccordionTrigger className="px-6 text-left">
                                     <div className="flex items-center gap-3">
-                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-primary"><Brain className="h-4 w-4" /></span>
+                                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#EEF1F6] text-[#2563EB]"><Brain className="h-4 w-4" /></span>
                                         <span className="font-semibold">AI & Automation</span>
                                     </div>
                                 </AccordionTrigger>
@@ -1566,8 +1717,82 @@ export default function HomePage() {
                 </motion.div>
             </section>
 
+            {/* FAQ */}
+            <section id="faq" className="py-24 sm:py-32 bg-white" data-st-section>
+                <motion.div
+                    className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8"
+                    variants={revealOnce}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, amount: 0.15 }}
+                >
+                    <div className="text-center mb-14">
+                        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#C9A227] mb-4">FAQ</p>
+                        <h2 className="text-3xl sm:text-4xl font-display font-semibold text-[#0B1220] mb-4">
+                            Frequently Asked Questions
+                        </h2>
+                        <p className="text-[#64748B]">Everything you need to know before we start building together.</p>
+                    </div>
+
+                    <Accordion type="single" collapsible className="w-full divide-y divide-[#EEF1F6]">
+                        {[
+                            {
+                                q: "What services does Revzion offer?",
+                                a: "Revzion delivers enterprise software engineering across six disciplines: SaaS platform development, AI & automation systems, mobile & cross-platform apps (Kotlin Multiplatform, React Native), cloud & DevOps infrastructure, data & intelligence platforms, and custom enterprise software (ERP, CRM, HRMS).",
+                            },
+                            {
+                                q: "How long does it take to build a software product?",
+                                a: "A typical MVP takes 8–14 weeks from signed scope to production. A full-featured platform is 4–6 months. We ship in weekly vertical slices with working demos each sprint, so you see real progress from week one.",
+                            },
+                            {
+                                q: "Do you work with startups or enterprises?",
+                                a: "Both. Startups get a senior team that moves fast, keeps scope tight, and builds for scale from day one. Enterprises get structured delivery, compliance-aware architecture, and deep integration experience. We adapt our process to your stage.",
+                            },
+                            {
+                                q: "What does a typical engagement look like?",
+                                a: "We start with a focused Discovery session (1–2 weeks) to lock in scope, risks, and success metrics. Then we build in weekly sprints with demos, changelogs, and a burndown you can watch in real time. After launch, we stay on for operate & scale.",
+                            },
+                            {
+                                q: "What technologies does Revzion specialise in?",
+                                a: "Our core stack: Next.js, React, TypeScript, Node.js on the web; Kotlin Multiplatform (KMP), Swift/SwiftUI, Jetpack Compose for mobile; AWS, GCP, Vercel, Kubernetes for cloud; PostgreSQL, Redis, vector databases for data. We also build with LLMs (OpenAI, Anthropic, Groq) and agentic pipelines.",
+                            },
+                            {
+                                q: "How does pricing work?",
+                                a: "We work on fixed-scope projects and retainer-based engagements. Fixed scope gives you a locked estimate after Discovery. Retainers give you a dedicated team at a monthly rate with flexible priorities. Use the Estimate page for a rough range, or contact us directly for a detailed quote.",
+                            },
+                            {
+                                q: "Where is Revzion located and which time zones do you cover?",
+                                a: "Headquartered in Jhansi, Uttar Pradesh, India. We serve clients across the US, UK, Europe, Middle East, and South Asia. Our team is distributed and structured for async-first collaboration, with overlap windows for real-time calls across most time zones.",
+                            },
+                            {
+                                q: "What is Kotlin Multiplatform and why does Revzion use it?",
+                                a: "Kotlin Multiplatform (KMP) lets us share 60–80% of business logic, networking, and data layers between iOS and Android, while keeping fully native UI on each platform. The result: faster development, cheaper maintenance, native performance — no compromises.",
+                            },
+                        ].map(({ q, a }, i) => (
+                            <AccordionItem key={i} value={`faq-${i}`} className="border-0 py-1">
+                                <AccordionTrigger className="text-left text-[15px] font-semibold text-[#0B1220] hover:text-[#2563EB] hover:no-underline py-5 transition-colors duration-200 [&[data-state=open]]:text-[#2563EB]">
+                                    {q}
+                                </AccordionTrigger>
+                                <AccordionContent className="text-[#64748B] leading-relaxed pb-5 text-[15px]">
+                                    {a}
+                                </AccordionContent>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
+
+                    <div className="mt-10 text-center">
+                        <p className="text-sm text-[#64748B]">
+                            Still have questions?{" "}
+                            <Link href="/contact" className="text-[#2563EB] font-semibold hover:underline">
+                                Talk to our team →
+                            </Link>
+                        </p>
+                    </div>
+                </motion.div>
+            </section>
+
             {/* CTA */}
-            <section id="cta" className="py-20 bg-gradient-revzion">
+            <section id="cta" className="py-20 bg-[#0B1220]">
                 <motion.div
                     className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
                     variants={revealOnce}
@@ -1575,21 +1800,22 @@ export default function HomePage() {
                     whileInView="show"
                     viewport={{ once: true, amount: 0.25 }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-6">
-                        Ready to Transform Your Business?
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C9A227] mb-6">Start a conversation</p>
+                    <h2 className="text-3xl sm:text-4xl font-display font-semibold text-white mb-6">
+                        Let's build the platform your operations depend on.
                     </h2>
-                    <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-                        Let's discuss how we can help you build innovative solutions that drive growth and success.
+                    <p className="text-lg text-[#64748B] mb-8 max-w-2xl mx-auto">
+                        Talk directly with our team about your technical requirements. No discovery calls, no sales decks — just a focused conversation about what you need to build.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button asChild size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-3">
-                            <Link href="/contact">Start Your Project</Link>
+                        <Button asChild size="lg" variant="secondary" className="bg-white text-[#0B1220] hover:bg-[#EEF1F6] text-lg px-8 py-3 font-semibold">
+                            <Link href="/contact">Start the Conversation</Link>
                         </Button>
                         <Button
                             asChild
                             size="lg"
                             variant="outline"
-                            className="border-2 border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-3 bg-transparent"
+                            className="border border-white/20 text-white hover:bg-white/10 text-lg px-8 py-3 bg-transparent"
                         >
                             <Link href="/portfolio">View Our Work</Link>
                         </Button>

@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { ShareActions } from "../ShareActions"
+import { createArticleSchema, createBreadcrumbSchema } from "@/lib/schemas"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://app.revzion.in";
 
@@ -94,21 +95,32 @@ export default async function BlogPost({ params }: { params: Promise<{ id: strin
             <Navigation />
 
             <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-                {/* JSON-LD */}
+                {/* Article JSON-LD */}
                 <script
                     type="application/ld+json"
-                    // eslint-disable-next-line react/no-danger
                     dangerouslySetInnerHTML={{
-                        __html: JSON.stringify({
-                            "@context": "https://schema.org",
-                            "@type": "Article",
-                            headline: post.title,
-                            datePublished: date,
-                            author: [{ "@type": "Person", name: post.author.name }],
-                            image: post.coverImage ? [post.coverImage] : undefined,
-                            mainEntityOfPage: { "@type": "WebPage", "@id": shareUrl },
+                        __html: JSON.stringify(createArticleSchema({
+                            title: post.title,
                             description: post.description,
-                        }),
+                            url: shareUrl,
+                            imageUrl: post.coverImage ?? undefined,
+                            datePublished: date,
+                            dateModified: post.createdAt,
+                            authorName: post.author.name,
+                            keywords: post.tags,
+                            category: post.category,
+                        })),
+                    }}
+                />
+                {/* Breadcrumb JSON-LD */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify(createBreadcrumbSchema([
+                            { name: "Home", url: "https://www.revzion.com" },
+                            { name: "Blog", url: "https://www.revzion.com/blogs" },
+                            { name: post.title, url: shareUrl },
+                        ])),
                     }}
                 />
 
