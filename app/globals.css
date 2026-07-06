@@ -59,11 +59,20 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* Brand aliases */
+  /* Brand aliases (legacy) */
   --revzion-blue: oklch(0.525 0.198 258.338);      /* #2563EB */
   --revzion-light-blue: oklch(0.725 0.142 258.338);/* #38BDF8 */
   --revzion-navy: oklch(0.145 0.016 258.338);      /* #0F172A */
   --revzion-gray: oklch(0.556 0.016 258.338);      /* #64748B */
+
+  /* ── Revzion Brand Identity Tokens ── */
+  --rvz-ink: #0b1220;          /* Primary brand surface — headlines, dark bg */
+  --rvz-charcoal: #1f2937;     /* Secondary dark surface */
+  --rvz-slate: #64748b;        /* Body text on light surfaces */
+  --rvz-mist: #eef1f6;         /* Quiet section background */
+  --rvz-paper: #ffffff;        /* Default page background */
+  --rvz-signal-blue: #2563eb;  /* Accent: CTAs, links, focus rings */
+  --rvz-aurum-gold: #c9a227;   /* Accent: editorial marks, decorative — light surfaces only */
 }
 
 /* ---------- Dark theme ---------- */
@@ -159,14 +168,24 @@
 
   /* Fonts */
   --font-sans: var(--font-inter);
-  --font-heading: var(--font-inter);
+  --font-heading: var(--font-inter);      /* Inter — H3, H4, UI, body */
+  --font-display: var(--font-fraunces);   /* Fraunces — H1, H2 display only */
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  /* Brand color tokens */
+  /* Legacy brand aliases */
   --color-revzion-blue: var(--revzion-blue);
   --color-revzion-light-blue: var(--revzion-light-blue);
   --color-revzion-navy: var(--revzion-navy);
   --color-revzion-gray: var(--revzion-gray);
+
+  /* ── Revzion Brand Color Utilities ── */
+  --color-ink: var(--rvz-ink);
+  --color-charcoal: var(--rvz-charcoal);
+  --color-rvz-slate: var(--rvz-slate);
+  --color-mist: var(--rvz-mist);
+  --color-paper: var(--rvz-paper);
+  --color-signal-blue: var(--rvz-signal-blue);
+  --color-aurum-gold: var(--rvz-aurum-gold);
 }
 
 /* ---------- Base ---------- */
@@ -174,11 +193,17 @@
   * { @apply border-border outline-ring/50; }
   body { @apply bg-background text-foreground font-sans; }
 
-  /* Headings use the heading font + slight tracking */
-  h1,h2,h3,h4,h5,h6 {
+  /* H1 / H2 — Fraunces display (brand spec: 600, left-aligned, tight leading) */
+  h1, h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  /* H3+ — Inter 700, tighter than default */
+  h3, h4, h5, h6 {
     font-family: var(--font-sans);
     font-weight: 700;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.005em;
   }
 }
 
@@ -186,6 +211,27 @@
 html, body { max-width: 100%; overflow-x: clip; }
 
 /* ---------- Motion helpers ---------- */
+@keyframes ticker-left  { from { transform: translateX(0) }    to { transform: translateX(-50%) } }
+@keyframes ticker-right { from { transform: translateX(-50%) } to { transform: translateX(0) } }
+.animate-ticker-l { animation: ticker-left  40s linear infinite; }
+.animate-ticker-r { animation: ticker-right 30s linear infinite; }
+.ticker-wrap {
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 12%,
+    black 88%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 12%,
+    black 88%,
+    transparent 100%
+  );
+}
+
 @keyframes spin-slow { to { transform: rotate(360deg); } }
 .animate-spin-slow { animation: spin-slow 18s linear infinite; }
 
@@ -194,14 +240,13 @@ html, body { max-width: 100%; overflow-x: clip; }
 
 /* ---------- Utilities (single source of truth for gradients) ---------- */
 @layer utilities {
+  /* Signal Blue — used for confidence bars, pill accents, focus indicators */
   .bg-gradient-revzion {
-    background-image: linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #06b6d4 100%);
+    background-color: #2563eb;
   }
+  /* Ink highlight — used for editorial text accents */
   .text-gradient-revzion {
-    background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 60%, #22d3ee 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: #2563eb;
   }
 
   /* Hide scrollbars where needed */

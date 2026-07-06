@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import ClientSplash from "@/components/ClientSplash";
@@ -15,6 +15,13 @@ const inter = Inter({
     subsets: ["latin"],
     display: "swap",
     variable: "--font-inter"
+});
+
+const fraunces = Fraunces({
+    subsets: ["latin"],
+    display: "swap",
+    weight: ["500", "600"],
+    variable: "--font-fraunces",
 });
 
 export const metadata: Metadata = {
@@ -261,10 +268,8 @@ export const metadata: Metadata = {
         email: false
     },
 
-    verification: {
-        google: "your-google-verification-code",
-        yandex: "your-yandex-verification-code"
-    }
+    // verification: { google: "paste-your-google-search-console-token-here" }
+
 };
 
 export default function RootLayout({
@@ -324,7 +329,7 @@ export default function RootLayout({
         </head>
 
         <body
-            className={`${inter.variable} antialiased bg-white text-gray-900`}
+            className={`${inter.variable} ${fraunces.variable} antialiased bg-white text-gray-900`}
             style={{ overscrollBehaviorX: "contain" }}
             suppressHydrationWarning
         >
@@ -363,9 +368,6 @@ export default function RootLayout({
         <SpeedInsights />
 
         {/* GSAP + Vercel analytics */}
-        <Script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" strategy="afterInteractive" />
-        <Script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" strategy="afterInteractive" />
-        <Script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrambleTextPlugin.min.js" strategy="afterInteractive" />
         <Analytics />
         </body>
         </html>
