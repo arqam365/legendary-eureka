@@ -25,6 +25,7 @@ export default function PrivacyPolicyPage() {
         { id: "security", label: "Security" },
         { id: "children", label: "Children" },
         { id: "cookies", label: "Cookies" },
+        { id: "business-info", label: "Business Information" },
         { id: "contact", label: "Contact Us" },
     ];
 
@@ -124,8 +125,7 @@ export default function PrivacyPolicyPage() {
                     {/* Main content */}
                     <article className="prose prose-gray max-w-none prose-headings:scroll-mt-28">
                         <p>
-                            This Privacy Policy explains how <strong>Revzion</strong> (“we”, “us”, “our”) collects, uses, discloses,
-                            and safeguards information when you use our website, products, and services (collectively, the “Services”).
+                            This Privacy Policy explains how <strong>Revzion</strong>, operated by <strong>REVZION GLOBAL TECHNOLOGIES LLP</strong> (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;), collects, uses, discloses, and safeguards information when you use our website, products, and services (collectively, the &quot;Services&quot;).
                         </p>
 
                         <h2 id="info-we-collect">Information We Collect</h2>
@@ -198,6 +198,52 @@ export default function PrivacyPolicyPage() {
 
                         <h2 id="cookies">Cookies</h2>
                         <p>You can control cookies via your browser settings. Where required, we’ll request consent via a banner.</p>
+
+                        <h2 id="business-info">Business Information</h2>
+                        <p>
+                            Revzion is operated by <strong>REVZION GLOBAL TECHNOLOGIES LLP</strong>, a registered business entity in India.
+                            The following information is provided for legal, regulatory, and platform verification purposes.
+                        </p>
+                        <div
+                            className="not-prose mt-4 rounded-2xl border bg-white shadow-sm overflow-hidden"
+                            itemScope
+                            itemType="https://schema.org/Organization"
+                        >
+                            <dl className="divide-y divide-gray-100">
+                                <div className="grid grid-cols-[180px_1fr] px-5 py-3 text-sm">
+                                    <dt className="font-semibold text-gray-700">Legal Name</dt>
+                                    <dd className="text-gray-900" itemProp="legalName">REVZION GLOBAL TECHNOLOGIES LLP</dd>
+                                </div>
+                                <div className="grid grid-cols-[180px_1fr] px-5 py-3 text-sm" itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
+                                    <dt className="font-semibold text-gray-700">Country</dt>
+                                    <dd className="text-gray-900" itemProp="addressCountry">India</dd>
+                                </div>
+                                <div className="grid grid-cols-[180px_1fr] px-5 py-3 text-sm">
+                                    <dt className="font-semibold text-gray-700">Street Address</dt>
+                                    <dd className="text-gray-900" itemProp="streetAddress">951 Civil Lines, Ghani Compound</dd>
+                                </div>
+                                <div className="grid grid-cols-[180px_1fr] px-5 py-3 text-sm">
+                                    <dt className="font-semibold text-gray-700">Town/City</dt>
+                                    <dd className="text-gray-900" itemProp="addressLocality">Jhansi</dd>
+                                </div>
+                                <div className="grid grid-cols-[180px_1fr] px-5 py-3 text-sm">
+                                    <dt className="font-semibold text-gray-700">State/Region</dt>
+                                    <dd className="text-gray-900" itemProp="addressRegion">Uttar Pradesh</dd>
+                                </div>
+                                <div className="grid grid-cols-[180px_1fr] px-5 py-3 text-sm">
+                                    <dt className="font-semibold text-gray-700">Postcode</dt>
+                                    <dd className="text-gray-900" itemProp="postalCode">284002</dd>
+                                </div>
+                                <div className="grid grid-cols-[180px_1fr] px-5 py-3 text-sm">
+                                    <dt className="font-semibold text-gray-700">Business Phone</dt>
+                                    <dd className="text-gray-900" itemProp="telephone">+91 6387161020</dd>
+                                </div>
+                                <div className="grid grid-cols-[180px_1fr] px-5 py-3 text-sm">
+                                    <dt className="font-semibold text-gray-700">Tax ID</dt>
+                                    <dd className="text-gray-900" itemProp="taxID">ABOFR5222L</dd>
+                                </div>
+                            </dl>
+                        </div>
 
                         {/* Contact card */}
                         <div
