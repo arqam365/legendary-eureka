@@ -1,37 +1,25 @@
-import Link from "next/link";
-import { Suspense } from "react";
-import type { Viewport } from "next";
-import RetryButton from "@/components/error/RetryButton"; // client component; uses useSearchParams
-
-// ✅ put themeColor here (NOT in metadata) to silence the warning
-export const viewport: Viewport = { themeColor: "#0a0a0a" };
+import Link from "next/link"
+import { Navigation } from "@/components/navigation"
+import { Footer } from "@/components/footer"
 
 export default function NotFound() {
     return (
-        <main className="min-h-[70vh] grid place-items-center bg-white">
-            <div className="max-w-xl text-center space-y-6 p-8 rounded-3xl border bg-gray-50/60 backdrop-blur">
-                <p className="text-sm text-blue-600 font-medium">404 — Page not found</p>
-                <h1 className="text-3xl font-bold text-gray-900">We can’t find that page.</h1>
-                <p className="text-gray-600">It may have been moved or deleted. Try going home or refresh.</p>
-
-                <div className="flex flex-wrap gap-3 justify-center">
-                    <Link href="/" className="px-4 py-2 rounded-full bg-primary text-white">
-                        Go to Home
-                    </Link>
-
-                    {/* ✅ wrap the client helper in Suspense to satisfy Next.js */}
-                    <Suspense fallback={<span className="px-4 py-2 rounded-full border">Loading…</span>}>
-                        <RetryButton />
-                    </Suspense>
-
-                    <a
-                        href="mailto:hello@yourdomain.com?subject=Missing%20page"
-                        className="px-4 py-2 rounded-full border"
-                    >
-                        Report issue
-                    </a>
-                </div>
-            </div>
-        </main>
-    );
+        <div className="min-h-screen bg-white">
+            <Navigation />
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
+                <p className="eyebrow">Error 404</p>
+                <h1 className="mt-4 text-4xl sm:text-5xl text-[#0B1220]">We can't find that page.</h1>
+                <p className="mt-5 text-lg text-[#1F2937] max-w-xl">
+                    It may have moved or no longer exists. Try one of these instead.
+                </p>
+                <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-[#2563EB] font-medium">
+                    <li><Link href="/" className="underline underline-offset-4">Home</Link></li>
+                    <li><Link href="/services" className="underline underline-offset-4">Services</Link></li>
+                    <li><Link href="/portfolio" className="underline underline-offset-4">Portfolio</Link></li>
+                    <li><Link href="/contact" className="underline underline-offset-4">Contact</Link></li>
+                </ul>
+            </section>
+            <Footer />
+        </div>
+    )
 }

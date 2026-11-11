@@ -11,7 +11,7 @@ export interface CaseStudy {
   duration: string
   team?: string
   technologies: string[]
-  heroImage: string
+  heroImage?: string
   summary?: string
   liveUrl?: string
   featured: boolean
@@ -72,59 +72,12 @@ export const CASE_STUDIES: CaseStudy[] = [
     results: {
       title: "The Impact",
       description:
-        "The launch site achieved strong organic traffic from day one, earning coverage from Forbes, WIRED, and TechCrunch. The no-subscription model became Evolwe's key conversion driver against Oura Ring in the Indian market.",
+        "The product site and companion app launched together. Evolwe's no-subscription model is the core of its positioning against subscription-gated rings in the Indian market.",
       metrics: [
         { label: "Play Store Rating", value: "4.7/5" },
         { label: "Press Coverage", value: "3 majors" },
         { label: "Biometrics Tracked", value: "15+" },
         { label: "Subscription Cost", value: "₹0" },
-      ],
-    },
-  },
-  {
-    id: "rynox",
-    title: "Rynox",
-    client: "Rynox (Product)",
-    category: "SaaS Platforms",
-    duration: "8 months",
-    team: "Revzion team",
-    technologies: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "Stripe", "Redis", "Vercel", "Tailwind CSS"],
-    heroImage: "/screenshots/rynox.jpg",
-    summary: "All-in-one billing & franchise command platform for multi-location beauty and wellness brands",
-    liveUrl: "https://www.rynox.io/",
-    featured: true,
-    problem: {
-      title: "The Challenge",
-      description:
-        "Franchise operators managing 5–500+ locations were running billing on generic POS software never designed for multi-unit command. They had no unified view of pricing consistency, no franchise-level profit auditing, and no way to benchmark individual location performance without manual spreadsheet reconciliation.",
-      challenges: [
-        "Generic POS software not designed for multi-unit franchise operations",
-        "No unified pricing visibility or consistency enforcement across locations",
-        "Manual spreadsheet reconciliation for franchise vs. location P&L comparisons",
-        "Commission and incentive disputes causing month-end friction",
-      ],
-    },
-    solution: {
-      title: "Our Approach",
-      description:
-        "We designed and built Rynox from the ground up — a multi-tenant SaaS platform with location-level data isolation, a centralised pricing engine, an analytics layer surfacing franchise vs. location P&L, and a staff incentive calculator that eliminates manual commission disputes.",
-      features: [
-        "Single dashboard controls pricing and settings across every franchise unit",
-        "Real-time P&L comparison identifying underperforming units vs. franchise average",
-        "Unified billing supporting Stripe, PayPal, and Square with split payments",
-        "Automated commission and incentive calculations reducing payroll admin",
-        "Native connectors for QuickBooks, Xero, Zapier, Mailchimp, and Slack",
-      ],
-    },
-    results: {
-      title: "The Impact",
-      description:
-        "Rynox serves franchise networks from single units to 500+ location operations. Operators replace a 3-tool stack with one command centre. Customer acquisition accelerated through word-of-mouth within the beauty franchise community.",
-      metrics: [
-        { label: "Locations Supported", value: "500+" },
-        { label: "Tools Replaced", value: "3 → 1" },
-        { label: "Billing Integrations", value: "3 gateways" },
-        { label: "Accounting Sync", value: "Real-time" },
       ],
     },
   },
@@ -160,18 +113,17 @@ export const CASE_STUDIES: CaseStudy[] = [
         "ML dropout prediction identifying at-risk students 14 days before disengagement",
         "Automated recurring billing, reminders, and instalment management",
         "Fully branded white-label iOS and Android apps published under the institute's name",
-        "SOC 2, GDPR, and ISO 27001 certified with end-to-end encryption and audit logging",
+        "Encryption in transit and at rest, with audit logging",
       ],
     },
     results: {
       title: "The Impact",
       description:
-        "Cognivia operates at 99.7% uptime and is positioned head-to-head against Classplus and Teachmint. AI-powered dropout detection and automated fee recovery directly address the two biggest revenue leaks in the coaching industry.",
+        "AI-powered dropout detection and automated fee recovery target the two biggest revenue leaks in the coaching industry.",
       metrics: [
-        { label: "Compliance Certs", value: "3" },
-        { label: "Uptime SLA", value: "99.7%" },
-        { label: "Dropout Detection", value: "14 days" },
-        { label: "Admin Hours Saved", value: "80%+" },
+        { label: "Dropout Early Warning", value: "14 days" },
+        { label: "White-label Apps", value: "iOS + Android" },
+        { label: "Fee Collection", value: "Automated" },
       ],
     },
   },
@@ -186,7 +138,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     heroImage: "/screenshots/scottish-home-bargains.jpg",
     summary: "Full-stack e-commerce platform for a UK home goods & DIY retailer with BNPL integration",
     liveUrl: "https://www.scottishhomebargains.uk/",
-    featured: false,
+    featured: true,
     problem: {
       title: "The Challenge",
       description:
@@ -213,59 +165,12 @@ export const CASE_STUDIES: CaseStudy[] = [
     results: {
       title: "The Impact",
       description:
-        "The platform went live with a full product catalogue, BNPL checkout reducing price-driven drop-off on larger home improvement purchases. The site is fully VAT-registered and GDPR-compliant for UK trading.",
+        "The platform went live with a full product catalogue, BNPL checkout reducing price-driven drop-off on larger home improvement purchases.",
       metrics: [
         { label: "Payment Methods", value: "4" },
         { label: "Product Categories", value: "10+" },
         { label: "Delivery Threshold", value: "£20" },
         { label: "Returns Window", value: "14 days" },
-      ],
-    },
-  },
-  {
-    id: "mawasim",
-    title: "Mawasim",
-    client: "Mawasim (Saudi Arabia)",
-    category: "E-Commerce",
-    duration: "3 months",
-    team: "Revzion team",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Arabic RTL", "Stripe", "WhatsApp API", "Vercel"],
-    heroImage: "/screenshots/mawasim.jpg",
-    summary: "Luxury premium dates e-commerce brand from Saudi Arabia with Arabic-first design",
-    liveUrl: "https://www.mawasim.com.sa/",
-    featured: false,
-    problem: {
-      title: "The Challenge",
-      description:
-        "A generations-old Saudi date merchant with unmatched product quality had no credible digital presence. Sales were entirely offline and through personal networks. The brand's 50-year heritage story was invisible to modern consumers who discover premium food through digital channels.",
-      challenges: [
-        "50-year heritage brand with zero digital presence or online discoverability",
-        "Sales entirely offline through personal networks with no e-commerce capability",
-        "Full Arabic RTL design required to serve the primary Saudi market authentically",
-        "B2B corporate gifting is a primary revenue channel in Saudi Arabia",
-      ],
-    },
-    solution: {
-      title: "Our Approach",
-      description:
-        "We designed and built a luxury bilingual e-commerce platform with full Arabic RTL support, premium food photography showcase, a heritage storytelling section communicating the brand's 50-year provenance, and a WhatsApp-integrated enquiry flow for B2B gifting orders.",
-      features: [
-        "Full RTL Arabic layout with EN/AR language toggle throughout",
-        "Heritage-driven product cards communicating origin region and artisanal quality",
-        "WhatsApp integration capturing B2B corporate gifting enquiries",
-        "SAR 500 free delivery threshold optimised for gifting average order value",
-        "Stripe checkout with Saudi Riyal pricing and KSA VAT compliance",
-      ],
-    },
-    results: {
-      title: "The Impact",
-      description:
-        "The platform gave Mawasim a flagship digital storefront worthy of a SAR 380+ product. The bilingual design serves both Arabic-speaking domestic buyers and international English-speaking audiences.",
-      metrics: [
-        { label: "Languages Supported", value: "2" },
-        { label: "Origin Regions", value: "12" },
-        { label: "Heritage Communicated", value: "50+ yrs" },
-        { label: "Free Delivery From", value: "SAR 500" },
       ],
     },
   },
@@ -356,10 +261,8 @@ export const CASE_STUDIES: CaseStudy[] = [
       description:
         "The website established Everyday Fitness as a credible, premium brand in the local market. Clear CTAs on every section reduce friction between interest and inquiry for the majority of users on mobile.",
       metrics: [
-        { label: "Load Time", value: "<1.5s" },
-        { label: "Lead Channels", value: "2" },
-        { label: "Mobile-First", value: "100%" },
-        { label: "Membership Tiers", value: "Clear CTAs" },
+        { label: "Lead Channels", value: "WhatsApp + email" },
+        { label: "Rendering", value: "Static (Next.js)" },
       ],
     },
   },
