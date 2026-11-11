@@ -6,6 +6,7 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import BuildarcSection from "@/components/BuildarcSection"
+import { BrowserFrame, PhoneFrame } from "@/components/brand/DeviceFrame"
 import { CASE_STUDIES } from "@/lib/case-studies"
 import { createFAQSchema } from "@/lib/schemas"
 
@@ -74,23 +75,41 @@ export default function HomePage() {
             <Navigation />
 
             {/* Hero */}
-            <section id="hero" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 sm:pt-28 sm:pb-24">
-                <p className="eyebrow mb-6">Software engineering partner</p>
-                <h1 className="max-w-4xl text-5xl sm:text-6xl lg:text-[4.5rem] leading-[1.06] text-[#0B1220]">
-                    Platforms engineered to last.
-                </h1>
-                <div aria-hidden className="mt-7 h-[2px] w-12 bg-[#C9A227]" />
-                <p className="mt-7 max-w-2xl text-lg sm:text-xl leading-relaxed text-[#1F2937]">
-                    We design and build SaaS platforms, AI systems and cross-platform apps for organisations that can't
-                    afford to compromise on reliability.
-                </p>
-                <div className="mt-10 flex flex-col sm:flex-row gap-3">
-                    <Button asChild size="lg" className="h-12 rounded-full bg-[#0B1220] px-7 text-base text-white hover:bg-[#1F2937]">
-                        <Link href="/contact">Start a conversation</Link>
-                    </Button>
-                    <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-[#D5DCE8] px-7 text-base text-[#0B1220]">
-                        <Link href="/portfolio">See our work</Link>
-                    </Button>
+            <section id="hero" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16 sm:pt-24 sm:pb-24">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-10 items-center">
+                    <div className="lg:col-span-6">
+                        <p className="eyebrow mb-6">Software engineering partner</p>
+                        <h1 className="text-5xl sm:text-6xl leading-[1.06] text-[#0B1220]">Platforms engineered to last.</h1>
+                        <div aria-hidden className="mt-7 h-[2px] w-12 bg-[#C9A227]" />
+                        <p className="mt-7 max-w-xl text-lg sm:text-xl leading-relaxed text-[#1F2937]">
+                            We design and build SaaS platforms, AI systems and cross-platform apps for organisations that
+                            can't afford to compromise on reliability.
+                        </p>
+                        <div className="mt-10 flex flex-col sm:flex-row gap-3">
+                            <Button asChild size="lg" className="h-12 rounded-full bg-[#0B1220] px-7 text-base text-white hover:bg-[#1F2937]">
+                                <Link href="/contact">Start a conversation</Link>
+                            </Button>
+                            <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-[#D5DCE8] px-7 text-base text-[#0B1220]">
+                                <Link href="/portfolio">See our work</Link>
+                            </Button>
+                        </div>
+                    </div>
+
+                    <figure className="lg:col-span-6">
+                        <div className="relative pb-10 pr-10 sm:pr-16">
+                            <BrowserFrame src="/screenshots/evolwe-ring.jpg" alt="Evolwe smart ring product website built by Revzion" priority sizes="(max-width: 1024px) 90vw, 560px" />
+                            <PhoneFrame
+                                src="/screenshots/gallery/evolwe-ring-app.jpg"
+                                alt="Evolwe smart ring companion app built by Revzion"
+                                sizes="160px"
+                                className="absolute bottom-0 right-0 w-[110px] sm:w-[150px]"
+                            />
+                        </div>
+                        <figcaption className="mt-4 text-sm text-[#64748B]">
+                            Shipped work: Evolwe product site and companion app.{" "}
+                            <Link href="/portfolio/evolwe-ring" className="text-[#2563EB] underline underline-offset-2">Read the case study</Link>
+                        </figcaption>
+                    </figure>
                 </div>
 
                 <div className="mt-16 border-t border-[#E4E9F1] pt-6">
