@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react"
+import { BrowserFrame, PhoneFrame } from "@/components/brand/DeviceFrame"
 
 type PageProps = { params: Promise<{ id: string }> }
 
@@ -136,6 +137,34 @@ export default async function CaseStudyPage({ params }: PageProps) {
                     </Card>
                 </div>
             </section>
+
+            {study.gallery?.length ? (
+                <section aria-labelledby="screens-heading" className="pb-16 bg-white">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <h2 id="screens-heading" className="text-3xl text-[#0B1220] mb-8">Screens</h2>
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                            {study.gallery.some((g) => g.device === "desktop") && (
+                                <div className="lg:col-span-7 space-y-8">
+                                    {study.gallery.filter((g) => g.device === "desktop").map((g) => (
+                                        <figure key={g.src}>
+                                            <BrowserFrame src={g.src} alt={g.alt} />
+                                            <figcaption className="mt-3 text-sm text-[#64748B]">{g.alt}</figcaption>
+                                        </figure>
+                                    ))}
+                                </div>
+                            )}
+                            <div className={`${study.gallery.some((g) => g.device === "desktop") ? "lg:col-span-5" : "lg:col-span-12"} grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-2`}>
+                                {study.gallery.filter((g) => g.device === "mobile").map((g) => (
+                                    <figure key={g.src}>
+                                        <PhoneFrame src={g.src} alt={g.alt} sizes="(max-width: 640px) 45vw, 240px" />
+                                        <figcaption className="mt-3 text-sm text-[#64748B]">{g.alt}</figcaption>
+                                    </figure>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            ) : null}
 
             <section className="py-16 bg-[#0B1220]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

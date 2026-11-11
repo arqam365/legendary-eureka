@@ -3,6 +3,12 @@ export interface CaseStudyMetric {
   value: string
 }
 
+export interface GalleryImage {
+  src: string
+  alt: string
+  device: "desktop" | "mobile"
+}
+
 export interface CaseStudy {
   id: string
   title: string
@@ -30,7 +36,7 @@ export interface CaseStudy {
     description: string
     metrics: CaseStudyMetric[]
   }
-  gallery?: string[]
+  gallery?: GalleryImage[]
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
@@ -43,6 +49,10 @@ export const CASE_STUDIES: CaseStudy[] = [
     team: "Revzion team",
     technologies: ["React Native", "TypeScript", "Next.js", "Node.js", "BLE SDK", "TensorFlow Lite", "AWS", "Vercel"],
     heroImage: "/screenshots/evolwe-ring.jpg",
+    gallery: [
+      { src: "/screenshots/gallery/evolwe-ring-mobile-1.jpg", alt: "Evolwe product site on mobile", device: "mobile" },
+      { src: "/screenshots/gallery/evolwe-ring-app.jpg", alt: "Evolwe companion app home screen with daily health score", device: "mobile" },
+    ],
     summary: "India's most advanced smart ring — companion app, AI health insights & product site",
     liveUrl: "https://evolwering.com/",
     featured: true,
@@ -90,6 +100,10 @@ export const CASE_STUDIES: CaseStudy[] = [
     team: "Revzion team",
     technologies: ["Next.js", "TypeScript", "React Native", "Node.js", "PostgreSQL", "OpenAI", "Redis", "AWS"],
     heroImage: "/screenshots/cognivia.jpg",
+    gallery: [
+      { src: "/screenshots/gallery/cognivia-desktop-2.jpg", alt: "Cognivia platform architecture section", device: "desktop" },
+      { src: "/screenshots/gallery/cognivia-mobile-2.jpg", alt: "Cognivia site on mobile — fee collection and data residency", device: "mobile" },
+    ],
     summary: "The operating system for modern educators — AI-first LMS with revenue automation",
     liveUrl: "https://cognivia-visit.vercel.app/",
     featured: true,
@@ -136,6 +150,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     team: "Revzion team",
     technologies: ["Next.js", "TypeScript", "Stripe", "Klarna", "Clearpay", "Tailwind CSS", "Vercel", "Tawk.to"],
     heroImage: "/screenshots/scottish-home-bargains.jpg",
+    gallery: [
+      { src: "/screenshots/gallery/scottish-home-bargains-desktop-2.jpg", alt: "Scottish Home Bargains brand and delivery sections", device: "desktop" },
+      { src: "/screenshots/gallery/scottish-home-bargains-mobile-1.jpg", alt: "Scottish Home Bargains storefront on mobile", device: "mobile" },
+      { src: "/screenshots/gallery/scottish-home-bargains-mobile-2.jpg", alt: "Scottish Home Bargains category tiles on mobile", device: "mobile" },
+    ],
     summary: "Full-stack e-commerce platform for a UK home goods & DIY retailer with BNPL integration",
     liveUrl: "https://www.scottishhomebargains.uk/",
     featured: true,
@@ -183,6 +202,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     team: "Revzion team",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Vercel", "Arabic RTL"],
     heroImage: "/screenshots/mazencito.jpg",
+    gallery: [
+      { src: "/screenshots/gallery/mazencito-desktop-2.jpg", alt: "Mazencito delivery partners section", device: "desktop" },
+      { src: "/screenshots/gallery/mazencito-mobile-1.jpg", alt: "Mazencito home screen on mobile", device: "mobile" },
+      { src: "/screenshots/gallery/mazencito-mobile-2.jpg", alt: "Mazencito delivery links on mobile", device: "mobile" },
+    ],
     summary: "Premium digital presence for a Neapolitan wood-fired pizza restaurant in Jeddah",
     liveUrl: "https://mazencito.vercel.app/",
     featured: false,
@@ -230,6 +254,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     team: "Revzion team",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Vercel"],
     heroImage: "/screenshots/everyday-fitness.jpg",
+    gallery: [
+      { src: "/screenshots/gallery/everyday-fitness-desktop-2.jpg", alt: "Everyday Fitness about section", device: "desktop" },
+      { src: "/screenshots/gallery/everyday-fitness-mobile-1.jpg", alt: "Everyday Fitness home screen on mobile", device: "mobile" },
+      { src: "/screenshots/gallery/everyday-fitness-mobile-2.jpg", alt: "Everyday Fitness about section on mobile", device: "mobile" },
+    ],
     summary: "High-performance fitness studio website with membership flows and class scheduling",
     liveUrl: "https://www.everydayfitness.in/",
     featured: false,
