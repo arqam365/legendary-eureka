@@ -25,7 +25,7 @@ export default function CookieCategoryRow({
                     <label htmlFor={id} className="block font-semibold text-gray-900">
                         {title}{" "}
                         {locked && (
-                            <span className="ml-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+                            <span className="ml-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700">
                 Required
               </span>
                         )}

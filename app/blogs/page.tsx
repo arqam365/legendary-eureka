@@ -6,7 +6,8 @@ import { BlogsClient, type Post } from "./BlogsClient";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-    title: "Blog · Revzion",
+    title: "Blog",
+    alternates: { canonical: "/blogs" },
     description:
         "Fresh thinking from Revzion — engineers, designers, and product leads sharing practical insights on AI, design, and engineering.",
 };
@@ -45,9 +46,9 @@ async function getPosts(): Promise<Post[]> {
         const res = await fetch(`${API_URL}/api/cms/public/posts`, {
             next: { revalidate: 60 },
         });
-        if (!res.ok) return [];
+        if (!res.ok || !res.headers.get("content-type")?.includes("application/json")) return [];
         const data: ApiPost[] = await res.json();
-        return data.map(mapApiPost);
+        return Array.isArray(data) ? data.map(mapApiPost) : [];
     } catch {
         return [];
     }
@@ -57,7 +58,7 @@ export default async function BlogsPage() {
     const posts = await getPosts();
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+        <div className="min-h-screen bg-white">
             <Navigation />
             <BlogsClient posts={posts} />
             <Footer />

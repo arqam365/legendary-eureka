@@ -5,7 +5,7 @@ import type { Metadata } from "next";
  * Provides reusable functions for consistent SEO across pages
  */
 
-const baseUrl = "https://www.revzion.com";
+const baseUrl = "https://www.revzion.in";
 const siteName = "Revzion";
 const defaultImage = "/og-image.png";
 const twitterHandle = "@revzion";

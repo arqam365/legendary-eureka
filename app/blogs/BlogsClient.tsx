@@ -117,17 +117,19 @@ export function BlogsClient({ posts }: { posts: Post[] }) {
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-8">
                 <div className="max-w-xl">
                     <h1 className="text-4xl sm:text-5xl font-heading font-extrabold text-gray-900">
-                        Revzion <span className="text-primary">Blog</span>
+                        Revzion Blog
                     </h1>
                     <p className="text-gray-600 mt-2 leading-relaxed">
                         Fresh thinking — engineers, designers, and product leads sharing practical insights on AI, design, and engineering.
                     </p>
 
                     <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-gray-600">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1">
-                            <strong className="font-medium text-gray-800">Updated</strong>
-                            <span>{sorted[0] ? formatDates(sorted[0].date) : "—"}</span>
-                        </span>
+                        {sorted[0] && (
+                            <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1">
+                                <strong className="font-medium text-gray-800">Updated</strong>
+                                <span>{formatDates(sorted[0].date)}</span>
+                            </span>
+                        )}
 
                         <button
                             type="button"
@@ -264,7 +266,7 @@ export function BlogsClient({ posts }: { posts: Post[] }) {
                                         <time dateTime={post.date} className="shrink-0">{formatDates(post.date)}</time>
                                         <span aria-hidden className="shrink-0">·</span>
                                         <span className="shrink-0">{readingTime(`${post.title} ${post.excerpt}`)}</span>
-                                        <span className="ml-auto capitalize rounded-full bg-gray-100 px-2.5 py-0.5 text-gray-600 font-medium text-[11px] shrink-0">
+                                        <span className="ml-auto capitalize rounded-full bg-gray-100 px-2.5 py-0.5 text-gray-700 font-medium text-[11px] shrink-0">
                                             {post.category}
                                         </span>
                                     </div>
@@ -280,7 +282,7 @@ export function BlogsClient({ posts }: { posts: Post[] }) {
                                     {post.tags?.length ? (
                                         <ul className="mt-2.5 flex flex-wrap gap-1.5">
                                             {post.tags.slice(0, 4).map((t) => (
-                                                <li key={t} className="text-[11px] rounded-md bg-gray-100 px-2 py-0.5 text-gray-600">
+                                                <li key={t} className="text-[11px] rounded-md bg-gray-100 px-2 py-0.5 text-gray-700">
                                                     {t}
                                                 </li>
                                             ))}
@@ -305,17 +307,22 @@ export function BlogsClient({ posts }: { posts: Post[] }) {
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-10 rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center shadow-sm"
+                    className="mt-10 rounded-2xl border border-gray-200 bg-white p-8"
                     role="status"
                     aria-live="polite"
                 >
-                    <p className="text-gray-800 font-semibold">No posts found</p>
-                    <p className="text-gray-500 mt-2">Try different keywords, or browse all posts below.</p>
-                    <div className="mt-4 flex items-center justify-center gap-3">
-                        <Link href="/blogs" className="rounded-full bg-primary px-4 py-2 text-white">
-                            View all posts
-                        </Link>
-                        <button
+                    <p className="text-gray-800 font-semibold">
+                        {posts.length === 0 ? "No posts published yet." : "No posts match your search."}
+                    </p>
+                    <p className="text-gray-500 mt-2">
+                        {posts.length === 0 ? (
+                            <>In the meantime, see our <Link href="/portfolio" className="text-primary underline underline-offset-2">case studies</Link>.</>
+                        ) : (
+                            "Try different keywords or reset the filters."
+                        )}
+                    </p>
+                    <div className="mt-4 flex items-center gap-3">
+                        {posts.length > 0 && <button
                             onClick={() => {
                                 setFilter("all");
                                 setQuery("");
@@ -323,7 +330,7 @@ export function BlogsClient({ posts }: { posts: Post[] }) {
                             className="rounded-full border px-4 py-2"
                         >
                             Reset filters
-                        </button>
+                        </button>}
                     </div>
                 </motion.div>
             )}
@@ -349,9 +356,6 @@ export function BlogsClient({ posts }: { posts: Post[] }) {
 
             {/* Bottom meta */}
             <footer className="mt-12 flex flex-wrap items-center justify-between gap-3 text-sm text-gray-600">
-                <p>
-                    Posting cadence: <span className="font-medium text-gray-800">Daily · Weekly · Monthly</span>
-                </p>
                 <div className="flex items-center gap-4">
                     <Link href="/blogs/rss.xml" className="text-primary hover:underline">
                         RSS Feed

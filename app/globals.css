@@ -7,8 +7,8 @@
 /* ---------- Light theme (default) ---------- */
 :root {
   /* Base surfaces & text */
-  --background: oklch(1 0 0);                 /* #ffffff */
-  --foreground: oklch(0.145 0 0);             /* near-black text */
+  --background: #ffffff;                 /* #ffffff */
+  --foreground: #0b1220;             /* near-black text */
 
   /* UI surfaces */
   --card: var(--background);
@@ -17,26 +17,26 @@
   --popover-foreground: var(--foreground);
 
   /* Brand */
-  --primary: oklch(0.525 0.198 258.338);      /* #2563EB */
-  --primary-foreground: oklch(1 0 0);         /* white on blue */
+  --primary: #2563eb;      /* #2563EB */
+  --primary-foreground: #ffffff;         /* white on blue */
 
   /* Secondary / muted */
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0.016 258.338); /* #64748B */
+  --secondary: #eef1f6;
+  --secondary-foreground: #0b1220;
+  --muted: #eef1f6;
+  --muted-foreground: #64748b; /* #64748B */
 
   /* Accents */
   --accent: var(--primary);
-  --accent-foreground: oklch(1 0 0);
+  --accent-foreground: #ffffff;
 
   /* Feedback */
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(1 0 0);     /* ✅ contrast fix (white) */
+  --destructive: #b91c1c;
+  --destructive-foreground: #ffffff;     /* ✅ contrast fix (white) */
 
   /* Controls */
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  --border: #e4e9f1;
+  --input: #d5dce8;
   --ring: var(--primary);
 
   /* Charts (light) */
@@ -86,7 +86,7 @@
   --popover-foreground: var(--foreground);
 
   --primary: oklch(0.525 0.198 258.338);
-  --primary-foreground: oklch(1 0 0);
+  --primary-foreground: #ffffff;
 
   --secondary: oklch(0.269 0.016 258.338);
   --secondary-foreground: oklch(0.985 0 0);
@@ -95,7 +95,7 @@
   --muted-foreground: oklch(0.708 0.016 258.338);
 
   --accent: var(--primary);
-  --accent-foreground: oklch(1 0 0);
+  --accent-foreground: #ffffff;
 
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.985 0 0);
@@ -188,6 +188,51 @@
   --color-aurum-gold: var(--rvz-aurum-gold);
 }
 
+/* ---------- Palette remap: Tailwind scales → brand ramps (guide pp. 23–28) ---------- */
+@theme {
+  --color-gray-50: #f7f9fb;
+  --color-gray-100: #eef1f6;
+  --color-gray-200: #e4e9f1;
+  --color-gray-300: #d5dce8;
+  --color-gray-400: #64748b;
+  --color-gray-500: #64748b;
+  --color-gray-600: #64748b;
+  --color-gray-700: #1f2937;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #0b1220;
+  --color-gray-950: #05070d;
+
+  --color-blue-50: #eef1f6;
+  --color-blue-100: #eef1f6;
+  --color-blue-200: #a3c1f8;
+  --color-blue-300: #74a0f4;
+  --color-blue-400: #4a7def;
+  --color-blue-500: #2563eb;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d53de;
+  --color-blue-800: #1743c4;
+  --color-blue-900: #10339b;
+
+  --color-red-50: #f8e8e8;
+  --color-red-100: #f8e8e8;
+  --color-red-200: #e3a4a4;
+  --color-red-300: #e3a4a4;
+  --color-red-400: #b91c1c;
+  --color-red-500: #b91c1c;
+  --color-red-600: #b91c1c;
+  --color-red-700: #b91c1c;
+  --color-green-50: #e8f2ec;
+  --color-green-600: #15803d;
+  --color-green-700: #15803d;
+  --color-emerald-50: #e8f2ec;
+  --color-emerald-500: #15803d;
+  --color-emerald-600: #15803d;
+  --color-emerald-700: #15803d;
+  --color-amber-50: #f7eee6;
+  --color-amber-200: #e6c3a3;
+  --color-amber-700: #b45309;
+}
+
 /* ---------- Base ---------- */
 @layer base {
   * { @apply border-border outline-ring/50; }
@@ -195,7 +240,7 @@
 
   /* H1 / H2 — Fraunces display (brand spec: 600, left-aligned, tight leading) */
   h1, h2 {
-    font-family: var(--font-display);
+    font-family: var(--font-fraunces), Georgia, serif;
     font-weight: 600;
     letter-spacing: -0.01em;
   }
@@ -244,9 +289,9 @@ html, body { max-width: 100%; overflow-x: clip; }
   .bg-gradient-revzion {
     background-color: #2563eb;
   }
-  /* Ink highlight — used for editorial text accents */
+  /* Headline emphasis stays Ink — accents never decorate headline type */
   .text-gradient-revzion {
-    color: #2563eb;
+    color: inherit;
   }
 
   /* Hide scrollbars where needed */
@@ -259,44 +304,6 @@ html, body { max-width: 100%; overflow-x: clip; }
   html { text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
 }
 
-/* Show app while splash runs (you can keep this as-is) */
-html.rvz-splashing [data-app-root] {
-  visibility: visible;
-}
-
-/* 🚫 Lock scroll on mobile (and desktop) while splash is active */
-html.rvz-splashing,
-html.rvz-splashing body {
-  height: 100%;
-  overflow: hidden;             /* no scrolling */
-  overscroll-behavior: none;    /* no rubber-band */
-  -webkit-overflow-scrolling: auto;
-  touch-action: none;           /* block touch scroll */
-}
-
-/* SSR splash default (visible) */
-#rvz-ssr-splash {
-  /* keep it pinned to the visual viewport to avoid iOS 100vh bugs */
-  height: 100dvh;               /* modern viewport */
-  transform: translateY(0%);
-  opacity: 1;
-  transition:
-          transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-          opacity   0.75s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, opacity;
-}
-
-/* Shorter duration for small screens (matches your motion.div) */
-@media (max-width: 640px) {
-  #rvz-ssr-splash { transition-duration: 0.6s; }
-}
-
-/* When exiting, slide SSR splash up just like the animated one */
-html.rvz-splash-exiting #rvz-ssr-splash {
-  transform: translateY(-100%);
-  opacity: 1; /* keep curtain look */
-}
-
 /* Lenis helpers */
 html.lenis { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto; } /* let Lenis control it */
@@ -304,4 +311,43 @@ html.lenis { height: auto; }
 .lenis.lenis-scrolling iframe { pointer-events: none; }
 
 /* Optional – avoid scrollbar width layout shift */
-html { scrollbar-gutter: stable both-edges; }
+html { scrollbar-gutter: stable; }
+/* ---------- Brand type (unlayered so it wins over utility classes) ---------- */
+/* Fraunces 600 for H1/H2 display; add .font-sans to an H2 that must render below 24px */
+h1, h2:not(.font-sans) {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 600;
+}
+h1 { letter-spacing: -0.01em; }
+h2:not(.font-sans) { letter-spacing: -0.005em; }
+
+/* Heading Four — Eyebrow: Inter 700 · 13/18 · +20% · caps · Signal Blue */
+.eyebrow {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rvz-signal-blue);
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--rvz-ink);
+  color: var(--rvz-paper);
+}
+.skip-link:focus { top: 1rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ticker-l, .animate-ticker-r, .animate-spin-slow, .animate-pulse-slow, .marquee {
+    animation: none !important;
+  }
+}
+
+.font-display-brand { font-family: var(--font-fraunces), Georgia, serif; font-weight: 600; }

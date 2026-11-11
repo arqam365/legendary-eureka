@@ -70,7 +70,7 @@ export default function ContactPage() {
       "$50K – $100K",
       "$100K – $250K",
       "$250K+",
-      "Let's discuss",
+      "Not sure yet",
     ],
     []
   )
@@ -86,7 +86,6 @@ export default function ContactPage() {
     if (!formData.message.trim() || formData.message.trim().length < 20)
       next.message = "Please provide at least 20 characters."
     if (!formData.service) next.service = "Select a service."
-    if (!formData.budget) next.budget = "Select a budget range."
     return next
   }
 
@@ -121,7 +120,7 @@ export default function ContactPage() {
 
       if (res.data?.success) {
         setIsSubmitted(true)
-        toast({ title: "Message sent", description: "We'll reply within 24 hours." })
+        toast({ title: "Message sent", description: "We'll reply within one business day." })
         setTimeout(() => {
           setIsSubmitted(false)
           setFormData({
@@ -158,16 +157,14 @@ export default function ContactPage() {
           animate="show"
         >
           <div className="max-w-2xl">
-            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-4">
-              Contact
-            </p>
+            <p className="eyebrow mb-4">Contact</p>
             <h1 className="text-4xl sm:text-5xl font-heading font-bold text-gray-900 leading-tight mb-5">
               Let's talk about{" "}
               <span className="text-gradient-revzion">your project.</span>
             </h1>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Tell us what you're building — scope, goals, timeline. We'll come back within
-              24 hours with a clear, practical proposal.
+              Tell us what you're building — scope, goals, timeline. We reply within one
+              business day.
             </p>
           </div>
         </motion.div>
@@ -196,16 +193,16 @@ export default function ContactPage() {
 
               {isSubmitted ? (
                 <div
-                  className="rounded-xl border border-emerald-200 bg-emerald-50 p-10 text-center"
+                  className="rounded-xl border border-[#D5DCE8] bg-[#EEF1F6] p-10"
                   role="status"
                   aria-live="polite"
                 >
-                  <CheckCircle className="h-12 w-12 text-emerald-500 mx-auto mb-4" />
+                  <CheckCircle className="h-10 w-10 text-[#0B1220] mb-4" aria-hidden />
                   <h3 className="text-lg font-heading font-semibold text-gray-900 mb-2">
                     Message received
                   </h3>
                   <p className="text-sm text-gray-600">
-                    We'll get back to you within 24 hours.
+                    We'll get back to you within one business day.
                   </p>
                 </div>
               ) : (
@@ -234,6 +231,7 @@ export default function ContactPage() {
                         id="name"
                         name="name"
                         type="text"
+                        autoComplete="name"
                         value={formData.name}
                         onChange={handleInputChange}
                         aria-invalid={!!errors.name}
@@ -255,6 +253,7 @@ export default function ContactPage() {
                         id="email"
                         name="email"
                         type="email"
+                        autoComplete="email"
                         value={formData.email}
                         onChange={handleInputChange}
                         aria-invalid={!!errors.email}
@@ -278,6 +277,7 @@ export default function ContactPage() {
                         id="company"
                         name="company"
                         type="text"
+                        autoComplete="organization"
                         value={formData.company}
                         onChange={handleInputChange}
                         placeholder="Your company"
@@ -292,6 +292,7 @@ export default function ContactPage() {
                         id="phone"
                         name="phone"
                         type="tel"
+                        autoComplete="tel"
                         value={formData.phone}
                         onChange={handleInputChange}
                         aria-invalid={!!errors.phone}
@@ -307,7 +308,7 @@ export default function ContactPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-gray-700">Service *</label>
+                      <label htmlFor="service" className="text-sm font-medium text-gray-700">Service *</label>
                       <Select
                         value={formData.service}
                         onValueChange={(v) => {
@@ -316,7 +317,9 @@ export default function ContactPage() {
                         }}
                       >
                         <SelectTrigger
+                          id="service"
                           aria-invalid={!!errors.service}
+                          aria-describedby={errors.service ? "service-error" : undefined}
                           className={errors.service ? "border-red-300 focus:ring-red-200" : ""}
                         >
                           <SelectValue placeholder="Select a service" />
@@ -336,7 +339,7 @@ export default function ContactPage() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-gray-700">Budget *</label>
+                      <label htmlFor="budget" className="text-sm font-medium text-gray-700">Budget (optional)</label>
                       <Select
                         value={formData.budget}
                         onValueChange={(v) => {
@@ -344,10 +347,7 @@ export default function ContactPage() {
                           if (errors.budget) setErrors((p) => ({ ...p, budget: "" }))
                         }}
                       >
-                        <SelectTrigger
-                          aria-invalid={!!errors.budget}
-                          className={errors.budget ? "border-red-300 focus:ring-red-200" : ""}
-                        >
+                        <SelectTrigger id="budget">
                           <SelectValue placeholder="Select budget range" />
                         </SelectTrigger>
                         <SelectContent>
@@ -359,9 +359,6 @@ export default function ContactPage() {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      {errors.budget && (
-                        <p id="budget-error" className="text-xs text-red-600">{errors.budget}</p>
-                      )}
                     </div>
                   </div>
 
@@ -370,8 +367,8 @@ export default function ContactPage() {
                       <label htmlFor="message" className="text-sm font-medium text-gray-700">
                         Project Details *
                       </label>
-                      <span className={`text-xs tabular-nums ${messageLen >= 20 ? "text-emerald-600" : "text-gray-400"}`}>
-                        {messageLen}/20
+                      <span id="message-count" className="text-xs tabular-nums text-gray-500">
+                        {messageLen < 20 ? `${messageLen} of 20 characters minimum` : `${messageLen} characters`}
                       </span>
                     </div>
                     <Textarea
@@ -382,7 +379,7 @@ export default function ContactPage() {
                       rows={6}
                       required
                       aria-invalid={!!errors.message}
-                      aria-describedby={errors.message ? "message-error" : undefined}
+                      aria-describedby={errors.message ? "message-error message-count" : "message-count"}
                       placeholder="Describe your scope, goals, rough timeline, and any key integrations or constraints…"
                       className={errors.message ? "border-red-300 focus-visible:ring-red-200" : ""}
                     />
@@ -411,7 +408,7 @@ export default function ContactPage() {
                     )}
                   </Button>
 
-                  <p className="text-xs text-gray-400 text-center">
+                  <p className="text-xs text-gray-500">
                     By submitting you agree to our{" "}
                     <a href="/privacy-policy" className="underline hover:text-gray-600">
                       Privacy Policy
@@ -426,7 +423,7 @@ export default function ContactPage() {
             <motion.div variants={revealOnce} className="lg:col-span-5 space-y-8">
               {/* Contact details */}
               <div>
-                <h2 className="text-lg font-heading font-semibold text-gray-900 mb-5">
+                <h2 className="font-sans text-lg font-bold text-gray-900 mb-5">
                   Contact details
                 </h2>
                 <div className="space-y-4">
@@ -441,7 +438,7 @@ export default function ContactPage() {
                     {
                       icon: <Phone className="h-4 w-4" />,
                       label: "Phone",
-                      value: "+91 (638) 716-1020",
+                      value: "+91 63871 61020",
                       href: "tel:+916387161020",
                       note: "Mon–Fri, 09:00–19:00 IST",
                     },
@@ -490,7 +487,7 @@ export default function ContactPage() {
 
               {/* What happens next */}
               <div>
-                <h2 className="text-lg font-heading font-semibold text-gray-900 mb-5">
+                <h2 className="font-sans text-lg font-bold text-gray-900 mb-5">
                   What happens next
                 </h2>
                 <div className="space-y-5">
@@ -498,7 +495,7 @@ export default function ContactPage() {
                     {
                       step: "1",
                       title: "We review your submission",
-                      desc: "A senior member of the team reads every message — usually within a few hours.",
+                      desc: "A senior member of the team reads every message and replies within one business day.",
                     },
                     {
                       step: "2",
@@ -507,7 +504,7 @@ export default function ContactPage() {
                     },
                     {
                       step: "3",
-                      title: "Proposal within 48 hours",
+                      title: "Proposal",
                       desc: "You receive a clear scope, team structure, milestone plan, and pricing.",
                     },
                     {
@@ -560,7 +557,7 @@ export default function ContactPage() {
           viewport={{ once: true, amount: 0.1 }}
         >
           <div className="mb-10">
-            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">FAQ</p>
+            <p className="eyebrow mb-3">FAQ</p>
             <h2 className="text-3xl font-heading font-bold text-gray-900">Common questions</h2>
           </div>
 
@@ -593,7 +590,7 @@ export default function ContactPage() {
             ))}
           </div>
 
-          <div className="mt-8 text-center">
+          <div className="mt-8">
             <p className="text-sm text-gray-500">
               Still have questions?{" "}
               <a href="mailto:connect@revzion.in" className="text-primary font-medium hover:underline">

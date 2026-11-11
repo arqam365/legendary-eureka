@@ -85,7 +85,7 @@ export default function ProcessPage() {
             <Navigation />
 
             {/* ========================== Hero ========================== */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50">
+            <section className="relative overflow-hidden bg-[#EEF1F6]">
                 <motion.div
                     className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20"
                     variants={sectionReveal}
@@ -98,7 +98,7 @@ export default function ProcessPage() {
                             <h1 className="text-4xl sm:text-5xl font-heading font-bold text-gray-900">
                                 A process that ships <span className="text-gradient-revzion">outcomes</span>
                             </h1>
-                            <p className="mt-4 text-xl text-gray-600">
+                            <p className="mt-4 text-xl text-gray-700">
                                 Lean discovery, fast iterations, measurable impact. We de-risk delivery without slowing it down.
                             </p>
                             <div className="mt-6 flex flex-col sm:flex-row gap-3">
@@ -130,7 +130,8 @@ export default function ProcessPage() {
             </section>
 
             {/* ============== Mobile carousel (snap) ============== */}
-            <section className="md:hidden py-10">
+            <section className="md:hidden py-10" aria-labelledby="phases-heading-mobile">
+                <h2 id="phases-heading-mobile" className="sr-only font-sans">Delivery phases</h2>
                 <motion.div
                     className="max-w-7xl mx-auto px-4"
                     variants={sectionReveal}
@@ -181,7 +182,7 @@ export default function ProcessPage() {
                         {/* Spine */}
                         <motion.div
                             aria-hidden
-                            className="pointer-events-none absolute left-1/2 top-0 w-[2px] -translate-x-1/2 rounded-full bg-gradient-to-b from-primary/40 via-primary/30 to-transparent"
+                            className="pointer-events-none absolute left-1/2 top-0 w-[2px] -translate-x-1/2 rounded-full bg-[#D5DCE8]"
                             initial={{ height: 0, opacity: 0 }}
                             whileInView={{ height: "100%", opacity: 1 }}
                             transition={{ duration: 1.1, ease: "easeOut" }}
@@ -244,7 +245,7 @@ export default function ProcessPage() {
                     whileInView="show"
                     viewport={{ once: true, amount: 0.25 }}
                 >
-                    <motion.div variants={childReveal} className="text-center mb-10">
+                    <motion.div variants={childReveal} className="mb-10">
                         <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">How we work</h2>
                         <p className="mt-3 text-lg text-gray-600">Simple rituals that keep quality high and communication calm.</p>
                     </motion.div>
@@ -307,11 +308,11 @@ export default function ProcessPage() {
                     viewport={{ once: true, amount: 0.25 }}
                 >
                     {/* Heading */}
-                    <motion.div variants={childReveal} className="text-center mb-14">
+                    <motion.div variants={childReveal} className="mb-14">
                         <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">
                             Process FAQ
                         </h2>
-                        <p className="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">
+                        <p className="mt-3 text-lg text-gray-600 max-w-2xl">
                             What it’s like to ship with us.
                         </p>
                     </motion.div>
@@ -337,8 +338,8 @@ export default function ProcessPage() {
                                     Do you handle security & compliance?
                                 </AccordionTrigger>
                                 <AccordionContent className="pb-4 text-gray-700 leading-relaxed">
-                                    Yes — we apply OWASP hardening, secret management, SSO and can align
-                                    with SOC2/GDPR practices.
+                                    Yes — we apply OWASP hardening, secret management and SSO, and can design controls that
+                                    support your SOC 2 or GDPR obligations.
                                 </AccordionContent>
                             </AccordionItem>
 
@@ -355,7 +356,7 @@ export default function ProcessPage() {
                     </motion.div>
 
                     {/* CTA */}
-                    <motion.div variants={childReveal} className="text-center mt-12">
+                    <motion.div variants={childReveal} className="mt-12">
                         <Button
                             asChild
                             size="lg"
@@ -368,9 +369,9 @@ export default function ProcessPage() {
             </section>
 
             {/* =============================== CTA =============================== */}
-            <section className="py-20 bg-gradient-revzion">
+            <section className="py-20 bg-[#0B1220]">
                 <motion.div
-                    className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+                    className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
                     variants={sectionReveal}
                     initial="hidden"
                     whileInView="show"
@@ -379,10 +380,10 @@ export default function ProcessPage() {
                     <motion.h2 variants={childReveal} className="text-3xl sm:text-4xl font-heading font-bold text-white mb-6">
                         Ready to move from idea to impact?
                     </motion.h2>
-                    <motion.p variants={childReveal} className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
+                    <motion.p variants={childReveal} className="text-lg text-[#C2CBDC] mb-8 max-w-2xl">
                         Tell us what you’re trying to achieve and we’ll propose the safest, fastest plan.
                     </motion.p>
-                    <motion.div variants={childReveal} className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <motion.div variants={childReveal} className="flex flex-col sm:flex-row gap-4">
                         <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100" asChild>
                             <Link href="/contact">Book a free consult</Link>
                         </Button>

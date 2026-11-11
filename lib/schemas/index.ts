@@ -10,23 +10,22 @@
 export const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "@id": "https://www.revzion.com/#organization",
+    "@id": "https://www.revzion.in/#organization",
 
     "name": "Revzion",
-    "legalName": "Revzion Technologies",
+    "legalName": "REVZION GLOBAL TECHNOLOGIES LLP",
     "alternateName": ["Next Level Programmers", "Revzion Tech", "Revzion Technologies"],
-    "url": "https://www.revzion.com",
+    "url": "https://www.revzion.in",
 
     "logo": {
         "@type": "ImageObject",
-        "url": "https://www.revzion.com/revzion-logo.png",
-        "width": 1000,
-        "height": 205,
-        "caption": "Revzion Logo"
+        "url": "https://www.revzion.in/brand/icon-512.png",
+        "width": 512,
+        "height": 512
     },
     "image": {
         "@type": "ImageObject",
-        "url": "https://www.revzion.com/api/og",
+        "url": "https://www.revzion.in/api/og",
         "width": 1200,
         "height": 630,
         "caption": "Revzion — Enterprise platforms, engineered to last."
@@ -49,29 +48,17 @@ export const organizationSchema = {
         "@type": "Person",
         "@id": "https://arqam365.com/#person",
         "name": "Arqam Ahmad Siddiqui",
-        "alternateName": [
-            "Arqam Ahmed Siddiqui",
-            "Arqam Ahmad",
-            "Arqam Ahmed",
-            "Arqam Siddiqui",
-            "Arkam Siddiqui",
-            "Akram Siddiqui",
-            "Arquam Siddiqui",
-            "Aqram Siddique",
-            "arqam365",
-            "@arqam365"
-        ],
+        "alternateName": ["Arqam Ahmed Siddiqui"],
         "url": "https://arqam365.com",
         "jobTitle": "Founder & CEO",
         "description": "Founder and CEO of Revzion. Full-stack engineer specialising in SaaS architecture, AI-powered systems, and cross-platform mobile development with Kotlin Multiplatform.",
-        "email": "arqam@revzion.com",
         "sameAs": [
             "https://www.linkedin.com/in/arqam365",
             "https://github.com/arqam365",
             "https://twitter.com/arqam365",
             "https://arqam365.com"
         ],
-        "worksFor": { "@id": "https://www.revzion.com/#organization" },
+        "worksFor": { "@id": "https://www.revzion.in/#organization" },
         "nationality": { "@type": "Country", "name": "India" },
         "knowsAbout": [
             "SaaS Architecture",
@@ -93,7 +80,7 @@ export const organizationSchema = {
             "name": "Arqam Ahmad Siddiqui",
             "jobTitle": "Founder & CEO",
             "@id": "https://arqam365.com/#person",
-            "worksFor": { "@id": "https://www.revzion.com/#organization" }
+            "worksFor": { "@id": "https://www.revzion.in/#organization" }
         }
     ],
 
@@ -134,17 +121,8 @@ export const organizationSchema = {
         "postalCode": "284001",
         "addressCountry": "IN"
     },
-    "email": "contact@revzion.com",
+    "email": "connect@revzion.in",
     "telephone": "+91-6387161020",
-
-    "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "5.0",
-        "bestRating": "5",
-        "worstRating": "1",
-        "ratingCount": "50",
-        "reviewCount": "15"
-    },
 
     "areaServed": [
         { "@type": "Place", "name": "Worldwide" },
@@ -170,8 +148,8 @@ export const organizationSchema = {
                     "@type": "Service",
                     "name": "Mobile App Development",
                     "description": "Cross-platform mobile application development using Kotlin Multiplatform, React Native, and native iOS/Android. Share 60–80% of code while maintaining native UI and performance.",
-                    "provider": { "@id": "https://www.revzion.com/#organization" },
-                    "url": "https://www.revzion.com/services"
+                    "provider": { "@id": "https://www.revzion.in/#organization" },
+                    "url": "https://www.revzion.in/services"
                 }
             },
             {
@@ -180,8 +158,8 @@ export const organizationSchema = {
                     "@type": "Service",
                     "name": "SaaS Platform Development",
                     "description": "Scalable software-as-a-service platforms with multi-tenant architecture, Stripe billing integration, role-based access control, and real-time analytics dashboards.",
-                    "provider": { "@id": "https://www.revzion.com/#organization" },
-                    "url": "https://www.revzion.com/services"
+                    "provider": { "@id": "https://www.revzion.in/#organization" },
+                    "url": "https://www.revzion.in/services"
                 }
             },
             {
@@ -190,8 +168,8 @@ export const organizationSchema = {
                     "@type": "Service",
                     "name": "AI & Automation Solutions",
                     "description": "Intelligent systems powered by LLMs, vector databases, and custom ML models. LLM copilots, RAG pipelines, embeddings search, and workflow automation.",
-                    "provider": { "@id": "https://www.revzion.com/#organization" },
-                    "url": "https://www.revzion.com/services"
+                    "provider": { "@id": "https://www.revzion.in/#organization" },
+                    "url": "https://www.revzion.in/services"
                 }
             },
             {
@@ -200,8 +178,8 @@ export const organizationSchema = {
                     "@type": "Service",
                     "name": "Web Development",
                     "description": "High-performance web applications built with Next.js, React, and TypeScript. Optimised for Core Web Vitals, SEO, and conversion.",
-                    "provider": { "@id": "https://www.revzion.com/#organization" },
-                    "url": "https://www.revzion.com/services"
+                    "provider": { "@id": "https://www.revzion.in/#organization" },
+                    "url": "https://www.revzion.in/services"
                 }
             },
             {
@@ -209,9 +187,9 @@ export const organizationSchema = {
                 "itemOffered": {
                     "@type": "Service",
                     "name": "Cloud & DevOps",
-                    "description": "Secure cloud infrastructure on AWS, GCP, and Vercel. CI/CD pipelines, container orchestration, monitoring, and 99.9% uptime SLA.",
-                    "provider": { "@id": "https://www.revzion.com/#organization" },
-                    "url": "https://www.revzion.com/services"
+                    "description": "Secure cloud infrastructure on AWS, GCP, and Vercel. CI/CD pipelines, container orchestration and monitoring.",
+                    "provider": { "@id": "https://www.revzion.in/#organization" },
+                    "url": "https://www.revzion.in/services"
                 }
             }
         ]
@@ -243,25 +221,12 @@ export const organizationSchema = {
 export const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "@id": "https://www.revzion.com/#website",
+    "@id": "https://www.revzion.in/#website",
     "name": "Revzion",
-    "url": "https://www.revzion.com",
-    "alternateName": [
-        "Revzion Technologies",
-        "Next Level Programmers",
-        "Arqam Ahmad Siddiqui",
-        "arqam365"
-    ],
+    "url": "https://www.revzion.in",
+    "alternateName": ["Revzion Technologies", "Next Level Programmers"],
     "description": "Revzion builds enterprise-grade SaaS platforms, AI-powered systems, and cross-platform mobile applications for startups and organisations worldwide.",
-    "publisher": { "@id": "https://www.revzion.com/#organization" },
-    "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-            "@type": "EntryPoint",
-            "urlTemplate": "https://www.revzion.com/search?q={search_term_string}"
-        },
-        "query-input": "required name=search_term_string"
-    },
+    "publisher": { "@id": "https://www.revzion.in/#organization" },
     "inLanguage": "en-US",
     "speakable": {
         "@type": "SpeakableSpecification",
@@ -276,12 +241,12 @@ export const websiteSchema = {
 export const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": ["LocalBusiness", "ProfessionalService"],
-    "@id": "https://www.revzion.com/#localbusiness",
+    "@id": "https://www.revzion.in/#localbusiness",
     "name": "Revzion",
-    "image": "https://www.revzion.com/api/og",
-    "url": "https://www.revzion.com",
+    "image": "https://www.revzion.in/api/og",
+    "url": "https://www.revzion.in",
     "telephone": "+91-6387161020",
-    "email": "contact@revzion.com",
+    "email": "connect@revzion.in",
     "address": {
         "@type": "PostalAddress",
         "addressLocality": "Jhansi",
@@ -303,13 +268,6 @@ export const localBusinessSchema = {
     "priceRange": "$$",
     "currenciesAccepted": "USD, INR",
     "paymentAccepted": "Credit Card, Bank Transfer, PayPal",
-    "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "5.0",
-        "bestRating": "5",
-        "worstRating": "1",
-        "ratingCount": "50"
-    },
     "sameAs": [
         "https://www.linkedin.com/company/revzion",
         "https://github.com/revzion"
@@ -370,14 +328,14 @@ export const createArticleSchema = (article: {
     },
     "publisher": {
         "@type": "Organization",
-        "@id": "https://www.revzion.com/#organization",
+        "@id": "https://www.revzion.in/#organization",
         "name": "Revzion",
         "logo": {
-            "@type": "ImageObject",
-            "url": "https://www.revzion.com/revzion-logo.png",
-            "width": 1000,
-            "height": 205
-        }
+        "@type": "ImageObject",
+        "url": "https://www.revzion.in/brand/icon-512.png",
+        "width": 512,
+        "height": 512
+    }
     },
     ...(article.keywords && { "keywords": article.keywords.join(", ") }),
     ...(article.category && { "articleSection": article.category }),
@@ -464,7 +422,7 @@ export const createReviewSchema = (review: {
         "@type": "Service",
         "name": review.itemName,
         "url": review.itemUrl,
-        "provider": { "@id": "https://www.revzion.com/#organization" }
+        "provider": { "@id": "https://www.revzion.in/#organization" }
     },
     "reviewRating": {
         "@type": "Rating",
@@ -475,7 +433,7 @@ export const createReviewSchema = (review: {
     "reviewBody": review.reviewBody,
     "author": { "@type": "Person", "name": review.authorName },
     "datePublished": review.datePublished,
-    "publisher": { "@id": "https://www.revzion.com/#organization" }
+    "publisher": { "@id": "https://www.revzion.in/#organization" }
 });
 
 // ============================================================================
@@ -504,7 +462,7 @@ export const createSoftwareSchema = (app: {
     ...(app.image && { "image": app.image }),
     "author": {
         "@type": "Organization",
-        "@id": "https://www.revzion.com/#organization",
+        "@id": "https://www.revzion.in/#organization",
         "name": "Revzion"
     },
     "offers": {
@@ -516,13 +474,6 @@ export const createSoftwareSchema = (app: {
     ...(app.version && { "softwareVersion": app.version }),
     ...(app.releaseDate && { "datePublished": app.releaseDate }),
     ...(app.rating && app.reviewCount && {
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": app.rating,
-            "reviewCount": app.reviewCount,
-            "bestRating": "5",
-            "worstRating": "1"
-        }
     })
 });
 
@@ -550,10 +501,10 @@ export const createJobPostingSchema = (job: {
     ...(job.workHours && { "workHours": job.workHours }),
     "hiringOrganization": {
         "@type": "Organization",
-        "@id": "https://www.revzion.com/#organization",
+        "@id": "https://www.revzion.in/#organization",
         "name": "Revzion",
-        "sameAs": "https://www.revzion.com",
-        "logo": "https://www.revzion.com/revzion-logo.png"
+        "sameAs": "https://www.revzion.in",
+        "logo": "https://www.revzion.in/brand/icon-512.png"
     },
     "jobLocation": {
         "@type": "Place",

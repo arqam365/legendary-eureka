@@ -194,87 +194,17 @@ export function renderAdminHtml(p: ContactPayload) {
     );
 }
 
+// The acknowledgement goes to an unverified address, so it must not echo visitor-supplied text.
 export function renderSenderHtml(p: ContactPayload) {
-    const summaryChip = (label: string, value?: string) =>
-        value
-            ? `<span style="
-           display:inline-block;
-           padding:6px 10px;
-           border:1px solid #e5e7eb;
-           background:#f9fafb;
-           color:#374151;
-           border-radius:9999px;
-           font-size:12px;
-           line-height:1;
-           font-weight:600;
-           margin:4px 6px 0 0;
-         ">${escapeHtml(label)}: ${escapeHtml(value)}</span>`
-            : "";
-
-    const detailsTableRow = (label: string, value?: string) =>
-        value
-            ? `<tr>
-           <td style="padding:8px 12px;background:#f9fafb;width:140px;font-weight:600;border-bottom:1px solid #f1f5f9">${escapeHtml(label)}</td>
-           <td style="padding:8px 12px;border-bottom:1px solid #f1f5f9">${escapeHtml(value)}</td>
-         </tr>`
-            : "";
-
-    const messageBlock = p.message
-        ? `
-      <div style="
-        margin-top:12px;
-        padding:14px 16px;
-        background:#f8fafc;
-        border:1px solid #e5e7eb;
-        border-radius:12px;
-        color:#111827;
-        font-size:14px;
-        line-height:1.6;
-        white-space:normal;
-      ">
-        ${nl2br(escapeHtml(p.message))}
-      </div>
-    `
-        : "";
-
-    // Main content
     return wrapEmail(
-        "We’ve received your request — Revzion Studio",
+        "We’ve received your request — Revzion",
         `
-      <p style="font-size:15px;color:#111827;margin:0 0 8px">
-        Hi ${escapeHtml(firstName(p.name))},
+      <p style="font-size:15px;color:#0b1220;margin:0 0 8px">
+        Hi ${escapeHtml(firstName(p.name).slice(0, 40))},
       </p>
-      <p style="font-size:15px;color:#374151;margin:0 0 16px">
-        Thanks for reaching out to <strong>Revzion</strong>. Your request is in our queue and a consultant will reply within
-        <strong>24 business hours</strong>.
+      <p style="font-size:15px;color:#1f2937;margin:0 0 16px">
+        Thanks for contacting <strong>Revzion</strong>. We’ve received your request and will reply within one business day.
       </p>
-
-      <!-- Quick summary chips -->
-      <div style="margin:8px 0 2px">
-        ${summaryChip("Service", p.service)}
-        ${summaryChip("Budget", p.budget)}
-        ${summaryChip("Company", p.company)}
-      </div>
-
-      <!-- Your message -->
-      <p style="margin:18px 0 6px;font-size:14px;color:#6b7280">Your message:</p>
-      ${messageBlock}
-
-      <!-- Details table (useful for forwarding) -->
-      <div style="margin-top:16px;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden">
-        <table cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial">
-          <tbody>
-            ${detailsTableRow("Name", p.name)}
-            ${detailsTableRow("Email", p.email)}
-            ${detailsTableRow("Company", p.company)}
-            ${detailsTableRow("Phone", p.phone)}
-            ${detailsTableRow("Service", p.service)}
-            ${detailsTableRow("Budget", p.budget)}
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Primary CTA -->
       <div style="margin-top:18px">
         <a href="https://calendly.com/arqam365/30min" style="
           display:inline-block;
@@ -285,34 +215,9 @@ export function renderSenderHtml(p: ContactPayload) {
           border-radius:10px;
           font-size:14px;
           font-weight:600;
-          margin-right:8px;
         ">Schedule a 30-min intro call →</a>
-        <a href="mailto:${encodeURIComponent(p.email)}" style="
-          display:inline-block;
-          padding:11px 16px;
-          background:#eef2ff;
-          color:#3730a3 !important;
-          text-decoration:none;
-          border-radius:10px;
-          font-size:14px;
-          font-weight:600;
-          border:1px solid #e0e7ff;
-        ">Update your request</a>
       </div>
-
-      <!-- Social proof & expectations -->
-      <div style="margin-top:18px;padding:12px 14px;background:#fafafa;border:1px solid #e5e7eb;border-radius:12px;color:#374151;font-size:13px;line-height:1.55">
-        <strong style="display:block;margin-bottom:6px">What happens next</strong>
-        <ul style="margin:0;padding-left:18px">
-          <li>We’ll review your goals and clarify open questions (if any).</li>
-          <li>You’ll receive a recommended approach, timeline, and commercial options.</li>
-          <li>Live call (optional) to align on scope and next steps.</li>
-        </ul>
-        <div style="margin-top:10px;color:#6b7280">Trusted by teams in 25+ countries · 100+ launches</div>
-      </div>
-
-      <!-- Footer note -->
-      <p style="color:#6b7280;font-size:12px;margin-top:14px">
+      <p style="color:#64748b;font-size:12px;margin-top:18px">
         If you didn’t submit this request, you can safely ignore this email.
       </p>
     `
@@ -335,15 +240,13 @@ ${p.message}
 }
 
 export function renderSenderText(p: ContactPayload) {
-    return `Hi ${firstName(p.name)},
+    return `Hi ${firstName(p.name).slice(0, 40)},
 
-Thank you for contacting Revzion.
-Your request has been received and we will respond within 24 business hours.
+Thanks for contacting Revzion. We've received your request and will reply within one business day.
 
-Your message:
-${p.message}
+Schedule a 30-min intro call: https://calendly.com/arqam365/30min
 
-If you did not submit this request, you can ignore this email.
+If you didn't submit this request, you can ignore this email.
 `
 }
 
@@ -352,7 +255,7 @@ export async function sendContactEmails(p: ContactPayload) {
 
     const from =
         process.env.MAIL_FROM ||
-        `Revzion Studio <${process.env.SMTP_USER}>`
+        `Revzion <${process.env.SMTP_USER}>`
 
     const adminTo =
         process.env.MAIL_TO ||
@@ -384,7 +287,7 @@ export async function sendContactEmails(p: ContactPayload) {
     await sendSafe({
         from,
         to: p.email,
-        subject: "We’ve received your request — Revzion Studio",
+        subject: "We’ve received your request — Revzion",
         html: renderSenderHtml(p),
         text: renderSenderText(p),
     })
@@ -394,8 +297,7 @@ export async function sendContactEmails(p: ContactPayload) {
 
 function wrapEmail(title: string, content: string) {
     // If MAIL_LOGO_URL is set in env, use that; otherwise fallback to your public path on the deployed site
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.revzion.com";
-    // const brandLogo = process.env.MAIL_LOGO_URL || `${baseUrl}/logo.svg`;
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.revzion.in";
 
     return `
   <div style="background:#f3f4f6;padding:28px">
