@@ -13,7 +13,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
 
     return (
         <html lang="en">
-        <body className="min-h-dvh bg-gradient-to-br from-blue-50 via-white to-blue-50">
+        <body className="min-h-dvh bg-[#EEF1F6]">
         <main className="mx-auto max-w-3xl px-6 py-20 text-center">
             {/* header */}
             <div className="inline-flex items-center gap-3 rounded-xl bg-white/70 backdrop-blur border border-white/60 px-4 py-2 text-sm text-blue-600 shadow-sm mb-6">

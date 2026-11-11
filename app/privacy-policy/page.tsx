@@ -1,18 +1,21 @@
 // app/privacy-policy/page.tsx
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "next/link"
+import { Navigation } from "@/components/navigation"
+import { Footer } from "@/components/footer";
 import { CalendarDays, ShieldCheck, ChevronDown, ArrowLeft } from "lucide-react";
 import QuickActions from "./QuickActions"; // client-only actions (print, etc.)
 
 export const metadata: Metadata = {
-    title: "Privacy Policy | Revzion",
+    title: "Privacy Policy",
+    alternates: { canonical: "/privacy-policy" },
     description:
         "How Revzion collects, uses, and protects your information. Learn about cookie-settings, analytics, data sharing, retention, and your rights.",
     robots: { index: true, follow: true },
 };
 
 export default function PrivacyPolicyPage() {
-    const lastUpdated = "August 31, 2025"; // keep this current
+    const lastUpdated = "November 11, 2026";
 
     const sections = [
         { id: "info-we-collect", label: "Information We Collect" },
@@ -30,17 +33,14 @@ export default function PrivacyPolicyPage() {
     ];
 
     return (
-        <main className="bg-white text-gray-900">
+        <div className="bg-white text-gray-900">
+            <Navigation />
             {/* anchor for “Back to top” */}
             <span id="top" className="block h-0 w-0" aria-hidden />
 
             {/* Hero */}
             <section className="relative overflow-hidden border-b">
                 {/* Decorative gradient — does not intercept clicks */}
-                <div
-                    className="absolute -inset-40 -z-10 pointer-events-none bg-gradient-revzion opacity-10 blur-3xl"
-                    aria-hidden
-                />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-18 lg:py-20">
                     <div className="flex items-start justify-between gap-6">
                         <div>
@@ -52,11 +52,11 @@ export default function PrivacyPolicyPage() {
                             </p>
 
                             <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-gray-600">
-                <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1">
+                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1">
                   <CalendarDays className="h-4 w-4" />
                   Last updated: <strong className="ml-1 font-semibold">{lastUpdated}</strong>
                 </span>
-                                <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1">
+                                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1">
                   <ShieldCheck className="h-4 w-4" />
                   GDPR / CPRA-aligned
                 </span>
@@ -123,7 +123,7 @@ export default function PrivacyPolicyPage() {
                     </aside>
 
                     {/* Main content */}
-                    <article className="prose prose-gray max-w-none prose-headings:scroll-mt-28">
+                    <article className="max-w-prose text-[#1F2937] leading-relaxed [&_h2]:scroll-mt-28 [&_h2]:mt-12 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:text-[#0B1220] [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mt-1">
                         <p>
                             This Privacy Policy explains how <strong>Revzion</strong>, operated by <strong>REVZION GLOBAL TECHNOLOGIES LLP</strong> (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;), collects, uses, discloses, and safeguards information when you use our website, products, and services (collectively, the &quot;Services&quot;).
                         </p>
@@ -179,7 +179,7 @@ export default function PrivacyPolicyPage() {
                         <p>
                             Depending on your location, you may have rights to access, correct, delete, or export your data, and to
                             object or restrict certain processing. To exercise a right, contact us at
-                            <a href="mailto:privacy@revzion.com"> privacy@revzion.com</a>.
+                            <a href="mailto:connect@revzion.in"> connect@revzion.in</a>.
                         </p>
 
                         <h2 id="transfers">International Transfers</h2>
@@ -190,7 +190,7 @@ export default function PrivacyPolicyPage() {
                         <h2 id="security">Security</h2>
                         <p>
                             We use technical and organizational measures to protect data. No method is 100% secure; report issues to{" "}
-                            <a href="mailto:security@revzion.com">security@revzion.com</a>.
+                            <a href="mailto:connect@revzion.in">connect@revzion.in</a>.
                         </p>
 
                         <h2 id="children">Children</h2>
@@ -254,17 +254,17 @@ export default function PrivacyPolicyPage() {
                                 <h3 className="text-lg font-semibold">Contact our Privacy Team</h3>
                                 <p className="mt-1 text-sm text-gray-600">
                                     Email{" "}
-                                    <a className="underline decoration-dotted" href="mailto:privacy@revzion.com">
-                                        privacy@revzion.com
+                                    <a className="underline decoration-dotted" href="mailto:connect@revzion.in">
+                                        connect@revzion.in
                                     </a>
                                     . We typically respond within 2 business days.
                                 </p>
                             </div>
                             <a
-                                href="mailto:privacy@revzion.com"
+                                href="mailto:connect@revzion.in"
                                 className="mt-4 sm:mt-0 inline-flex items-center justify-center rounded-xl bg-gradient-revzion px-4 py-2.5 font-semibold text-white shadow-sm hover:opacity-90"
                             >
-                                Email privacy@revzion.com
+                                Email connect@revzion.in
                             </a>
                         </div>
 
@@ -281,6 +281,7 @@ export default function PrivacyPolicyPage() {
                     </article>
                 </div>
             </section>
-        </main>
+            <Footer />
+        </div>
     );
 }
