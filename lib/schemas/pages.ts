@@ -31,7 +31,7 @@ export const createFAQSchema = (faqs: Array<{ question: string; answer: string }
 // ============================================
 
 export const homeBreadcrumb = createBreadcrumbSchema([
-    { name: "Home", url: "https://www.revzion.com" }
+    { name: "Home", url: "https://www.revzion.in" }
 ]);
 
 export const homepageFAQ = createFAQSchema([
@@ -53,7 +53,7 @@ export const homepageFAQ = createFAQSchema([
     },
     {
         question: "Where is Revzion located?",
-        answer: "Revzion is headquartered in Meerut, Uttar Pradesh, India. We operate as a remote-first company and serve clients globally across multiple time zones."
+        answer: "Revzion is based in Jhansi, Uttar Pradesh, India. We operate as a remote-first company and serve clients globally across multiple time zones."
     },
     {
         question: "What is Kotlin Multiplatform?",
@@ -77,7 +77,7 @@ export const servicesPageSchema = {
             "name": "Mobile App Development",
             "description": "Cross-platform and native mobile app development using Kotlin Multiplatform, React Native, iOS, and Android",
             "provider": {
-                "@id": "https://www.revzion.com/#organization"
+                "@id": "https://www.revzion.in/#organization"
             },
             "serviceType": "Mobile Application Development",
             "areaServed": "Worldwide"
@@ -88,7 +88,7 @@ export const servicesPageSchema = {
             "name": "SaaS Development",
             "description": "Scalable software-as-a-service platforms with multi-tenant architecture, billing, and analytics",
             "provider": {
-                "@id": "https://www.revzion.com/#organization"
+                "@id": "https://www.revzion.in/#organization"
             },
             "serviceType": "Software as a Service Development",
             "areaServed": "Worldwide"
@@ -99,7 +99,7 @@ export const servicesPageSchema = {
             "name": "AI & Automation",
             "description": "AI-powered solutions using OpenAI, Groq, vector databases, and machine learning",
             "provider": {
-                "@id": "https://www.revzion.com/#organization"
+                "@id": "https://www.revzion.in/#organization"
             },
             "serviceType": "Artificial Intelligence Solutions",
             "areaServed": "Worldwide"
@@ -110,7 +110,7 @@ export const servicesPageSchema = {
             "name": "Web Development",
             "description": "High-performance web applications built with Next.js, React, and TypeScript",
             "provider": {
-                "@id": "https://www.revzion.com/#organization"
+                "@id": "https://www.revzion.in/#organization"
             },
             "serviceType": "Web Application Development",
             "areaServed": "Worldwide"
@@ -121,7 +121,7 @@ export const servicesPageSchema = {
             "name": "Cloud & DevOps",
             "description": "Cloud infrastructure, CI/CD pipelines, and DevOps best practices",
             "provider": {
-                "@id": "https://www.revzion.com/#organization"
+                "@id": "https://www.revzion.in/#organization"
             },
             "serviceType": "Cloud Infrastructure Services",
             "areaServed": "Worldwide"
@@ -130,8 +130,8 @@ export const servicesPageSchema = {
 };
 
 export const servicesBreadcrumb = createBreadcrumbSchema([
-    { name: "Home", url: "https://www.revzion.com" },
-    { name: "Services", url: "https://www.revzion.com/services" },
+    { name: "Home", url: "https://www.revzion.in" },
+    { name: "Services", url: "https://www.revzion.in/services" },
 ]);
 
 // ============================================
@@ -143,15 +143,15 @@ export const portfolioPageSchema = {
     "@type": "CollectionPage",
     "name": "Revzion Portfolio",
     "description": "Portfolio of projects and case studies by Revzion",
-    "url": "https://www.revzion.com/portfolio",
+    "url": "https://www.revzion.in/portfolio",
     "publisher": {
-        "@id": "https://www.revzion.com/#organization"
+        "@id": "https://www.revzion.in/#organization"
     }
 };
 
 export const portfolioBreadcrumb = createBreadcrumbSchema([
-    { name: "Home", url: "https://www.revzion.com" },
-    { name: "Portfolio", url: "https://www.revzion.com/portfolio" },
+    { name: "Home", url: "https://www.revzion.in" },
+    { name: "Portfolio", url: "https://www.revzion.in/portfolio" },
 ]);
 
 // ============================================
@@ -163,14 +163,14 @@ export const contactPageSchema = {
     "@type": "ContactPage",
     "name": "Contact Revzion",
     "description": "Get in touch with Revzion for your next project",
-    "url": "https://www.revzion.com/contact",
+    "url": "https://www.revzion.in/contact",
     "mainEntity": {
         "@type": "Organization",
-        "@id": "https://www.revzion.com/#organization"
+        "@id": "https://www.revzion.in/#organization"
     }
 };
 
 export const contactBreadcrumb = createBreadcrumbSchema([
-    { name: "Home", url: "https://www.revzion.com" },
-    { name: "Contact", url: "https://www.revzion.com/contact" },
+    { name: "Home", url: "https://www.revzion.in" },
+    { name: "Contact", url: "https://www.revzion.in/contact" },
 ]);

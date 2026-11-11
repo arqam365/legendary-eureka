@@ -3,25 +3,25 @@ import { contactBreadcrumb, contactPageSchema } from "@/lib/schemas/pages"
 import { createFAQSchema, localBusinessSchema } from "@/lib/schemas"
 
 export const metadata: Metadata = {
-    title: "Contact Revzion | Start a Project | Software Engineering Partner",
+    title: "Contact — Start a project",
     description: "Get in touch with Revzion to start your next software project. Whether you need a SaaS platform, AI system, mobile app, or cloud infrastructure — we'd love to hear about your requirements.",
     keywords: [
         "contact Revzion", "hire software development company", "software development inquiry",
         "SaaS development quote", "mobile app development quote", "start a project Revzion",
         "Revzion contact", "software engineering partner", "outsource software development India"
     ],
-    alternates: { canonical: "https://www.revzion.com/contact" },
+    alternates: { canonical: "/contact" },
     openGraph: {
         type: "website",
-        url: "https://www.revzion.com/contact",
+        url: "https://www.revzion.in/contact",
         title: "Contact Revzion | Start Your Project",
-        description: "Tell us what you need to build. We'll respond within 24 hours with a focused assessment.",
+        description: "Tell us what you need to build. We reply within one business day.",
         images: [{ url: "/api/og?page=contact", width: 1200, height: 630, alt: "Contact Revzion" }],
     },
     twitter: {
         card: "summary_large_image",
         title: "Contact Revzion | Start Your Project",
-        description: "Tell us what you need to build. We'll respond within 24 hours with a focused assessment.",
+        description: "Tell us what you need to build. We reply within one business day.",
         images: ["/api/og?page=contact"],
     },
 }
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 const contactFAQ = createFAQSchema([
     {
         question: "How quickly does Revzion respond to inquiries?",
-        answer: "We respond to all project inquiries within 24 hours on business days. For urgent requirements, email contact@revzion.com directly and mention your timeline."
+        answer: "We reply to every project inquiry within one business day. For urgent requirements, email connect@revzion.in directly and mention your timeline."
     },
     {
         question: "What information should I include when contacting Revzion?",
@@ -45,7 +45,7 @@ const contactFAQ = createFAQSchema([
     },
     {
         question: "What is Revzion's email address?",
-        answer: "You can reach Revzion at contact@revzion.com for project inquiries, hello@revzion.com for general questions, or arqam@revzion.com to reach the founder directly."
+        answer: "Email connect@revzion.in, or use the contact form at revzion.in/contact."
     },
 ])
 

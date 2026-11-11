@@ -2,17 +2,17 @@ import type { Metadata } from "next"
 import { createBreadcrumbSchema, createJobPostingSchema } from "@/lib/schemas"
 
 export const metadata: Metadata = {
-    title: "Careers at Revzion | Join Our Engineering Team | Remote Jobs",
+    title: "Careers",
     description: "Join Revzion's engineering team. We're hiring Kotlin Multiplatform developers, Next.js frontend engineers, and AI engineers. Remote-first, challenging work, senior mentorship.",
     keywords: [
         "Revzion careers", "software engineering jobs", "remote developer jobs India",
         "Kotlin Multiplatform jobs", "Next.js developer jobs", "AI engineer jobs remote",
         "frontend developer jobs India", "software startup jobs", "work at Revzion"
     ],
-    alternates: { canonical: "https://www.revzion.com/careers" },
+    alternates: { canonical: "/careers" },
     openGraph: {
         type: "website",
-        url: "https://www.revzion.com/careers",
+        url: "https://www.revzion.in/careers",
         title: "Careers at Revzion | Remote Engineering Roles",
         description: "Build real products with a senior team. Remote-first, challenging work, fast growth.",
         images: [{ url: "/api/og?page=careers", width: 1200, height: 630, alt: "Careers at Revzion" }],
@@ -20,8 +20,8 @@ export const metadata: Metadata = {
 }
 
 const careersBreadcrumb = createBreadcrumbSchema([
-    { name: "Home", url: "https://www.revzion.com" },
-    { name: "Careers", url: "https://www.revzion.com/careers" },
+    { name: "Home", url: "https://www.revzion.in" },
+    { name: "Careers", url: "https://www.revzion.in/careers" },
 ])
 
 const kmpJobPosting = createJobPostingSchema({

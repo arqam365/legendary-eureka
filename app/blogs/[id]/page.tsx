@@ -30,8 +30,8 @@ async function fetchPost(slug: string): Promise<ApiPost | null> {
         const res = await fetch(`${API_URL}/api/cms/public/posts/${slug}`, {
             next: { revalidate: 30 },
         })
-        if (!res.ok) return null
-        return res.json()
+        if (!res.ok || !res.headers.get("content-type")?.includes("application/json")) return null
+        return await res.json()
     } catch {
         return null
     }
@@ -54,7 +54,7 @@ export async function generateMetadata(
     const post = await fetchPost(slug)
     if (!post) return {}
 
-    const url = `https://revzion.com/blogs/${slug}`
+    const url = `https://revzion.in/blogs/${slug}`
     const title = `${post.title} • Revzion Blog`
     const description = post.description
 
@@ -86,7 +86,7 @@ export default async function BlogPost({ params }: { params: Promise<{ id: strin
     const post = await fetchPost(slug)
     if (!post) return notFound()
 
-    const shareUrl = `https://revzion.com/blogs/${slug}`
+    const shareUrl = `https://revzion.in/blogs/${slug}`
     const date = post.publishedAt ?? post.createdAt
     const rt = post.readTime ? `${post.readTime} min read` : null
 
@@ -117,8 +117,8 @@ export default async function BlogPost({ params }: { params: Promise<{ id: strin
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{
                         __html: JSON.stringify(createBreadcrumbSchema([
-                            { name: "Home", url: "https://www.revzion.com" },
-                            { name: "Blog", url: "https://www.revzion.com/blogs" },
+                            { name: "Home", url: "https://www.revzion.in" },
+                            { name: "Blog", url: "https://www.revzion.in/blogs" },
                             { name: post.title, url: shareUrl },
                         ])),
                     }}

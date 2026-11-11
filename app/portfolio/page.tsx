@@ -58,9 +58,7 @@ export default function PortfolioPage() {
           animate="show"
         >
           <div className="max-w-3xl">
-            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-4">
-              Selected Work
-            </p>
+            <p className="eyebrow mb-4">Selected Work</p>
             <h1 className="text-4xl sm:text-5xl font-heading font-bold text-gray-900 leading-tight mb-5">
               Problems we've solved.
               <br />
@@ -116,15 +114,17 @@ export default function PortfolioPage() {
                   >
                     {/* Image */}
                     <div className="lg:col-span-5 relative">
-                      <div className="relative w-full overflow-hidden lg:h-full min-h-[240px] bg-gray-100">
-                        <Image
-                          src={study.heroImage || "/placeholder.svg"}
-                          alt={`${study.title} case study`}
-                          width={1280}
-                          height={960}
-                          className="w-full h-auto lg:h-full lg:object-cover"
-                          priority={index === 0}
-                        />
+                      <div className="relative w-full overflow-hidden lg:h-full min-h-[240px] bg-[#EEF1F6]">
+                        {study.heroImage && (
+                          <Image
+                            src={study.heroImage}
+                            alt={`${study.title} — screenshot`}
+                            width={1280}
+                            height={960}
+                            className="w-full h-auto lg:h-full lg:object-cover object-top"
+                            priority={index === 0}
+                          />
+                        )}
                         <div className="absolute top-4 left-4">
                           <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-white/90 border border-gray-200 text-xs font-medium text-gray-700 backdrop-blur-sm">
                             {study.category}
@@ -167,7 +167,7 @@ export default function PortfolioPage() {
                           <AccordionItem value="prob">
                             <AccordionTrigger className="text-left text-sm font-medium">
                               <div className="flex items-center gap-2">
-                                <Target className="h-4 w-4 text-red-400 flex-shrink-0" />
+                                <Target className="h-4 w-4 text-[#0B1220] flex-shrink-0" />
                                 {study.problem.title}
                               </div>
                             </AccordionTrigger>
@@ -178,7 +178,7 @@ export default function PortfolioPage() {
                               <ul className="space-y-1.5">
                                 {study.problem.challenges.map((c) => (
                                   <li key={c} className="text-sm text-gray-600 flex items-start">
-                                    <div className="w-1.5 h-1.5 bg-red-300 rounded-full mt-2 mr-3 flex-shrink-0" />
+                                    <div className="w-1.5 h-1.5 bg-[#0B1220] rounded-full mt-2 mr-3 flex-shrink-0" />
                                     {c}
                                   </li>
                                 ))}
@@ -189,7 +189,7 @@ export default function PortfolioPage() {
                           <AccordionItem value="sol">
                             <AccordionTrigger className="text-left text-sm font-medium">
                               <div className="flex items-center gap-2">
-                                <Zap className="h-4 w-4 text-blue-400 flex-shrink-0" />
+                                <Zap className="h-4 w-4 text-[#0B1220] flex-shrink-0" />
                                 {study.solution.title}
                               </div>
                             </AccordionTrigger>
@@ -200,7 +200,7 @@ export default function PortfolioPage() {
                               <ul className="space-y-1.5">
                                 {study.solution.features.map((f) => (
                                   <li key={f} className="text-sm text-gray-600 flex items-start">
-                                    <CheckCircle className="h-3.5 w-3.5 text-blue-400 mt-0.5 mr-2.5 flex-shrink-0" />
+                                    <CheckCircle className="h-3.5 w-3.5 text-[#0B1220] mt-0.5 mr-2.5 flex-shrink-0" />
                                     {f}
                                   </li>
                                 ))}
@@ -211,7 +211,7 @@ export default function PortfolioPage() {
                           <AccordionItem value="res">
                             <AccordionTrigger className="text-left text-sm font-medium">
                               <div className="flex items-center gap-2">
-                                <TrendingUp className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                                <TrendingUp className="h-4 w-4 text-[#0B1220] flex-shrink-0" />
                                 {study.results.title}
                               </div>
                             </AccordionTrigger>
@@ -241,7 +241,7 @@ export default function PortfolioPage() {
                       <div className="hidden md:grid md:grid-cols-3 divide-x divide-gray-100 border border-gray-100 rounded-xl overflow-hidden">
                         <div className="p-6">
                           <h3 className="text-sm font-semibold text-gray-900 mb-2.5 flex items-center gap-2">
-                            <Target className="h-4 w-4 text-red-400 flex-shrink-0" />
+                            <Target className="h-4 w-4 text-[#0B1220] flex-shrink-0" />
                             {study.problem.title}
                           </h3>
                           <p className="text-gray-500 text-xs leading-relaxed mb-3">
@@ -250,7 +250,7 @@ export default function PortfolioPage() {
                           <ul className="space-y-1.5">
                             {study.problem.challenges.slice(0, 3).map((c) => (
                               <li key={c} className="text-xs text-gray-500 flex items-start">
-                                <div className="w-1 h-1 bg-red-300 rounded-full mt-1.5 mr-2.5 flex-shrink-0" />
+                                <div className="w-1 h-1 bg-[#0B1220] rounded-full mt-1.5 mr-2.5 flex-shrink-0" />
                                 {c}
                               </li>
                             ))}
@@ -259,7 +259,7 @@ export default function PortfolioPage() {
 
                         <div className="p-6">
                           <h3 className="text-sm font-semibold text-gray-900 mb-2.5 flex items-center gap-2">
-                            <Zap className="h-4 w-4 text-blue-400 flex-shrink-0" />
+                            <Zap className="h-4 w-4 text-[#0B1220] flex-shrink-0" />
                             {study.solution.title}
                           </h3>
                           <p className="text-gray-500 text-xs leading-relaxed mb-3">
@@ -268,7 +268,7 @@ export default function PortfolioPage() {
                           <ul className="space-y-1.5">
                             {study.solution.features.slice(0, 3).map((f) => (
                               <li key={f} className="text-xs text-gray-500 flex items-start">
-                                <CheckCircle className="h-3 w-3 text-blue-400 mt-0.5 mr-2 flex-shrink-0" />
+                                <CheckCircle className="h-3 w-3 text-[#0B1220] mt-0.5 mr-2 flex-shrink-0" />
                                 {f}
                               </li>
                             ))}
@@ -277,7 +277,7 @@ export default function PortfolioPage() {
 
                         <div className="p-6">
                           <h3 className="text-sm font-semibold text-gray-900 mb-2.5 flex items-center gap-2">
-                            <TrendingUp className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                            <TrendingUp className="h-4 w-4 text-[#0B1220] flex-shrink-0" />
                             {study.results.title}
                           </h3>
                           <p className="text-gray-500 text-xs leading-relaxed mb-3">
@@ -329,23 +329,22 @@ export default function PortfolioPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-gray-50 border-t border-gray-100">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="py-20 bg-[#EEF1F6] border-t border-[#E4E9F1]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">
             Have a project in mind?
           </h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto">
-            We take on a small number of new projects each quarter. Tell us what you're building and
-            we'll be straight with you about whether we're a good fit.
+          <p className="text-lg text-[#1F2937] mb-8 max-w-xl">
+            Tell us what you're building and we'll be straight with you about whether we're a good fit.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Button
               size="lg"
-              className="bg-gradient-revzion hover:opacity-90 text-white"
+              className="bg-[#0B1220] hover:bg-[#1F2937] text-white"
               asChild
             >
               <Link href="/contact">
-                Start a Conversation
+                Start a conversation
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>

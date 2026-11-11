@@ -249,7 +249,7 @@ export default function ServicesPage() {
           animate="show"
         >
           <motion.div variants={childReveal} className="max-w-3xl">
-            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-4">
+            <p className="eyebrow mb-4">
               Services
             </p>
             <h1 className="text-4xl sm:text-5xl font-heading font-bold text-gray-900 leading-tight mb-5">
@@ -264,11 +264,11 @@ export default function ServicesPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Button size="lg" className="bg-gradient-revzion hover:opacity-90 transition-opacity" asChild>
                 <Link href="/contact">
-                  Start a Conversation <ArrowRight className="ml-2 h-4 w-4" />
+                  Start a conversation <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="border-gray-300 text-gray-700 hover:bg-white" asChild>
-                <Link href="/portfolio">See Our Work</Link>
+                <Link href="/portfolio">See our work</Link>
               </Button>
             </div>
           </motion.div>
@@ -276,7 +276,8 @@ export default function ServicesPage() {
       </section>
 
       {/* Services Grid */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white" aria-labelledby="services-grid-heading">
+        <h2 id="services-grid-heading" className="sr-only font-sans">Our services</h2>
         <motion.div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
           variants={sectionReveal}
@@ -347,7 +348,7 @@ export default function ServicesPage() {
           viewport={{ once: true, amount: 0.1 }}
         >
           <motion.div variants={childReveal} className="max-w-2xl mb-12">
-            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">
+            <p className="eyebrow mb-3">
               How we work
             </p>
             <h2 id="process-heading" className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">
@@ -419,14 +420,14 @@ export default function ServicesPage() {
                     />
 
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2.5 rounded-lg bg-gray-100 text-gray-600">
+                      <div className="p-2.5 rounded-lg bg-gray-100 text-gray-700">
                         {step.icon}
                       </div>
                       <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
                         Step {i + 1}
                       </span>
                       {step.duration && (
-                        <span className="ml-auto text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full border border-gray-200">
+                        <span className="ml-auto text-xs font-medium text-gray-700 bg-gray-100 px-2.5 py-1 rounded-full border border-gray-200">
                           {step.duration}
                         </span>
                       )}
@@ -453,7 +454,7 @@ export default function ServicesPage() {
           </div>
 
           <motion.div
-            className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
+            className="mt-10 flex flex-col items-center gap-3 sm:flex-row"
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: EASE }}
@@ -480,7 +481,7 @@ export default function ServicesPage() {
           viewport={{ once: true, amount: 0.1 }}
         >
           <motion.div variants={childReveal} className="max-w-2xl mb-12">
-            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">
+            <p className="eyebrow mb-3">
               Engagement models
             </p>
             <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">
@@ -530,14 +531,14 @@ export default function ServicesPage() {
       {/* FAQ */}
       <section className="py-16 bg-gray-50 border-t border-gray-100">
         <motion.div
-          className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8"
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
           variants={sectionReveal}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.1 }}
         >
           <motion.div variants={childReveal} className="mb-10">
-            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">FAQ</p>
+            <p className="eyebrow mb-3">FAQ</p>
             <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">
               Common questions
             </h2>
@@ -579,7 +580,7 @@ export default function ServicesPage() {
             </Accordion>
           </motion.div>
 
-          <motion.div variants={childReveal} className="mt-8 text-center">
+          <motion.div variants={childReveal} className="mt-8">
             <p className="text-sm text-gray-500">
               Have a question not listed here?{" "}
               <Link href="/contact" className="text-primary font-medium hover:underline">
@@ -593,7 +594,7 @@ export default function ServicesPage() {
       {/* CTA */}
       <section className="py-20 bg-white border-t border-gray-100">
         <motion.div
-          className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
           variants={sectionReveal}
           initial="hidden"
           whileInView="show"
@@ -602,18 +603,18 @@ export default function ServicesPage() {
           <motion.h2 variants={childReveal} className="text-3xl sm:text-4xl font-heading font-bold text-gray-900 mb-4">
             Ready to scope your project?
           </motion.h2>
-          <motion.p variants={childReveal} className="text-lg text-gray-600 mb-8 max-w-xl mx-auto">
-            Tell us what you're building. We'll come back with a realistic path — scope, timeline,
-            and team structure — within 48 hours.
+          <motion.p variants={childReveal} className="text-lg text-gray-600 mb-8 max-w-xl">
+            Tell us what you're building. We reply within one business day, then come back with a
+            realistic path — scope, timeline and team structure.
           </motion.p>
-          <motion.div variants={childReveal} className="flex flex-col sm:flex-row gap-3 justify-center">
+          <motion.div variants={childReveal} className="flex flex-col sm:flex-row gap-3">
             <Button size="lg" className="bg-gradient-revzion hover:opacity-90 text-white" asChild>
               <Link href="/contact">
-                Get a Free Estimate <ArrowRight className="ml-2 h-4 w-4" />
+                Start a conversation <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50" asChild>
-              <Link href="/portfolio">View Our Work</Link>
+              <Link href="/portfolio">See our work</Link>
             </Button>
           </motion.div>
         </motion.div>

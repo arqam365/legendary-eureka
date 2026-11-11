@@ -3,7 +3,7 @@ import { servicesBreadcrumb, servicesPageSchema } from "@/lib/schemas/pages"
 import { createFAQSchema } from "@/lib/schemas"
 
 export const metadata: Metadata = {
-    title: "Software Engineering Services | SaaS, AI, Mobile & Cloud | Revzion",
+    title: "Services — SaaS, AI, mobile & cloud",
     description: "Revzion delivers enterprise-grade SaaS development, AI & automation systems, cross-platform mobile apps (Kotlin Multiplatform), cloud infrastructure, and custom software for startups and enterprises worldwide.",
     keywords: [
         "SaaS development company", "AI software development", "Kotlin Multiplatform development",
@@ -12,10 +12,10 @@ export const metadata: Metadata = {
         "software development company", "custom software development", "mobile app development India",
         "startup software development", "enterprise platform development", "Revzion services"
     ],
-    alternates: { canonical: "https://www.revzion.com/services" },
+    alternates: { canonical: "/services" },
     openGraph: {
         type: "website",
-        url: "https://www.revzion.com/services",
+        url: "https://www.revzion.in/services",
         title: "Software Engineering Services | Revzion",
         description: "SaaS platforms, AI systems, cross-platform mobile apps, and cloud infrastructure — engineered to last.",
         images: [{ url: "/api/og?page=services", width: 1200, height: 630, alt: "Revzion Services" }],

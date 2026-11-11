@@ -2,17 +2,17 @@ import type { Metadata } from "next"
 import { createBreadcrumbSchema, createFAQSchema, createHowToSchema } from "@/lib/schemas"
 
 export const metadata: Metadata = {
-    title: "Our Engineering Process | How Revzion Builds Software | 6-Phase Framework",
+    title: "Our engineering process",
     description: "Learn how Revzion delivers software — from Discovery & Alignment through Solution Design, Iterative Build, Test & Harden, Launch, and Operate & Scale. A proven 6-phase engineering framework.",
     keywords: [
         "software development process", "agile development process", "how Revzion works",
         "software engineering framework", "iterative development", "sprint-based development",
         "software delivery process", "product development methodology", "Revzion process"
     ],
-    alternates: { canonical: "https://www.revzion.com/process" },
+    alternates: { canonical: "/process" },
     openGraph: {
         type: "website",
-        url: "https://www.revzion.com/process",
+        url: "https://www.revzion.in/process",
         title: "Our Engineering Process | Revzion",
         description: "A 6-phase engineering framework: Discovery → Design → Build → Harden → Launch → Scale.",
         images: [{ url: "/api/og?page=process", width: 1200, height: 630, alt: "Revzion Process" }],
@@ -20,8 +20,8 @@ export const metadata: Metadata = {
 }
 
 const processBreadcrumb = createBreadcrumbSchema([
-    { name: "Home", url: "https://www.revzion.com" },
-    { name: "Process", url: "https://www.revzion.com/process" },
+    { name: "Home", url: "https://www.revzion.in" },
+    { name: "Process", url: "https://www.revzion.in/process" },
 ])
 
 const processHowTo = createHowToSchema({
