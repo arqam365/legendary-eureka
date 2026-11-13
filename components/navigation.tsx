@@ -11,7 +11,6 @@ const NAV = [
     { href: "/portfolio", label: "Portfolio" },
     { href: "/process", label: "Process" },
     { href: "/about", label: "About" },
-    { href: "/blogs", label: "Blog" },
 ]
 
 export function Navigation() {

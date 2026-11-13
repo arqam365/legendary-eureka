@@ -13,7 +13,6 @@ const ROUTES: Array<[path: string, priority: number]> = [
     ["/careers", 0.5],
     ["/estimate", 0.5],
     ["/referrals", 0.4],
-    ["/blogs", 0.4],
     ["/privacy-policy", 0.2],
     ["/terms", 0.2],
 ]

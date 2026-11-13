@@ -5,12 +5,6 @@ import { BlogsClient, type Post } from "./BlogsClient";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-    title: "Blog",
-    alternates: { canonical: "/blogs" },
-    description:
-        "Fresh thinking from Revzion — engineers, designers, and product leads sharing practical insights on AI, design, and engineering.",
-};
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://app.revzion.in";
 
@@ -52,6 +46,18 @@ async function getPosts(): Promise<Post[]> {
     } catch {
         return [];
     }
+}
+
+// Keep the empty listing out of search results until posts are published.
+export async function generateMetadata(): Promise<Metadata> {
+    const posts = await getPosts();
+    return {
+        title: "Blog",
+        alternates: { canonical: "/blogs" },
+        description:
+            "Notes from the Revzion team on software, AI and product engineering.",
+        robots: posts.length ? undefined : { index: false, follow: true },
+    };
 }
 
 export default async function BlogsPage() {

@@ -9,7 +9,7 @@ import QuickActions from "../privacy-policy/QuickActions" // client component (n
 export const metadata: Metadata = {
     title: "Terms of Service",
     alternates: { canonical: "/terms" },
-    description: "The rules and terms for using Revzion’s services.",
+    description: "The terms that govern use of the Revzion website and services, including accounts, payments, intellectual property and liability.",
     robots: { index: true, follow: true },
 }
 
