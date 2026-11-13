@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
-import { portfolioBreadcrumb, portfolioPageSchema } from "@/lib/schemas/pages"
-import { createFAQSchema } from "@/lib/schemas"
+
 
 export const metadata: Metadata = {
     title: "Portfolio & case studies",
@@ -26,32 +25,6 @@ export const metadata: Metadata = {
     },
 }
 
-const portfolioFAQ = createFAQSchema([
-    {
-        question: "What kind of projects has Revzion built?",
-        answer: "An AI-first LMS (Cognivia), a smart ring companion app and product site (Evolwe), an e-commerce store (Scottish Home Bargains) and websites (Mazencito, Everyday Fitness)."
-    },
-    {
-        question: "Can I see examples of Revzion's previous work?",
-        answer: "Yes. The portfolio has case studies for Evolwe, Cognivia, Scottish Home Bargains, Mazencito and Everyday Fitness — each covering the problem, our approach, the stack and the outcome."
-    },
-    {
-        question: "Does Revzion share source code or technical details in case studies?",
-        answer: "We share architectural decisions, technology choices, performance metrics, and business outcomes in our case studies. Source code remains confidential per NDA, but we discuss the technical approach in detail during consultation calls."
-    },
-    {
-        question: "Has Revzion worked with funded startups or enterprises?",
-        answer: "Yes. We work with early-stage startups building their first product, growth-stage companies scaling their platforms, and established enterprises modernising legacy systems. Our process adapts to your stage, timeline, and budget."
-    },
-])
-
 export default function PortfolioLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <>
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(portfolioBreadcrumb) }} />
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(portfolioPageSchema) }} />
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(portfolioFAQ) }} />
-            {children}
-        </>
-    )
+    return children
 }

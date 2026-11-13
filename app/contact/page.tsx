@@ -1,5 +1,7 @@
 "use client"
 
+import { FaqSection } from "@/components/FaqSection"
+import { CONTACT_FAQ } from "@/lib/faqs"
 import React, { useMemo, useState } from "react"
 import axios from "axios"
 import { motion, Variants } from "framer-motion"
@@ -547,59 +549,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-16 sm:py-20 bg-gray-50 border-t border-gray-100">
-        <motion.div
-          className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8"
-          variants={revealOnce}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.1 }}
-        >
-          <div className="mb-10">
-            <p className="eyebrow mb-3">FAQ</p>
-            <h2 className="text-3xl font-heading font-bold text-gray-900">Common questions</h2>
-          </div>
-
-          <div className="space-y-4">
-            {[
-              {
-                q: "How long does a typical project take?",
-                a: "Most projects run 3–12 months depending on scope. We share a milestone plan during discovery so you know exactly what to expect and when.",
-              },
-              {
-                q: "Do you work with early-stage startups?",
-                a: "Yes — our engagement models scale from early-stage to enterprise. We prioritise moving fast and proving value in the first sprint.",
-              },
-              {
-                q: "What does your development process look like?",
-                a: "Discovery → iterative sprints with weekly demos → QA & security hardening → launch → post-launch support. Transparent burn-up throughout.",
-              },
-              {
-                q: "Do you offer ongoing support after launch?",
-                a: "We offer SLAs covering monitoring, incident response, dependency upgrades, and feature iterations — on a retainer or milestone basis.",
-              },
-            ].map((faq) => (
-              <div
-                key={faq.q}
-                className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
-              >
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">{faq.q}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">{faq.a}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8">
-            <p className="text-sm text-gray-500">
-              Still have questions?{" "}
-              <a href="mailto:connect@revzion.in" className="text-primary font-medium hover:underline">
-                Email us directly.
-              </a>
-            </p>
-          </div>
-        </motion.div>
-      </section>
+      <FaqSection items={CONTACT_FAQ} />
 
       <Footer />
     </div>

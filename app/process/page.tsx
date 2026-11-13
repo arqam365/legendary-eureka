@@ -1,7 +1,8 @@
 "use client"
 
+import { FaqSection } from "@/components/FaqSection"
+import { PROCESS_FAQ } from "@/lib/faqs"
 import Link from "next/link"
-import Image from "next/image"
 import { motion, useReducedMotion, Variants } from "framer-motion"
 import {
     Users, Target, NotebookPen, Figma, Rocket, ShieldCheck, Wrench, Zap, TimerReset,
@@ -9,7 +10,6 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 
@@ -89,7 +89,7 @@ export default function ProcessPage() {
                 <motion.div
                     className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20"
                     variants={sectionReveal}
-                    initial="hidden"
+                    initial={false}
                     whileInView="show"
                     viewport={{ once: true, amount: 0.25 }}
                 >
@@ -103,8 +103,8 @@ export default function ProcessPage() {
                             </p>
                             <div className="mt-6 flex flex-col sm:flex-row gap-3">
                                 <Button className="bg-gradient-revzion hover:opacity-90" asChild>
-                                    <Link href="/contact" aria-label="Talk to us about your project">
-                                        Start a project <ArrowRight className="ml-2 h-4 w-4" />
+                                    <Link href="/contact">
+                                        Start a conversation <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
                                     </Link>
                                 </Button>
                                 <Button variant="outline" asChild>
@@ -112,19 +112,6 @@ export default function ProcessPage() {
                                 </Button>
                             </div>
                         </div>
-                        <motion.div
-                            variants={childReveal}
-                            className="lg:col-span-5 hidden md:flex justify-end"
-                            aria-hidden
-                        >
-                            <Image
-                                src="/illustrations/process-hero.png"
-                                width={520}
-                                height={360}
-                                alt=""
-                                className="rounded-2xl shadow-2xl ring-1 ring-black/5"
-                            />
-                        </motion.div>
                     </motion.div>
                 </motion.div>
             </section>
@@ -298,75 +285,7 @@ export default function ProcessPage() {
                 </motion.div>
             </section>
 
-            {/* ============================== FAQ ============================== */}
-            <section className="py-20 bg-gray-50">
-                <motion.div
-                    className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
-                    variants={sectionReveal}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true, amount: 0.25 }}
-                >
-                    {/* Heading */}
-                    <motion.div variants={childReveal} className="mb-14">
-                        <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">
-                            Process FAQ
-                        </h2>
-                        <p className="mt-3 text-lg text-gray-600 max-w-2xl">
-                            What it’s like to ship with us.
-                        </p>
-                    </motion.div>
-
-                    {/* Accordion */}
-                    <motion.div
-                        variants={childReveal}
-                        className="bg-white/80 rounded-2xl shadow-sm border border-gray-200 backdrop-blur-sm p-6 sm:p-8"
-                    >
-                        <Accordion type="single" collapsible className="divide-y divide-gray-200">
-                            <AccordionItem value="1">
-                                <AccordionTrigger className="py-4 text-left text-gray-900 font-medium">
-                                    How long is discovery?
-                                </AccordionTrigger>
-                                <AccordionContent className="pb-4 text-gray-700 leading-relaxed">
-                                    Usually 1–2 weeks. Enough to map risks, define v1 and build the first
-                                    prototype plan.
-                                </AccordionContent>
-                            </AccordionItem>
-
-                            <AccordionItem value="2">
-                                <AccordionTrigger className="py-4 text-left text-gray-900 font-medium">
-                                    Do you handle security & compliance?
-                                </AccordionTrigger>
-                                <AccordionContent className="pb-4 text-gray-700 leading-relaxed">
-                                    Yes — we apply OWASP hardening, secret management and SSO, and can design controls that
-                                    support your SOC 2 or GDPR obligations.
-                                </AccordionContent>
-                            </AccordionItem>
-
-                            <AccordionItem value="3">
-                                <AccordionTrigger className="py-4 text-left text-gray-900 font-medium">
-                                    How are changes handled mid-project?
-                                </AccordionTrigger>
-                                <AccordionContent className="pb-4 text-gray-700 leading-relaxed">
-                                    We keep a cutline. New work enters the backlog, is sized, and traded
-                                    against lower-value scope.
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
-                    </motion.div>
-
-                    {/* CTA */}
-                    <motion.div variants={childReveal} className="mt-12">
-                        <Button
-                            asChild
-                            size="lg"
-                            className="bg-gradient-revzion hover:opacity-90 rounded-full px-6 py-3"
-                        >
-                            <Link href="/contact">Ask something specific</Link>
-                        </Button>
-                    </motion.div>
-                </motion.div>
-            </section>
+            <FaqSection items={PROCESS_FAQ} />
 
             {/* =============================== CTA =============================== */}
             <section className="py-20 bg-[#0B1220]">

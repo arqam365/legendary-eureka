@@ -3,6 +3,8 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
+import { FaqSection } from "@/components/FaqSection"
+import { ABOUT_FAQ } from "@/lib/faqs"
 
 type Member = { name: string; role: string; bio: string; links?: { label: string; href: string }[] }
 
@@ -203,6 +205,8 @@ export default function AboutPage() {
                     </ul>
                 </div>
             </section>
+
+            <FaqSection items={ABOUT_FAQ} />
 
             <section className="py-20 bg-[#0B1220]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

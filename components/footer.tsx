@@ -17,7 +17,6 @@ const COLUMNS = [
         items: [
             { href: "/about", label: "About" },
             { href: "/labs", label: "Labs" },
-            { href: "/blogs", label: "Blog" },
             { href: "/careers", label: "Careers" },
             { href: "/referrals", label: "Referrals" },
         ],

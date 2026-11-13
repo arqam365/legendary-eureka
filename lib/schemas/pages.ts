@@ -80,7 +80,6 @@ export const servicesPageSchema = {
                 "@id": "https://www.revzion.in/#organization"
             },
             "serviceType": "Mobile Application Development",
-            "areaServed": "Worldwide"
         },
         {
             "@type": "Service",
@@ -91,7 +90,6 @@ export const servicesPageSchema = {
                 "@id": "https://www.revzion.in/#organization"
             },
             "serviceType": "Software as a Service Development",
-            "areaServed": "Worldwide"
         },
         {
             "@type": "Service",
@@ -102,7 +100,6 @@ export const servicesPageSchema = {
                 "@id": "https://www.revzion.in/#organization"
             },
             "serviceType": "Artificial Intelligence Solutions",
-            "areaServed": "Worldwide"
         },
         {
             "@type": "Service",
@@ -113,7 +110,6 @@ export const servicesPageSchema = {
                 "@id": "https://www.revzion.in/#organization"
             },
             "serviceType": "Web Application Development",
-            "areaServed": "Worldwide"
         },
         {
             "@type": "Service",
@@ -124,7 +120,6 @@ export const servicesPageSchema = {
                 "@id": "https://www.revzion.in/#organization"
             },
             "serviceType": "Cloud Infrastructure Services",
-            "areaServed": "Worldwide"
         },
     ]
 };

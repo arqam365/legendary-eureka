@@ -1,9 +1,10 @@
 import type { Metadata } from "next"
-import { createBreadcrumbSchema, createFAQSchema, createHowToSchema } from "@/lib/schemas"
+import { PROCESS_FAQ, faqJsonLd } from "@/lib/faqs"
+import { createBreadcrumbSchema, createHowToSchema } from "@/lib/schemas"
 
 export const metadata: Metadata = {
     title: "Our engineering process",
-    description: "Learn how Revzion delivers software — from Discovery & Alignment through Solution Design, Iterative Build, Test & Harden, Launch, and Operate & Scale. A proven 6-phase engineering framework.",
+    description: "How Revzion delivers software: discovery, design, weekly build sprints with demos, testing, launch and ongoing support.",
     keywords: [
         "software development process", "agile development process", "how Revzion works",
         "software engineering framework", "iterative development", "sprint-based development",
@@ -56,28 +57,7 @@ const processHowTo = createHowToSchema({
     ]
 })
 
-const processFAQ = createFAQSchema([
-    {
-        question: "How does Revzion manage software projects?",
-        answer: "Revzion uses a 6-phase engineering framework: Discovery & Alignment, Solution Design, Build in Iterations (weekly sprints with demos), Test & Harden, Launch (with feature flags and gradual rollout), and Operate & Scale. Every phase has defined outputs and clear handoffs."
-    },
-    {
-        question: "How often does Revzion provide project updates?",
-        answer: "Weekly. Every sprint ends with a working demo, a changelog, and an updated burndown chart. You always know what was shipped, what's next, and where the project stands — no status meetings needed."
-    },
-    {
-        question: "Does Revzion follow agile methodology?",
-        answer: "We follow a pragmatic agile approach — weekly iterations with working deliverables, continuous integration, and frequent stakeholder feedback. We skip ceremony-heavy processes in favour of actual shipped software."
-    },
-    {
-        question: "What happens after launch?",
-        answer: "Post-launch, we move into an Operate & Scale phase: monitoring SLOs, shipping experiments, maintaining infrastructure, and evolving the product roadmap. Most clients stay on a monthly retainer for ongoing development."
-    },
-    {
-        question: "How long does the Discovery phase take?",
-        answer: "Discovery & Alignment typically takes 1–2 weeks. It includes stakeholder interviews, technical assessment, risk identification, scope definition, and a fixed estimate for the build phase."
-    },
-])
+const processFAQ = faqJsonLd(PROCESS_FAQ)
 
 export default function ProcessLayout({ children }: { children: React.ReactNode }) {
     return (

@@ -125,17 +125,9 @@ export const organizationSchema = {
     "telephone": "+91-6387161020",
 
     "areaServed": [
-        { "@type": "Place", "name": "Worldwide" },
         { "@type": "Country", "name": "India" },
-        { "@type": "Country", "name": "United States" },
-        { "@type": "Country", "name": "United Kingdom" },
-        { "@type": "Country", "name": "Canada" },
-        { "@type": "Country", "name": "Australia" },
-        { "@type": "Country", "name": "New Zealand" },
-        { "@type": "Country", "name": "Singapore" },
         { "@type": "Country", "name": "Saudi Arabia" },
-        { "@type": "Country", "name": "Qatar" },
-        { "@type": "Country", "name": "United Arab Emirates" }
+        { "@type": "Country", "name": "United Kingdom" }
     ],
 
     "hasOfferCatalog": {
@@ -259,12 +251,20 @@ export const localBusinessSchema = {
         "latitude": 25.4484,
         "longitude": 78.5685
     },
-    "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        "opens": "09:00",
-        "closes": "18:00"
-    },
+    "openingHoursSpecification": [
+        {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "09:00",
+            "closes": "19:00"
+        },
+        {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": "Saturday",
+            "opens": "10:00",
+            "closes": "14:00"
+        }
+    ],
     "priceRange": "$$",
     "currenciesAccepted": "USD, INR",
     "paymentAccepted": "Credit Card, Bank Transfer, PayPal",

@@ -1,5 +1,7 @@
 "use client"
 
+import { FaqSection } from "@/components/FaqSection"
+import { SERVICES_FAQ } from "@/lib/faqs"
 import React from "react"
 import Link from "next/link"
 import { motion, useReducedMotion, type Variants } from "framer-motion"
@@ -11,7 +13,6 @@ import {
   Smartphone, Cloud, Brain, Watch, Database, Puzzle, ArrowRight,
   CheckCircle, Zap, Shield, Users, Rocket, BadgeDollarSign, Clock4, Handshake,
 } from "lucide-react"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { EstimateCallout } from "@/components/EstimateCallout"
 
 const EASE = [0.16, 1, 0.3, 1] as const
@@ -245,7 +246,7 @@ export default function ServicesPage() {
         <motion.div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
           variants={sectionReveal}
-          initial="hidden"
+          initial={false}
           animate="show"
         >
           <motion.div variants={childReveal} className="max-w-3xl">
@@ -528,68 +529,7 @@ export default function ServicesPage() {
         </motion.div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-16 bg-gray-50 border-t border-gray-100">
-        <motion.div
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-          variants={sectionReveal}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.1 }}
-        >
-          <motion.div variants={childReveal} className="mb-10">
-            <p className="eyebrow mb-3">FAQ</p>
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-gray-900">
-              Common questions
-            </h2>
-          </motion.div>
-
-          <motion.div variants={childReveal}>
-            <Accordion type="single" collapsible className="space-y-3">
-              {[
-                {
-                  q: "How do you estimate timeline and cost?",
-                  a: "We run a short discovery to map scope, risks, and milestones, then provide a conservative estimate with options (fixed scope vs. elastic capacity). You get weekly burn-up charts and demo builds so nothing surprises you at invoice time.",
-                },
-                {
-                  q: "Can you work with our in-house team?",
-                  a: "Most engagements do. We pair our pod with your PM or tech lead, follow your existing rituals and repos, and leave a clean knowledge trail — documentation, comments, and handoff sessions included.",
-                },
-                {
-                  q: "Do you offer post-launch support?",
-                  a: "Yes — we offer SLAs with proactive monitoring, incident response, dependency upgrades, and a rolling roadmap so the product keeps improving after go-live.",
-                },
-                {
-                  q: "What's your minimum engagement size?",
-                  a: "We don't publish a floor, but our smallest engagements are typically fixed-scope projects over 4–6 weeks. If you have a smaller need, we're happy to refer you to someone better suited.",
-                },
-              ].map(({ q, a }) => (
-                <AccordionItem
-                  key={q}
-                  value={q}
-                  className="rounded-xl border border-gray-200 bg-white px-5 shadow-sm"
-                >
-                  <AccordionTrigger className="py-4 text-left text-sm font-semibold text-gray-900 hover:no-underline">
-                    {q}
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-4 text-sm text-gray-600 leading-relaxed">
-                    {a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </motion.div>
-
-          <motion.div variants={childReveal} className="mt-8">
-            <p className="text-sm text-gray-500">
-              Have a question not listed here?{" "}
-              <Link href="/contact" className="text-primary font-medium hover:underline">
-                Ask us directly.
-              </Link>
-            </p>
-          </motion.div>
-        </motion.div>
-      </section>
+      <FaqSection items={SERVICES_FAQ} />
 
       {/* CTA */}
       <section className="py-20 bg-white border-t border-gray-100">

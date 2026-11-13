@@ -9,6 +9,8 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react"
 import { BrowserFrame, PhoneFrame } from "@/components/brand/DeviceFrame"
+import { createBreadcrumbSchema } from "@/lib/schemas"
+import { SITE_URL } from "@/lib/site"
 
 type PageProps = { params: Promise<{ id: string }> }
 
@@ -47,8 +49,32 @@ export default async function CaseStudyPage({ params }: PageProps) {
         { title: study.solution.title, description: study.solution.description, items: study.solution.features },
     ]
 
+    const url = `${SITE_URL}/portfolio/${study.id}`
+    const schemas = [
+        createBreadcrumbSchema([
+            { name: "Home", url: SITE_URL },
+            { name: "Portfolio", url: `${SITE_URL}/portfolio` },
+            { name: study.title, url },
+        ]),
+        {
+            "@context": "https://schema.org",
+            "@type": "CreativeWork",
+            name: study.title,
+            description: study.summary ?? study.results.description,
+            url,
+            ...(study.heroImage && { image: `${SITE_URL}${study.heroImage}` }),
+            creator: { "@id": `${SITE_URL}/#organization` },
+            about: study.client,
+            genre: study.category,
+            keywords: study.technologies.join(", "),
+        },
+    ]
+
     return (
         <div className="min-h-screen bg-white">
+            {schemas.map((s, i) => (
+                <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(s) }} />
+            ))}
             <Navigation />
 
             <section className="bg-[#EEF1F6]">

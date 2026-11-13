@@ -4,11 +4,11 @@ import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import BuildarcSection from "@/components/BuildarcSection"
 import { BrowserFrame, PhoneFrame } from "@/components/brand/DeviceFrame"
 import { CASE_STUDIES } from "@/lib/case-studies"
-import { createFAQSchema } from "@/lib/schemas"
+import { HOME_FAQ, faqJsonLd } from "@/lib/faqs"
+import { FaqSection } from "@/components/FaqSection"
 
 const CLIENTS = ["Evolwe", "Scottish Home Bargains", "Mazencito", "Everyday Fitness", "Techxellent", "EHP Academy"]
 
@@ -37,34 +37,8 @@ const STACKS = [
     { title: "Design systems", items: ["shadcn/ui", "Radix", "Storybook", "Figma"] },
 ]
 
-const FAQ = [
-    {
-        q: "What services does Revzion offer?",
-        a: "Six disciplines: SaaS platforms, AI & automation, mobile & cross-platform apps (React Native, Kotlin Multiplatform), cloud & DevOps, data & intelligence, and custom enterprise software (ERP, CRM, HRMS).",
-    },
-    {
-        q: "How long does it take to build a software product?",
-        a: "A typical MVP takes 8–14 weeks from signed scope to production; a full platform 4–6 months. We ship in weekly slices with working demos each sprint.",
-    },
-    {
-        q: "Do you work with startups or enterprises?",
-        a: "Both. We adapt the process to your stage — tight scope and speed for startups, structured delivery and integration depth for established businesses.",
-    },
-    {
-        q: "What does a typical engagement look like?",
-        a: "A 1–2 week discovery to lock scope, risks and success metrics, then weekly sprints with demos and changelogs. After launch we can stay on to operate and extend the platform.",
-    },
-    {
-        q: "How does pricing work?",
-        a: "Fixed-scope projects with a locked estimate after discovery, or monthly retainers for a dedicated team. The Estimate page gives a rough range; contact us for a detailed quote.",
-    },
-    {
-        q: "Where is Revzion based?",
-        a: "Jhansi, Uttar Pradesh, India. We work remotely with clients in India, the Middle East and the UK, with overlap windows for live calls.",
-    },
-]
 
-const faqSchema = createFAQSchema(FAQ.map(({ q, a }) => ({ question: q, answer: a })))
+const faqSchema = faqJsonLd(HOME_FAQ)
 
 export default function HomePage() {
     const featured = CASE_STUDIES.filter((c) => c.featured)
@@ -228,27 +202,7 @@ export default function HomePage() {
                 </dl>
             </section>
 
-            {/* FAQ */}
-            <section id="faq" className="border-t border-[#E4E9F1]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 grid gap-12 lg:grid-cols-12">
-                    <div className="lg:col-span-4">
-                        <p className="eyebrow mb-4">FAQ</p>
-                        <h2 className="text-3xl sm:text-4xl text-[#0B1220]">Frequently asked questions</h2>
-                    </div>
-                    <Accordion type="single" collapsible className="lg:col-span-8 divide-y divide-[#E4E9F1]">
-                        {FAQ.map(({ q, a }, i) => (
-                            <AccordionItem key={q} value={`faq-${i}`} className="border-0">
-                                <AccordionTrigger className="text-left text-base font-semibold text-[#0B1220] hover:no-underline py-5">
-                                    {q}
-                                </AccordionTrigger>
-                                <AccordionContent className="text-[#1F2937] leading-relaxed pb-5 text-base max-w-prose">
-                                    {a}
-                                </AccordionContent>
-                            </AccordionItem>
-                        ))}
-                    </Accordion>
-                </div>
-            </section>
+            <FaqSection items={HOME_FAQ} />
 
             {/* CTA */}
             <section id="cta" className="bg-[#0B1220]">
