@@ -9,7 +9,7 @@ const PAGES: Record<string, { eyebrow: string; title: string }> = {
     portfolio: { eyebrow: "Portfolio", title: "Problems solved. Products shipped." },
     about: { eyebrow: "About", title: "The team behind Revzion." },
     contact: { eyebrow: "Contact", title: "Let's talk about your project." },
-    careers: { eyebrow: "Careers", title: "Work with Revzion." },
+    careers: { eyebrow: "Careers", title: "Not hiring right now — check back soon." },
     process: { eyebrow: "Process", title: "A process that ships outcomes." },
 }
 

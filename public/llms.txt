@@ -24,5 +24,5 @@ Clients: India, Saudi Arabia, United Kingdom (see case studies)
 
 - [About](https://www.revzion.in/about)
 - [Labs](https://www.revzion.in/labs): research tracks (EdTech AI, healthcare decision-support research, Indic AI) — research only
-- [Careers](https://www.revzion.in/careers)
+- [Careers](https://www.revzion.in/careers): not hiring at the moment
 - [Privacy Policy](https://www.revzion.in/privacy-policy)
